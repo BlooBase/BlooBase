@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'helloWorld.html')); //Open helloWorld.html intitially
+    res.sendFile(path.join(__dirname, 'index.html')); //Open helloWorld.html intitially
   });
 
 //start app at localhost:3001

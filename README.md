@@ -1,5 +1,5 @@
 # BlooBase
-We make an app
+A software for artists looking to grow their brand
 
 Devs:
 - 2677722 - Josh Snyman
@@ -7,3 +7,7 @@ Devs:
 - Tafara Chibanda
 - Tetelo
 - Mpho
+
+<u>Code Coverage</u>
+
+![codecov](https://codecov.io/gh/BlooBase/BlooBase/graphs/sunburst.svg?token=9N1S0VGR81)

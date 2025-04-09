@@ -1,17 +1,12 @@
 name: Run tests and upload coverage
 
-on:
-  push:
-    branches:
-      - main   # This triggers the action when changes are pushed to the main branch
-      - Josh   # This triggers the action when changes are pushed to the Josh branch
+on: 
+  push
 
 jobs:
   test:
     name: Run tests and collect coverage
-    runs-on: ubuntu-
-    permissions:
-      contents: read  # Required for actions/checkout to fetch your code
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-
     permissions:
       contents: read  # Required for actions/checkout to fetch your code
-      id-token: write  # If using tokens for authentication
     steps:
       - name: Checkout
         uses: actions/checkout@v4

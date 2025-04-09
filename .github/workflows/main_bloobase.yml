@@ -71,4 +71,6 @@ jobs:
           app-name: 'BlooBase'
           slot-name: 'Production'
           package: .
+
+          
           

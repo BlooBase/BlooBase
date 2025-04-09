@@ -2,11 +2,11 @@
     "name": "lab5-file",
     "version": "1.0.0",
     "main": "index.js",
-   "scripts": {
-    "test": "jest",  
-    "start": "node index.js", 
-    "test:placeholder": "echo \"Error: no test specified\" && exit 1"
-},
+    "scripts": {
+        "test": "jest --coverage",
+        "start": "node index.js",
+        "test:placeholder": "echo \"Error: no test specified\" && exit 1"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/LuckyNkosi/lab5-file.git"
@@ -24,6 +24,7 @@
         "express": "^5.1.0"
     },
     "devDependencies": {
+        "codecov": "^3.8.2",
         "jest": "^29.7.0"
     }
 }

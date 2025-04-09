@@ -1,10 +1,7 @@
-// jest.config.js
 module.exports = {
-    collectCoverage: true,
-    collectCoverageFrom: [
-        'index.js',
-        'sum.js', // Include other files you want to cover
-      ],
-    coverageReporters: ["lcov", "text"],
-  };
-  
+  collectCoverage: true,
+  collectCoverageFrom: [
+    '**/*.js',  // Includes all .js files in the project directory and subdirectories
+  ],
+  coverageReporters: ["lcov", "text"],
+};

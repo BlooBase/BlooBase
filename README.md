@@ -11,3 +11,5 @@ Devs:
 **Code Coverage**
 
 [![codecov](https://codecov.io/gh/BlooBase/BlooBase/branch/Josh/graph/badge.svg?token=9N1S0VGR81)](https://codecov.io/gh/BlooBase/BlooBase)
+
+[![codecov](https://codecov.io/gh/BlooBase/BlooBase/branch/Josh/graph/sunburst.svg?token=9N1S0VGR81)](https://codecov.io/gh/BlooBase/BlooBase)

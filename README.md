@@ -8,6 +8,6 @@ Devs:
 - Tetelo
 - Mpho
 
-<u>Code Coverage</u>
+**Code Coverage**
 
-![codecov](https://codecov.io/gh/BlooBase/BlooBase/graphs/sunburst.svg?token=9N1S0VGR81)
+[![codecov](https://codecov.io/gh/BlooBase/BlooBase/graph/badge.svg?token=9N1S0VGR81)](https://codecov.io/gh/BlooBase/BlooBase)

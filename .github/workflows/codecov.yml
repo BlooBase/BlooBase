@@ -26,10 +26,10 @@ jobs:
         run: npm install
 
       - name: Fix Jest permissions
-        run: chmod +x ./node_modules/.bin/jest
+        run: chmod -R +x ./node_modules/.bin
 
-      - name: Run tests and continue on error
-        run: npx jest --coverage || true
+      - name: Run tests with verbosity and continue on error
+        run: npx jest --config jest.config.js --coverage --verbose || true
 
       - name: List coverage directory
         run: ls -l coverage

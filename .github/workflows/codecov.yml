@@ -25,5 +25,5 @@ jobs:
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ddb102a9-6986-49dc-b1d4-739a98f3e712
           slug: BlooBase/BlooBase

@@ -2,24 +2,28 @@
     "name": "lab5-file",
     "version": "1.0.0",
     "main": "index.js",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "node index.js"
-    },
+   "scripts": {
+    "test": "jest",  
+    "start": "node index.js", 
+    "test:placeholder": "echo \"Error: no test specified\" && exit 1"
+},
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/LuckyNkosi/lab5-file.git"
+        "type": "git",
+        "url": "git+https://github.com/LuckyNkosi/lab5-file.git"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "bugs": {
-      "url": "https://github.com/LuckyNkosi/lab5-file/issues"
+        "url": "https://github.com/LuckyNkosi/lab5-file/issues"
     },
     "homepage": "https://github.com/LuckyNkosi/lab5-file#readme",
-    "description": "",
+    "description": "We make an app",
     "dependencies": {
-      "cors": "^2.8.5",
-      "express": "^5.1.0"
+        "cors": "^2.8.5",
+        "express": "^5.1.0"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0"
     }
-  }
+}

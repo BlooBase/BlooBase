@@ -6,7 +6,10 @@ on:
 jobs:
   test:
     name: Run tests and collect coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-
+    permissions:
+      contents: read  # Required for actions/checkout to fetch your code
+      id-token: write  # If using tokens for authentication
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,5 +28,5 @@ jobs:
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v5
         with:
-          token: ddb102a9-6986-49dc-b1d4-739a98f3e712
+          token: ${{ secrets.CODECOV_TOKEN }}
           slug: BlooBase/BlooBase

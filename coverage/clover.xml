@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1744225770829" clover="3.2.0">
-  <project timestamp="1744225770829" name="All files">
-    <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1" elements="3" coveredelements="3" complexity="0" loc="2" ncloc="2" packages="1" files="1" classes="1"/>
+<coverage generated="1744226287224" clover="3.2.0">
+  <project timestamp="1744226287224" name="All files">
+    <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2" elements="5" coveredelements="5" complexity="0" loc="3" ncloc="3" packages="1" files="1" classes="1"/>
     <file name="sum.js" path="C:\University\SD\BlooBase\Coding\sum.js">
-      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <line num="2" count="1" type="stmt"/>
-      <line num="4" count="1" type="stmt"/>
+      <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+      <line num="3" count="5" type="stmt"/>
+      <line num="7" count="3" type="stmt"/>
+      <line num="10" count="1" type="stmt"/>
     </file>
   </project>
 </coverage>

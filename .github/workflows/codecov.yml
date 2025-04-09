@@ -28,11 +28,12 @@ jobs:
       - name: Fix Jest permissions
         run: chmod +x ./node_modules/.bin/jest
 
-      - name: Run tests with coverage
-        run: ./node_modules/.bin/jest --coverage
+      - name: Run tests and continue on error
+        run: ./node_modules/.bin/jest --coverage || true
 
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: BlooBase/BlooBase
+

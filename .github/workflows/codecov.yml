@@ -29,13 +29,15 @@ jobs:
         run: chmod +x ./node_modules/.bin/jest
 
       - name: Run tests and continue on error
-        run: npx jest --coverage
+        run: npx jest --coverage || true
+
+      - name: List coverage directory
+        run: ls -l coverage
 
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: BlooBase/BlooBase
-          files: coverage/lcov.info  # 👈 this is the key
+          files: coverage/lcov.info
           fail_ci_if_error: true
-

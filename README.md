@@ -1,12 +1,12 @@
 # BlooBase
-A software for artists looking to grow their brand
+An app for artists
 
 Devs:
 - 2677722 - Josh Snyman
 - 2677730 - Sam Snyman
-- Tafara Chibanda
+- 2683459 - Tafara Chibanda
 - Tetelo
-- Mpho
+- 2129849 - Mpho Muamela 
 
 **Code Coverage**
 

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://s6.gifyu.com/images/bM57j.gif" height="300" />
+  <img src="media/Banner_compressed.gif" alt="BlooBase demo" height="300" />
 </p>
 
 ---

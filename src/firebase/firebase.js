@@ -1,21 +1,24 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore, doc, setDoc } from "firebase/firestore"; 
-
+import {getAuth} from "firebase/auth";
 const firebaseConfig = {
-  apiKey: "AIzaSyAgBSpJB0B2XEFNAfeoqtt5KRERZVhJ10k",
-  authDomain: "bloobase-6179e.firebaseapp.com",
-  projectId: "bloobase-6179e",
-  storageBucket: "bloobase-6179e.firebasestorage.app",
-  messagingSenderId: "272512255909",
-  appId: "1:272512255909:web:112b08aa2458c2fd51ca4c",
-  measurementId: "G-JD0KF0LJHB"
+  apiKey: "AIzaSyBLRZEHtvWJex2S_6wUgU9-0PyUZ6XvYdc",
+  authDomain: "bloobase-fc939.firebaseapp.com",
+  projectId: "bloobase-fc939",
+  storageBucket: "bloobase-fc939.firebasestorage.app",
+  messagingSenderId: "897530812763",
+  appId: "1:897530812763:web:7f5ece875f7921f7c6227e",
+  measurementId: "G-YDRE0F2FHC"
 };
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-const db = getFirestore(app);  
+const db = getFirestore(app); 
+const auth=getAuth(app); 
 
+
+export{app,analytics,auth,db,doc,setDoc};
 // Function to create a user document
 const createUser = async (userId, username, email,password) => {
     try {
@@ -83,20 +86,3 @@ const createOrder = async (orderId, userId, productId, quantity, totalAmount) =>
       console.error("Error adding order: ", error);
     }
 };
-
-// Sample calls to create user, artisan, product, and order
-const createSampleData = async () => {
-    const userId = "user_001";
-    await createUser(userId, "johnDoe", "john@example.com");
-
-    const artisanId = "artisan_001";
-    await createArtisan(artisanId, userId, "John the Painter", "ColorVibes", "1234567890", "We paint everything!", "profile_img_url");
-
-    const productId = "product_001";
-    await createProduct(productId, artisanId, "Custom Painting", "Handmade painting", 100, "Paintings", 10, "product_img_url");
-
-    const orderId = "order_001";
-    await createOrder(orderId, userId, productId, 1, 100);
-};
-
-createSampleData();

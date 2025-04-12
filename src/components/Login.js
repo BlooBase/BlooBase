@@ -64,14 +64,14 @@ const Login = () => {
   };
 
   return (
-    <div className="login-wrapper">
-      <div className="login-container">
+    <main className="login-wrapper">
+      <section className="login-container">
         <h2 className="login-title">Welcome Back</h2>
         <p className="login-subtitle">Sign in to your account</p>
 
         {/* Email/Password Form */}
         <form onSubmit={handleEmailLogin} className="login-form">
-          <div className="input-group">
+          <section className="input-group">
             <label htmlFor="email">Email</label>
             <input
               type="email"
@@ -81,10 +81,10 @@ const Login = () => {
               placeholder="Enter your email"
               required
             />
-          </div>
-          <div className="input-group password-group">
+          </section>
+          <section className="input-group password-group">
             <label htmlFor="password">Password</label>
-            <div className="password-input-wrapper">
+            <section className="password-input-wrapper">
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
@@ -99,8 +99,8 @@ const Login = () => {
                 className="toggle-password-icon"
                 onClick={() => setShowPassword(!showPassword)}
               />
-            </div>
-          </div>
+            </section>
+          </section>
 
           <button type="submit" className="login-button" disabled={loading}>
             {loading ? 'Signing In...' : 'Sign In'}
@@ -108,12 +108,12 @@ const Login = () => {
         </form>
 
         {/* Divider */}
-        <div className="divider">
+        <section className="divider">
           <span>or continue with</span>
-        </div>
+        </section>
 
         {/* Social Login Buttons */}
-        <div className="social-buttons">
+        <section className="social-buttons">
           <button 
             onClick={handleGoogleLogin} 
             className="social-button google-button"
@@ -130,7 +130,7 @@ const Login = () => {
             <img src="./facebook.png" alt="Facebook" className="social-icon" />
             Facebook
           </button>
-        </div>
+        </section>
 
         {/* Error Message */}
         {error && <p className="error-message">{error}</p>}
@@ -139,8 +139,8 @@ const Login = () => {
         <p className="register-link">
           Don't have an account? <Link to="/register">Sign up</Link>
         </p>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

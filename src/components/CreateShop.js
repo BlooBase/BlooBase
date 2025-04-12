@@ -4,51 +4,51 @@ import { Link } from "react-router-dom";
 
 const CreateShop = () => {
   return (
-    <div className="create-shop-container">
+    <section className="create-shop-container">
       {/* Progress Bar */}
-      <div className="progress-container">
-        <div className="progress-bar"></div>
-      </div>
+      <section className="progress-container">
+        <section className="progress-bar"></section>
+      </section>
 
-      <div className="header">
+      <section className="header">
         <img src="./profile.png" alt="Profile" className="step-icon" />
         <span className="step">1. Create a profile</span>
         <img src="./product.png" alt="Product" className="step-icon" />
         <span className="step">2. Upload your products</span>
         <img src="./verify.png" alt="Verify" className="step-icon" />
         <span className="step">3. Get verified</span>
-      </div>
+      </section>
 
-      <div className="form-box">
+      <section className="form-box">
         <h2>Sign up to create a store with BlooBase.</h2>
         <p>Enter your profile info.</p>
-        <div className="form-row">
+        <section className="form-row">
           <input type="text" placeholder="First Name" className="input half-width" />
           <input type="text" placeholder="Last Name" className="input half-width" />
-        </div>
+        </section>
         <input type="text" placeholder="Mobile Number" className="input" />
         <input type="email" placeholder="Store Name" className="input" />
-        <div className="password-field">
+        <section className="password-field">
           <input type="password" placeholder="Description of the store" className="input" />
 
-        </div>
+        </section>
 
-        <div className="checkbox-row">
+        <section className="checkbox-row">
           <input type="checkbox" id="offers" />
           <label htmlFor="offers">Be the first to know about our offers and upcoming updates.</label>
-        </div>
+        </section>
 
-        <div className="checkbox-row">
+        <section className="checkbox-row">
           <input type="checkbox" id="terms" />
           <label htmlFor="terms">I agree to Grupy's <span className="terms-link">terms</span></label>
-        </div>
+        </section>
 
        <Link to="/UploadProducts" style={{ textDecoration: 'none' }}>
         <button className="next-button">Next</button>
         </Link>
-      </div>
-    </div>
+      </section>
+    </section>
   );
 };
 
-export default CreateShop;
+export default CreateShop; 

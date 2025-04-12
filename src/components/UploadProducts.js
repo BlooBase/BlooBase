@@ -11,30 +11,30 @@ const UploadProducts = () => {
   };
 
   return (
-    <div className="upload-shop-container">
-      <div className="upload-progress-container">
-        <div className="upload-progress-bar" style={{ width: "66.66%" }}></div>
-      </div>
+    <main className="upload-shop-container">
+      <section className="upload-progress-container">
+        <section className="upload-progress-bar" style={{ width: "66.66%" }}></section>
+      </section>
 
-      <div className="upload-header">
+      <section className="upload-header">
         <img src="./profile.png" alt="Profile" className="upload-step-icon" />
         <span className="upload-step">1. Create a profile</span>
         <img src="./product.png" alt="Product" className="upload-step-icon" />
         <span className="upload-step">2. Upload your products</span>
         <img src="./verify.png" alt="Verify" className="upload-step-icon" />
         <span className="upload-step">3. Get verified</span>
-      </div>
+      </section>
 
-      <div className="upload-form-box">
+      <section className="upload-form-box">
         <h2>Add Your Products</h2>
         <p>Enter details for your first product.</p>
 
         <input type="text" placeholder="Product Name" className="upload-input" />
 
-        <div className="upload-form-row">
+        <section className="upload-form-row">
           <input type="number" placeholder="Price in Rands" className="upload-input upload-half-width" />
           <input type="number" placeholder="Quantity" className="upload-input upload-half-width" />
-        </div>
+        </section>
 
         <textarea
           placeholder="Product Description"
@@ -42,7 +42,7 @@ const UploadProducts = () => {
           style={{ minHeight: "100px", resize: "vertical" }}
         ></textarea>
 
-        <div className="upload-form-row">
+        <section className="upload-form-row">
           <label htmlFor="product-images" className="upload-input" style={{ padding: "0.75rem", cursor: "pointer" }}>
             Upload Product Images
             <input
@@ -54,25 +54,25 @@ const UploadProducts = () => {
               onChange={handleFileChange}
             />
           </label>
-        </div>
+        </section>
 
         {selectedFiles.length > 0 && (
-          <div className="upload-file-preview">
+          <section className="upload-file-preview">
             <p>Selected Images:</p>
             <ul>
               {selectedFiles.map((file, index) => (
                 <li key={index}>{file.name}</li>
               ))}
             </ul>
-          </div>
+          </section>
         )}
 
         <Link to="/verifyArtisan" style={{ textDecoration: "none" }}>
           <button className="upload-next-button">Next</button>
         </Link>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 
-export default UploadProducts;
+export default UploadProducts; 

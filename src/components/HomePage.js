@@ -7,6 +7,7 @@ const HomePage = () => {
   const searchInputRef = useRef();
   const [popupMessage, setPopupMessage] = useState('');
 
+  //will connect to database
   function handleSearch() {
     const query = searchInputRef.current.value.trim();
     if (query.length === 0) {
@@ -15,19 +16,18 @@ const HomePage = () => {
       setPopupMessage(`Item not found: ${query}`);
     }
 
-    
     setTimeout(() => {
       setPopupMessage('');
     }, 3000);
   }
 
   return (
-    <div style={styles.homepage}>
+    <main style={styles.homepage}>
       {/* Popup Message */}
       {popupMessage && (
-        <div style={styles.popup}>
+        <section style={styles.popup}>
           {popupMessage}
-        </div>
+        </section>
       )}
 
       <header style={styles.header}>
@@ -36,8 +36,8 @@ const HomePage = () => {
       </header>
 
       <main style={styles.mainContent}>
-        <div className="navbar">
-          <div className="searchContainer">
+        <nav className="navbar">
+          <section className="searchContainer">
             <input
               type="text"
               placeholder="Search for products..."
@@ -47,7 +47,7 @@ const HomePage = () => {
             <button className="search-button" onClick={handleSearch}>
               <img src="/search.png" alt="Search icon" className="searchIcon" />
             </button>
-          </div>
+          </section>
 
           <Link to="/Login">
             <button className="login">Login</button>
@@ -61,20 +61,20 @@ const HomePage = () => {
               <img src="/shop.png" alt="shop icon" style={styles.shopIcon} />
             </button>
           </Link>
-        </div>
+        </nav>
 
-        <div className="options-section">
+        <section className="options-section">
           <button className="option-btn">Paintings</button>
           <button className="option-btn">Jewelry</button>
           <button className="option-btn">Hand-made Crafts</button>
           <button className="option-btn">Clothing & Accessories</button>
           <button className="option-btn">Home & Garden</button>
           <button className="option-btn">Toys</button>
-        </div>
+        </section>
 
         <h2>Products will be displayed here</h2>
       </main>
-    </div>
+    </main>
   );
 };
 

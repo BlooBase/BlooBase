@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - Josh
 
 jobs:
   test:

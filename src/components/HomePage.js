@@ -11,7 +11,7 @@ const HomePage = () => {
   function handleSearch() {
     const query = searchInputRef.current.value.trim();
     if (query.length === 0) {
-      setPopupMessage("Please enter a search term");
+      setPopupMessage("Please search for an item");
     } else {
       setPopupMessage(`Item not found: ${query}`);
     }

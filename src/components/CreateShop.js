@@ -40,7 +40,7 @@ const CreateShop = () => {
 
         <section className="checkbox-row">
           <input type="checkbox" id="terms" />
-          <label htmlFor="terms">I agree to Grupy's <span className="terms-link">terms</span></label>
+          <label htmlFor="terms">I agree to BlooBase's <span className="terms-link">terms</span></label>
         </section>
 
        <Link to="/UploadProducts" style={{ textDecoration: 'none' }}>

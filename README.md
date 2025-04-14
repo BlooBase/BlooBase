@@ -28,7 +28,7 @@
   - 2677722 - Josh Snyman<br>
   - 2677730 - Sam Snyman<br>
   - 2683459 - Tafara Chibanda<br>
-  - Tetelo<br>
+  - 2663025 - Tetelo<br>
   - 2129849 - Mpho Muamela
 </p>
 

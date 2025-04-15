@@ -46,6 +46,7 @@
   </a>
 </p>
 
+---
 
 # Getting Started with Create React App
 

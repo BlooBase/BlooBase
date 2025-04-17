@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Successful</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    h1 {
+      color: #2c7a7b;
+    }
+    p {
+      color: #555;
+      margin-bottom: 1.5rem;
+    }
+    a {
+      text-decoration: none;
+      color: white;
+      background-color: #007bff;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+    }
+    a:hover {
+      background-color: #007bff;
+    }
+  </style>
+</head>
+<body>
+  <section class="card">
+    <h1>Login Successful!</h1>
+    <p>Welcome back! You’ve successfully logged in.</p>
+    <a id = signOutButton>Sign Out</a>
+  </section>
+  <script type="module" src="login_success.js"></script>
+</body>
+</html>

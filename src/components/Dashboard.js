@@ -17,7 +17,7 @@ const Dashboard = () => {
           <img src="./bloobase.png" alt="Dashboard" className="sidebar-icon" />
         </section>
         <nav className="sidebar-nav">
-          <Link to="/dashboard" className="sidebar-link" data-tooltip="Home">
+          <Link to="/Homepage" className="sidebar-link" data-tooltip="Home">
             <img src="./home.png" alt="Home" className="sidebar-link-icon" />
           </Link>
           <Link to="/users" className="sidebar-link" data-tooltip="Users">

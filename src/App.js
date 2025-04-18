@@ -10,7 +10,7 @@ import DashBoard from './components/Dashboard';
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      <Route path="/Homepage" element={<HomePage />} />
       <Route path="/CreateShop" element={<CreateShop />} />
       <Route path="/UploadProducts" element={<UploadProducts/>} />
       <Route path="/verifyArtisan" element={<VerifyArtisan/>} />

@@ -1,15 +1,15 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBZF6B4SKasuGtqc3pVDnuivjsF0txDgCM",
-            authDomain: "bloobasetest-82497.firebaseapp.com",
-            projectId: "bloobasetest-82497",
-            storageBucket: "bloobasetest-82497.firebasestorage.app",
-            messagingSenderId: "982771689968",
-            appId: "1:982771689968:web:a516d96eed7b8093729535",
-            measurementId: "G-5GZB24CC92"
-          };
+const firebaseConfig = {
+    apiKey: "AIzaSyBLRZEHtvWJex2S_6wUgU9-0PyUZ6XvYdc",
+    authDomain: "bloobase-fc939.firebaseapp.com",
+    projectId: "bloobase-fc939",
+    storageBucket: "bloobase-fc939.firebasestorage.app",
+    messagingSenderId: "897530812763",
+    appId: "1:897530812763:web:7f5ece875f7921f7c6227e",
+    measurementId: "G-YDRE0F2FHC"
+  };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);

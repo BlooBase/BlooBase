@@ -23,10 +23,9 @@ jobs:
           submodules: true
           lfs: false
 
-      # Fix Git Permissions to avoid permission errors
+      # Fix Git Permissions
       - name: Fix Git Permissions
-        run: |
-          sudo chmod -R u+w .git
+        run: sudo chmod -R u+w .git
 
       # Install Dependencies
       - name: Install Dependencies
@@ -42,18 +41,17 @@ jobs:
         id: idtoken
         with:
           script: |
-              const coredemo = require('@actions/core')
-              return await coredemo.getIDToken()
+            const coredemo = require('@actions/core')
+            return await coredemo.getIDToken()
           result-encoding: string
 
       # Build And Deploy
       - name: Build And Deploy
-        id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_FLOWER_07E89B41E }}
           action: "upload"
-          app_location: "/" # App source code path
-          api_location: "" # Api source code path - optional
-          output_location: "build" # Built app content directory - optional
+          app_location: "/" # Update this to your app's source directory
+          api_location: "" # Update this to your API's source directory, if applicable
+          output_location: "build" # Update this to the directory containing the built app
           github_id_token: ${{ steps.idtoken.outputs.result }}

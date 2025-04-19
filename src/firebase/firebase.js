@@ -53,36 +53,36 @@ export{app,analytics,auth,db,doc,setDoc};
 // };
 
 // Function to create a product document
-const createProduct = async (productId, artisanId, name, description, price, category, quantity, product_img) => {
-    try {
-      await setDoc(doc(db, "products", productId), {
-        artisan_id: artisanId,
-        name: name,
-        description: description,
-        price: price,
-        created_at: new Date(),
-        product_img: product_img,
-        category: category,
-        quantity: quantity,
-      });
-      console.log("Product created successfully");
-    } catch (error) {
-      console.error("Error adding product: ", error);
-    }
-};
+// const createProduct = async (productId, artisanId, name, description, price, category, quantity, product_img) => {
+//     try {
+//       await setDoc(doc(db, "products", productId), {
+//         artisan_id: artisanId,
+//         name: name,
+//         description: description,
+//         price: price,
+//         created_at: new Date(),
+//         product_img: product_img,
+//         category: category,
+//         quantity: quantity,
+//       });
+//       console.log("Product created successfully");
+//     } catch (error) {
+//       console.error("Error adding product: ", error);
+//     }
+// };
 
 // Function to create an order document
-const createOrder = async (orderId, userId, productId, quantity, totalAmount) => {
-    try {
-      await setDoc(doc(db, "orders", orderId), {
-        user_id: userId,
-        product_id: productId,
-        quantity: quantity,
-        created_at: new Date(),
-        total_amount: totalAmount,
-      });
-      console.log("Order created successfully");
-    } catch (error) {
-      console.error("Error adding order: ", error);
-    }
-};
+// const createOrder = async (orderId, userId, productId, quantity, totalAmount) => {
+//     try {
+//       await setDoc(doc(db, "orders", orderId), {
+//         user_id: userId,
+//         product_id: productId,
+//         quantity: quantity,
+//         created_at: new Date(),
+//         total_amount: totalAmount,
+//       });
+//       console.log("Order created successfully");
+//     } catch (error) {
+//       console.error("Error adding order: ", error);
+//     }
+// };

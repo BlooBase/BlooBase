@@ -20,37 +20,37 @@ const auth=getAuth(app);
 
 export{app,analytics,auth,db,doc,setDoc};
 // Function to create a user document
-const createUser = async (userId, username, email,password) => {
-    try {
-      await setDoc(doc(db, "users", userId), {
-        username:username,
-        email:email,
-        password:password, // Will hash later
-        created_at: new Date(),
-      });
-      console.log("User created successfully");
-    } catch (error) {
-      console.error("Error adding user: ", error);
-    }
-};
+// const createUser = async (userId, username, email,password) => {
+//     try {
+//       await setDoc(doc(db, "users", userId), {
+//         username:username,
+//         email:email,
+//         password:password, // Will hash later
+//         created_at: new Date(),
+//       });
+//       console.log("User created successfully");
+//     } catch (error) {
+//       console.error("Error adding user: ", error);
+//     }
+// };
 
 // Function to create an artisan document
-const createArtisan = async (artisanId, userId, name, shopName, mobileNumber, description, profileImg) => {
-    try {
-      await setDoc(doc(db, "artisans", artisanId), {
-        user_id: userId,
-        name: name,
-        mobile_number: mobileNumber,
-        shop_name: shopName,
-        description: description,
-        created_at: new Date(),
-        profile_img: profileImg,
-      });
-      console.log("Artisan created successfully");
-    } catch (error) {
-      console.error("Error adding artisan: ", error);
-    }
-};
+// const createArtisan = async (artisanId, userId, name, shopName, mobileNumber, description, profileImg) => {
+//     try {
+//       await setDoc(doc(db, "artisans", artisanId), {
+//         user_id: userId,
+//         name: name,
+//         mobile_number: mobileNumber,
+//         shop_name: shopName,
+//         description: description,
+//         created_at: new Date(),
+//         profile_img: profileImg,
+//       });
+//       console.log("Artisan created successfully");
+//     } catch (error) {
+//       console.error("Error adding artisan: ", error);
+//     }
+// };
 
 // Function to create a product document
 const createProduct = async (productId, artisanId, name, description, price, category, quantity, product_img) => {

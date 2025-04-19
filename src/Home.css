@@ -4,10 +4,10 @@ body {
   margin: 0;
   font-family: 'DM Sans', sans-serif;
   background-image: url('./assets/BG.png');
-  background-size: cover;         /* cover the whole page */
-  background-repeat: no-repeat;   /* don't tile it */
-  background-attachment: fixed;   /* 🔥 keeps it static while scrolling */
-  background-position: center;    /* center it */
+  background-size: cover;       
+  background-repeat: no-repeat;  
+  background-attachment: fixed;  
+  background-position: center; 
   min-height: 100vh;
   background-repeat: no-repeat;
   background-size: cover;
@@ -41,7 +41,7 @@ body {
   background-color: #fdf9dd;
   color: #165a9c;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: bold;
   text-decoration: none;
   font-size: 1.1rem;
@@ -56,7 +56,7 @@ body {
 }
 
 .hero-title {
-  font-family: 'Chewy';
+  font-family: 'DM Sans', sans-serif;
   font-size: 3.5rem;
   color: #165a9c;
   margin-top: 60px;
@@ -91,9 +91,57 @@ body {
 }
 
 .footer-text {
-  margin-top: 390px;   /* pushes it down to allow scrolling */
+  margin-top: 390px;   
   text-align: center;
   color: #165a9c;
   font-size: 1rem;
   padding-bottom: 40px;
+}
+
+/*Mobile version*/
+@media (max-width: 768px) {
+  .nav-buttons {
+    flex-direction: column; 
+    align-items: center; 
+    gap: 15px; 
+    margin: 20px 0; 
+  }
+
+  .nav-button {
+    width: 100%;
+    max-width: 300px; 
+    padding: 10px 20px; 
+    font-size: 1rem; 
+  }
+
+  .homepage-container {
+    padding: 40px 15px; 
+  }
+
+  .hero-title {
+    font-size: 2.5rem; 
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem; 
+  }
+
+  .header {
+    top: 10px;
+    left: 10px;
+    gap: 8px;
+  }
+
+  .ghost-logo {
+    width: 140px;
+  }
+
+  .brand-title {
+    font-size: 1.5rem; 
+  }
+
+  .footer-text {
+    margin-top: 200px; 
+    font-size: 0.9rem; 
+  }
 }

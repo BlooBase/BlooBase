@@ -13,7 +13,7 @@ const firebaseConfig = {
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-
+        console.log('change');
         const loginForm = document.getElementById('loginForm');
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();

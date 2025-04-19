@@ -5,7 +5,7 @@ on:
     branches:
       - initial_setup
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, closed]
     branches:
       - initial_setup
 
@@ -15,27 +15,49 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     permissions:
-      contents: read
-
+       id-token: write
+       contents: read
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: true
+          lfs: false
 
+      # Set up Node.js version 20
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: '20'
 
+      # Fix Git Permissions
+      - name: Fix Git Permissions
+        run: sudo chmod -R u+w .git
+
+      # Install Dependencies
       - name: Install Dependencies
         run: npm install
 
-      - name: Build App
-        run: npm run build
+      # Install OIDC Client from Core Package
+      - name: Install OIDC Client from Core Package
+        run: npm install @actions/core@1.6.0 @actions/http-client
 
-      - name: Deploy to Azure Static Web Apps
+      # Get Id Token
+      - name: Get Id Token
+        uses: actions/github-script@v6
+        id: idtoken
+        with:
+          script: |
+            const coredemo = require('@actions/core')
+            return await coredemo.getIDToken()
+          result-encoding: string
+
+      # Build And Deploy
+      - name: Build And Deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_FLOWER_07E89B41E }}
           action: "upload"
-          app_location: "/"         # change if your app is in a subfolder
-          api_location: ""          # leave empty unless you're using Azure Functions or similar
-          output_location: "build"  # or "dist", depending on your framework
+          app_location: "/" # Update this to your app's source directory
+          api_location: "" # Update this to your API's source directory, if applicable
+          output_location: "build" # Update this to the directory containing the built app
+          github_id_token: ${{ steps.idtoken.outputs.result }}

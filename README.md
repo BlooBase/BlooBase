@@ -21,7 +21,7 @@
 ---
 
 <h3 align="center">BlooBase</h3>
-<p align="center">An app for artists</p>
+<p align="center">The global artist marketplace</p>
 
 <p align="center">
   <strong>Devs:</strong><br>

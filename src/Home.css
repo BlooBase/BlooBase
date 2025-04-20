@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=DM+Sans:wght@400;700&display=swap');
 
+
+/* Preload background image using a hidden element,so it loads faster */
+#bg-preload {
+  display: none;
+  background-image: url('./assets/BG.png');
+}
 body {
   margin: 0;
   font-family: 'DM Sans', sans-serif;

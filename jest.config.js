@@ -10,10 +10,10 @@ module.exports = {
     //"!**/node_modules/**"
     //Checks all JS Files
 
-    'sum.js', 
-    'firebase.js',
-    'index.js',
-    'App.js',
+    'src/sum.js', 
+    //'firebase.js',
+    'src/index.js',
+    'src/App.js',
     /*'index.js',
     'firebase.js',
     'CreateShop.js',

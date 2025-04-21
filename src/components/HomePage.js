@@ -15,7 +15,7 @@ const HomePage = () => {
 
 
       <nav className="nav-buttons">
-        <Link to="/products" className="nav-button">Products</Link>
+        <Link to="/artists" className="nav-button">Artists</Link>
         <Link to="/signup" className="nav-button">Sign Up</Link>
         <Link to="/login" className="nav-button">Log In</Link>
       </nav>

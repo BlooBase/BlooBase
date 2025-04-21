@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'DM Sans', sans-serif;
+  overflow-y: auto; /* Allow scrolling */
+}
+
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.products-container {
+  flex: 1; /* this fills the remaining space and pushes the footer down */
+  padding: 60px 20px;
+  font-family: 'DM Sans', sans-serif;
+  background-image: url('./assets/BG.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-footer {
+  padding: 40px 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #165a9c;
+  background-color: rgba(255, 255, 255, 0.7);
+  width: 100%;
+}
+
+
+.products-container {
+  flex: 1; /* this fills the remaining space and pushes the footer down */
+  padding: 60px 20px;
+  font-family: 'DM Sans', sans-serif;
+  background-image: url('./assets/BG.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.artists-heading {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #165a9c;
+  margin-bottom: 60px; /* Space below the heading */
+  padding: 20px 40px; /* Add padding inside the bubble */
+  background-color: rgba(255, 255, 255, 0.1); /* Light background to make it stand out */
+  border-radius: 50px; /* Round the edges to create a bubble effect */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Optional: add a shadow for depth */
+}
+
+.product-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.products-grid {
+  column-count: 3;
+  column-gap: 40px;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.product-card {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  break-inside: avoid; /* <-- Prevents card from being split across columns */
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.55);
+}
+
+.product-image {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.product-title {
+  font-size: 1.5rem;
+  color: #165a9c;
+  margin-bottom: 10px;
+}
+
+.product-description {
+  color: #165a9c;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .products-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .product-card {
+    width: 90%;
+  }
+
+  .page-footer {
+    padding: 40px 0;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #165a9c;
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 100%;
+  }
+  
+  
+}

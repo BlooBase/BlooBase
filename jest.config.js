@@ -2,12 +2,19 @@ module.exports = {
   rootDir: './',
   collectCoverage: true,
   collectCoverageFrom: [ //parts of code you want to check covered for
-    "src/**/*.{js,jsx}",
-    "!src/**/*.test.js",
-    "!**/node_modules/**" 
+    
+    //"src/**/*.{js,jsx}",
+    //"!src/**/*.test.js",
+    //"!src/reportWebVitals.js", //Ignore these files
+    //"!src/setupTests.js", //Ignore these files
+    //"!**/node_modules/**"
+    //Checks all JS Files
 
+    'sum.js', 
+    'firebase.js',
+    'index.js',
+    'App.js',
     /*'index.js',
-    'sum.js', // Include other files you want to cover
     'firebase.js',
     'CreateShop.js',
     'UploadProducts.js',
@@ -20,6 +27,7 @@ module.exports = {
     'Homepage.js',
     'setupTests.js',
     'reportWebVitals.js',*/
+    //Checks specific files
 
     
   ],

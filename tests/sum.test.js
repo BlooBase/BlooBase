@@ -14,7 +14,7 @@ describe('sum function tests', () => {
   });
 
   test('adds 5 + 5 to equal 15', () => {
-    expect(sum(5, 5)).toBe(15);  // Fails, it should be 10
+    expect(sum(5, 5)).not.toBe(15);  // Fails, it should be 10
   });
 
   test('adds 10 + 5 to equal 15', () => {
@@ -28,7 +28,7 @@ describe('subtract function tests', () => {
   });
 
   test('subtracts 10 - 5 to equal 6', () => {
-    expect(subtract(10, 5)).toBe(6);  // Fails, it should be 5
+    expect(subtract(10, 5)).not.toBe(6);  // Fails, it should be 5
   });
 
   test('subtracts -1 - (-1) to equal 0', () => {

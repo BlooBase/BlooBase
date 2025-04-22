@@ -18,7 +18,7 @@
   
   
   .site-title {
-    font-size: 1.5rem; /* Smaller font */
+    font-size: 1rem; /* Smaller font */
     margin: 0;
   }
   
@@ -49,4 +49,36 @@
     border-radius: 50%;
     object-fit: cover;
   }
+
+  @media (max-width: 768px) {
+    .navbar {
+      height: 40px;
+      padding: 6px 12px;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+  
+    .site-title {
+      font-size: 0.6rem; /* Smaller title text */
+    }
+  
+    .page-title {
+      font-size: 0.9rem; /* Smaller page name text */
+    }
+  
+    .username {
+      font-size: 0.8rem;
+      font-weight: bold; /* Keep it bold */
+    }
+  
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+    }
+  
+    .user-info {
+      gap: 6px;
+    }
+  }
+  
   

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../Artists.css'; // Use a dedicated CSS file
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar'; // Ensure this path is correct
 
-
 const Products = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+
   const productList = [
     {
       id: 1,
@@ -12,7 +13,8 @@ const Products = () => {
       image: "/Murata.gif",
       description: "Artist of 'One Punch Man' and 'Eyeshield 21'.",
       color: '#696867',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
+      genre: 'Digital Art'	
     },
     {
       id: 2,
@@ -20,7 +22,8 @@ const Products = () => {
       image: "/Asano.jpg",
       description: "Author and artist of 'Goodnight Punpun', 'Solanin' and 'A Girl On the Shore'.",
       color: '#ffffff',
-      textColor: '#598EA0'
+      textColor: '#598EA0',
+      genre: 'Digital Art'
     },
     {
       id: 3,
@@ -28,7 +31,8 @@ const Products = () => {
       image: "/Island.jpg",
       description: "Digital Media editor, artist and director, @CultureStudios ",
       color: '#DEAED2',
-      textColor: '#FFDFE2'
+      textColor: '#FFDFE2',
+      genre: 'Video Editing'
     },
     {
       id: 4,
@@ -36,7 +40,8 @@ const Products = () => {
       image: "/keely.jpg",
       description: "3d Modeling and Character Design, @poiandkeely",
       color: '#FFEFF8',
-      textColor: '#A38FF7'
+      textColor: '#A38FF7',
+      genre: '3D Modeling'
     },
     {
       id: 5,
@@ -44,47 +49,86 @@ const Products = () => {
       image: "/Chogiseok.jpg",
       description: "Korean photographer, director and artisan, 조기석 Cho Gi-Seok @chogiseok",
       color: '#e7e4d7',
-      textColor: '#141118'
+      textColor: '#141118',
+      genre: 'Photography'
     }
   ];
 
-  // Sample user object (you can update this with dynamic data as needed)
+const [selectedGenre, setSelectedGenre] = useState('All');
+
+const genres = ['All', '3D Modeling', 'Digital Art', 'Video Editing', 'Photography'];
+
+const filteredProducts = productList.filter((product) =>
+  (selectedGenre === 'All' || product.genre === selectedGenre) &&
+  product.title.toLowerCase().includes(searchQuery.toLowerCase())
+);
+
+
   const user = {
     name: 'DigitalJosh',
-    avatarUrl: 'https://i.pravatar.cc/100' // Placeholder image URL
+    avatarUrl: 'https://i.pravatar.cc/100',
+    avatarLocal: '/pfp.jpeg'
   };
 
   return (
     <section className="page-wrapper">
-      {/* Navbar Component */}
-      <Navbar pageTitle="Artists"
-      user={user}
-      bgColor="#fff6fb"
-      textColor="#a08cf2"/>
+      <Navbar
+        pageTitle="Artists"
+        user={user}
+        bgColor="#fff6fb"
+        textColor="#165a9c"
+      />
+
 
       <section className="products-container">
-
-        <section className="products-grid">
-          {productList.map((product) => (
-            <Link to={`/product/${product.id}`} key={product.id} className="product-link">
-              <section className="product-card" style={{ backgroundColor: product.color }}>
-                {product.image && (
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="product-image"
-                  />
-                )}
-                <h3 className="product-title" style={{ color: product.textColor }}>
-                  {product.title}
-                </h3>
-                <p className="product-description" style={{ color: product.textColor }}>
-                  {product.description}
-                </p>
-              </section>
-            </Link>
-          ))}
+        <section className="search-bar-wrapper">
+          <input
+            type="text"
+            placeholder="Search for an artist..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-bar"
+          />
         </section>
+
+        <section className="genre-filter-wrapper">
+        {genres.map((genre) => (
+          <button
+            key={genre}
+            className={`genre-button ${selectedGenre === genre ? 'active' : ''}`}
+            onClick={() => setSelectedGenre(genre)}
+          >
+            {genre}
+          </button>
+        ))}
+      </section>
+
+        <section className="products-grid-wrapper">
+          <section className="products-grid">
+            {filteredProducts.map((product) => (
+              <Link to={`/product/${product.id}`} key={product.id} className="product-link">
+                <section className="product-card" style={{ backgroundColor: product.color }}>
+                  {product.image && (
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className="product-image"
+                    />
+                  )}
+                  <h3 className="product-title" style={{ color: product.textColor }}>
+                    {product.title}
+                  </h3>
+                  <p className="product-description" style={{ color: product.textColor }}>
+                    {product.description}
+                  </p>
+                </section>
+              </Link>
+            ))}
+          </section>
+        </section>
+
+        {/* Add the blur fade effect inside products-container */}
+        <section className="opacity-fade" />
       </section>
 
       <footer className="page-footer">

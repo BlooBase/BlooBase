@@ -165,6 +165,15 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
+  .search-bar-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px; /* for spacing below navbar */
+    margin-bottom: 5px; /* spacing before the grid */
+  }
+
   .products-container {
     flex: 1; /* this fills the remaining space and pushes the footer down */
     padding: 20px 20px 20px; 

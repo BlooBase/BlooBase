@@ -1,22 +1,20 @@
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px; /* Reduced padding */
-    height: 60px; /* Lower the height */
-    position: sticky;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-    /* Don't hardcode these here if using props */
-    /* background-color: white; ❌ */
-    /* color: #165a9c; ❌ */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 16px; /* Reduced vertical & horizontal padding */
+  height: 50px;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 
-    border-bottom-left-radius: 25px;
-    border-bottom-right-radius: 25px;
-  }
-  
-  
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+
+  background: linear-gradient(to right, #eafcff, #fff5e1); /* Light pastel pink to soft lavender */
+}
+
   .site-title {
     font-size: 1rem; /* Smaller font */
     margin: 0;

@@ -9,12 +9,12 @@ const Products = () => {
   const productList = [
     {
       id: 1,
-      title: "Yusuke Murata",
-      image: "/Murata.gif",
-      description: "Artist of 'One Punch Man' and 'Eyeshield 21'.",
-      color: '#696867',
-      textColor: '#ffffff',
-      genre: 'Digital Art'	
+      title: "poiandkeely",
+      image: "/keely.jpg",
+      description: "3d Modeling and Character Design, @poiandkeely",
+      color: '#FFEFF8',
+      textColor: '#A38FF7',
+      genre: '3D Modeling'
     },
     {
       id: 2,
@@ -27,36 +27,55 @@ const Products = () => {
     },
     {
       id: 3,
-      title: "Inspired Island",
-      image: "/Island.jpg",
-      description: "Digital Media editor, artist and director, @CultureStudios ",
-      color: '#DEAED2',
-      textColor: '#FFDFE2',
-      genre: 'Video Editing'
-    },
-    {
-      id: 4,
-      title: "poiandkeely",
-      image: "/keely.jpg",
-      description: "3d Modeling and Character Design, @poiandkeely",
-      color: '#FFEFF8',
-      textColor: '#A38FF7',
-      genre: '3D Modeling'
-    },
-    {
-      id: 5,
       title: "조기석 Cho Gi-Seok",
       image: "/Chogiseok.jpg",
       description: "Korean photographer, director and artisan, 조기석 Cho Gi-Seok @chogiseok",
       color: '#e7e4d7',
       textColor: '#141118',
       genre: 'Photography'
+    },
+    {
+      id: 4,
+      title: "Yusuke Murata",
+      image: "/Murata.gif",
+      description: "Artist of 'One Punch Man' and 'Eyeshield 21'.",
+      color: '#1e1e1e',
+      textColor: '#ffffff',
+      genre: 'Digital Art'	
+    },
+
+    {
+      id: 5,
+      title: "Inspired Island",
+      image: "/Island.jpg",
+      description: "Digital Media editor, artist and director, @CultureStudios ",
+      color: '#8C2C54',
+      textColor: '#FFDFE2',
+      genre:'Video Editing'
+    },
+    {
+      id: 6,
+      title: "Jamie Hewlett",
+      image: "/Hewlett.jpg",
+      description: "Digital Artist - @Hewll",
+      color: '#1c6e7b',
+      textColor: '#ffffff',
+      genre: 'Digital Art'
+    },
+    {
+      id: 7,
+      title: "Kim Jung Gi",
+      image: "/Kim.jpg",
+      description: "Physical inking artist and illsustrator",
+      color: '#ffffff',
+      textColor: '#181818',
+      genre: 'Physical Art'
     }
   ];
 
 const [selectedGenre, setSelectedGenre] = useState('All');
 
-const genres = ['All', '3D Modeling', 'Digital Art', 'Video Editing', 'Photography'];
+const genres = ['All', 'Physical Art', '3D Modeling', 'Digital Art', 'Video Editing', 'Photography', 'Sculpting'];
 
 const filteredProducts = productList.filter((product) =>
   (selectedGenre === 'All' || product.genre === selectedGenre) &&

@@ -1,30 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=DM+Sans:wght@400;700&display=swap');
 
-
-/* Preload background image using a hidden element,so it loads faster */
+/* Preload background image using a hidden element, so it loads faster */
 #bg-preload {
   display: none;
   background-image: url('./assets/BG.png');
 }
+
 body {
   margin: 0;
   font-family: 'DM Sans', sans-serif;
-  background-image: url('./assets/BG.png');
-  background-size: cover;       
-  background-repeat: no-repeat;  
-  background-attachment: fixed;  
-  background-position: center; 
+  background-color: #fff;
   min-height: 100vh;
-  background-repeat: no-repeat;
-  background-size: cover;
   overflow-x: hidden;
   position: relative;
+}
+
+.homepage {
+  background-color: #fff; /* Ensure main container is white */
+}
+
+.header-section {
+  background-image: url('./assets/BG.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  border-bottom-left-radius: 45px;
+  border-bottom-right-radius: 45px;
+  overflow: hidden;
+  z-index: 0;
 }
 
 .homepage-container {
   text-align: center;
   padding: 60px 20px;
   position: relative;
+  background-color: transparent;
 }
 
 .logo-header {
@@ -53,7 +64,7 @@ body {
   font-size: 1.1rem;
   border: none;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+ 
 }
 
 .nav-button:hover {
@@ -72,14 +83,12 @@ body {
   font-size: 1.3rem;
   margin-top: 15px;
   color: #165a9c;
-  
 }
 
 .header {
   display: flex;
   align-items: center;
   position: absolute;
-  font-family: 'Chewy';
   top: 20px;
   left: 20px;
   gap: 10px;
@@ -97,39 +106,121 @@ body {
 }
 
 .footer-text {
-  margin-top: 390px;   
+  margin-top: 40px;
   text-align: center;
   color: #165a9c;
   font-size: 1rem;
-  padding-bottom: 40px;
+  padding: 20px 0;
+  background-color: #fff;
 }
 
-/*Mobile version*/
+.products-section {
+  margin-top: 10px;
+  padding: 40px 20px;
+  background-color: #fff;
+  position: relative;
+  z-index: 1;
+
+}
+
+.products-heading {
+  color: #165a9c;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+  justify-content: center;
+  justify-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 25px;
+}
+
+.product-card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  width: 240px;
+  height: 310px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #d1d1d1 ;
+  justify-content: space-between;
+  
+  
+}
+
+.product-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.product-info {
+  margin-top: 5px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0 5px; 
+}
+
+.product-name {
+  font-size: 1.1rem;
+  color: #165a9c;
+  margin: 3px 0;
+  white-space: nowrap; 
+  overflow: hidden;
+
+}
+
+.product-price {
+  font-weight: bold;
+  font-size: 1rem; 
+  color: #2c7fc7;
+  margin: 3px 0;
+}
+
+.store-name {
+  font-size: 0.85rem;
+  color: #777;
+  white-space: nowrap;
+  overflow: hidden;
+  
+}
+
+/* Mobile version */
 @media (max-width: 768px) {
   .nav-buttons {
-    flex-direction: column; 
-    align-items: center; 
-    gap: 15px; 
-    margin: 20px 0; 
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0;
   }
 
   .nav-button {
     width: 100%;
-    max-width: 300px; 
-    padding: 10px 20px; 
-    font-size: 1rem; 
+    max-width: 300px;
+    padding: 10px 20px;
+    font-size: 1rem;
   }
 
   .homepage-container {
-    padding: 40px 15px; 
+    padding: 40px 15px;
   }
 
   .hero-title {
-    font-size: 2.5rem; 
+    font-size: 2.5rem;
   }
 
   .hero-subtitle {
-    font-size: 1.1rem; 
+    font-size: 1.1rem;
   }
 
   .header {
@@ -143,11 +234,52 @@ body {
   }
 
   .brand-title {
-    font-size: 1.5rem; 
+    font-size: 1.5rem;
   }
 
   .footer-text {
-    margin-top: 200px; 
-    font-size: 0.9rem; 
+    margin-top: 20px;
+    font-size: 0.9rem;
+    padding: 15px 0;
+  }
+
+  .products-section {
+    padding: 20px 15px;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    justify-content: center;
+    justify-items: center;
+    max-width: 100%;
+    padding: 0 15px;
+  }
+
+  .product-card {
+    width: 170px;
+    height: 210px;
+    padding: 10px;
+  }
+
+  .product-image {
+    height: 100px;
+    object-fit: cover;
+  }
+
+  .product-name {
+    font-size: 0.9rem;
+    overflow: hidden;
+ 
+  }
+
+  .product-price {
+    font-size: 0.85rem;
+  }
+
+  .store-name {
+    font-size: 0.75rem;
+    overflow: hidden;
+   
   }
 }

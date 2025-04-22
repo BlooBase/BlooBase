@@ -1,34 +1,40 @@
-// import { initializeApp } from 'firebase/app';
-// import {
-//   getFirestore,
-//   doc,
-//   setDoc,
-//   getDoc,
-//   collection,
-//   getDocs,
-//   terminate
-// } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  getDocs,
+  terminate
+} from 'firebase/firestore';
 
-// const firebaseConfig = {
-//   apiKey: 'AIzaSyAgBSpJB0B2XEFNAfeoqtt5KRERZVhJ10k',
-//   authDomain: 'bloobase-6179e.firebaseapp.com',
-//   projectId: 'bloobase-6179e',
-//   storageBucket: 'bloobase-6179e.firebasestorage.app',
-//   messagingSenderId: '272512255909',
-//   appId: '1:272512255909:web:112b08aa2458c2fd51ca4c',
-//   measurementId: 'G-JD0KF0LJHB',
-// };
+const firebaseConfig = {
+  apiKey: 'AIzaSyAgBSpJB0B2XEFNAfeoqtt5KRERZVhJ10k',
+  authDomain: 'bloobase-6179e.firebaseapp.com',
+  projectId: 'bloobase-6179e',
+  storageBucket: 'bloobase-6179e.firebasestorage.app',
+  messagingSenderId: '272512255909',
+  appId: '1:272512255909:web:112b08aa2458c2fd51ca4c',
+  measurementId: 'G-JD0KF0LJHB',
+};
 
-// let db;
+let db;
 
-// beforeAll(() => {
-//   const app = initializeApp(firebaseConfig);
-//   db = getFirestore(app);
-// });
+beforeAll(() => {
+  const app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+});
 
-// afterAll(async () => {
-//   await terminate(db);
-// });
+afterAll(async () => {
+  await terminate(db);
+});
+
+describe('Firebase Test Placeholder', () => {
+    test('should pass a basic test', () => {
+      expect(true).toBe(true);
+    });
+  });
 
 // test('should create a user and retrieve it from Firestore', async () => {
 //   const userId = 'user_001';

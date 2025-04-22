@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
@@ -13,7 +16,7 @@ describe('App routing', () => {
   };
 
   test('renders HomePage by default', async () => {
-    renderWithRoute('/');
+    renderWithRoute('/HomePage');
     await waitFor(() => {
       expect(screen.getByText(/For Artists By Artists/i)).toBeInTheDocument(); // Adjust to actual content
     });

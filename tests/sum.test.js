@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 const { sum, subtract } = require('../src/sum');
 
 describe('sum function tests', () => {

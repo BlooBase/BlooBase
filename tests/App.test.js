@@ -2,58 +2,51 @@
  * @jest-environment node
  */
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../src/App';
 
-describe('App routing', () => {
-  const renderWithRoute = (route) => {
-    render(
-      <MemoryRouter initialEntries={[route]}>
-        <App />
-      </MemoryRouter>
-    );
-  };
+const renderWithRoute = (initialRoute) => {
+  render(
+    <MemoryRouter initialEntries={[initialRoute]}>
+      <App />
+    </MemoryRouter>
+  );
+};
 
-  test('renders HomePage by default', async () => {
-    renderWithRoute('/HomePage');
-    await waitFor(() => {
-      expect(screen.getByText(/For Artists By Artists/i)).toBeInTheDocument(); // Adjust to actual content
-    });
+describe('App Routing', () => {
+  test('renders HomePage on default route', () => {
+    renderWithRoute('/');
+    expect(screen.getByText(/For Artists By Artists/i)).toBeInTheDocument(); // Adjust based on actual content
   });
 
-  test('navigates to CreateShop', async () => {
+  test('renders CreateShop page', () => {
     renderWithRoute('/CreateShop');
-    await waitFor(() => {
-      expect(screen.getByText(/CreateShop/i)).toBeInTheDocument(); // Adjust if needed
-    });
+    expect(screen.getByText(/CreateShop/i)).toBeInTheDocument();
   });
 
-  test('navigates to UploadProducts', async () => {
+  test('renders UploadProducts page', () => {
     renderWithRoute('/UploadProducts');
-    await waitFor(() => {
-      expect(screen.getByText(/UploadProducts/i)).toBeInTheDocument();
-    });
+    expect(screen.getByText(/UploadProducts/i)).toBeInTheDocument();
   });
 
-  test('navigates to VerifyArtisan', async () => {
+  test('renders VerifyArtisan page', () => {
     renderWithRoute('/verifyArtisan');
-    await waitFor(() => {
-      expect(screen.getByText(/VerifyArtisan/i)).toBeInTheDocument();
-    });
+    expect(screen.getByText(/VerifyArtisan/i)).toBeInTheDocument();
   });
 
-  test('navigates to Login', async () => {
+  test('renders Login page', () => {
     renderWithRoute('/Login');
-    await waitFor(() => {
-      expect(screen.getByText(/Login/i)).toBeInTheDocument();
-    });
+    expect(screen.getByText(/Login/i)).toBeInTheDocument();
   });
 
-  test('navigates to Dashboard', async () => {
+  test('renders Dashboard page', () => {
     renderWithRoute('/Dashboard');
-    await waitFor(() => {
-      expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
-    });
+    expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
+  });
+
+  test('renders Artists page', () => {
+    renderWithRoute('/Artists');
+    expect(screen.getByText(/Artists/i)).toBeInTheDocument();
   });
 });

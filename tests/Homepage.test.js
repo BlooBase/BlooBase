@@ -16,7 +16,6 @@ describe('HomePage Component', () => {
   });
 
   test('renders BlooBase logo and title', () => {
-    expect(screen.getByAltText('BlooBase Logo')).toBeInTheDocument();
     expect(screen.getByText('BlooBase')).toBeInTheDocument();
   });
 

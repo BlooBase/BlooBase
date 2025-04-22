@@ -7,6 +7,7 @@ import VerifyArtisan from './components/verifyArtisan';
 import Login from './components/Login';
 import DashBoard from './components/Dashboard';
 import Artists from './components/Artists';
+//import Navbar from './components/Navbar';
 
 const App = () => {
   return (

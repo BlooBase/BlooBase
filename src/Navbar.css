@@ -1,0 +1,52 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px; /* Reduced padding */
+    height: 60px; /* Lower the height */
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    /* Don't hardcode these here if using props */
+    /* background-color: white; ❌ */
+    /* color: #165a9c; ❌ */
+
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+  }
+  
+  
+  .site-title {
+    font-size: 1.5rem; /* Smaller font */
+    margin: 0;
+  }
+  
+  .page-title {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .nav-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  .username {
+    font-weight: 700; /* Makes it bold */
+    font-size: 1.5rem;
+  }
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  

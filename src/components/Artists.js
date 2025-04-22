@@ -1,6 +1,7 @@
 import React from 'react';
 import '../Artists.css'; // Use a dedicated CSS file
 import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar'; // Ensure this path is correct
 
 
 const Products = () => {
@@ -11,7 +12,7 @@ const Products = () => {
       image: "/Murata.gif",
       description: "Artist of 'One Punch Man' and 'Eyeshield 21'.",
       color: '#696867',
-      textColor: '#ffffff' 
+      textColor: '#ffffff'
     },
     {
       id: 2,
@@ -26,7 +27,7 @@ const Products = () => {
       title: "Inspired Island",
       image: "/Island.jpg",
       description: "Digital Media editor, artist and director, @CultureStudios ",
-      color: '#D492C3',
+      color: '#DEAED2',
       textColor: '#FFDFE2'
     },
     {
@@ -47,39 +48,49 @@ const Products = () => {
     }
   ];
 
+  // Sample user object (you can update this with dynamic data as needed)
+  const user = {
+    name: 'DigitalJosh',
+    avatarUrl: 'https://i.pravatar.cc/100' // Placeholder image URL
+  };
+
   return (
-    <div className="page-wrapper">
-  <div className="products-container">
-    <h1 className="artists-heading">Artists</h1>
+    <section className="page-wrapper">
+      {/* Navbar Component */}
+      <Navbar pageTitle="Artists"
+      user={user}
+      bgColor="#fff6fb"
+      textColor="#a08cf2"/>
 
-    <div className="products-grid">
-      {productList.map((product) => (
-        <Link to={`/product/${product.id}`} key={product.id} className="product-link">
-          <div className="product-card" style={{ backgroundColor: product.color }}>
-            {product.image && (
-              <img
-                src={product.image}
-                alt={product.title}
-                className="product-image"
-              />
-            )}
-            <h3 className="product-title" style={{ color: product.textColor }}>
-              {product.title}
-            </h3>
-            <p className="product-description" style={{ color: product.textColor }}>
-              {product.description}
-            </p>
-          </div>
-        </Link>
-      ))}
-    </div>
-  </div>
+      <section className="products-container">
 
-  <footer className="page-footer">
-    © 2025. All Rights Reserved.
-  </footer>
-</div>
+        <section className="products-grid">
+          {productList.map((product) => (
+            <Link to={`/product/${product.id}`} key={product.id} className="product-link">
+              <section className="product-card" style={{ backgroundColor: product.color }}>
+                {product.image && (
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    className="product-image"
+                  />
+                )}
+                <h3 className="product-title" style={{ color: product.textColor }}>
+                  {product.title}
+                </h3>
+                <p className="product-description" style={{ color: product.textColor }}>
+                  {product.description}
+                </p>
+              </section>
+            </Link>
+          ))}
+        </section>
+      </section>
 
+      <footer className="page-footer">
+        © 2025. All Rights Reserved.
+      </footer>
+    </section>
   );
 };
 

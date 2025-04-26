@@ -7,6 +7,7 @@ import VerifyArtisan from './components/verifyArtisan';
 import Login from './components/Login';
 import DashBoard from './components/Dashboard';
 import Artists from './components/Artists';
+import Signup from './components/Signup';
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
       <Route path="/Login" element={<Login/>} />
       <Route path="/Artists" element={<Artists/>} />
       <Route path="/Dashboard" element={<DashBoard/>}/>
+      <Route path="/Signup" element={<Signup/>}/>
       <Route path="/" element={<HomePage />} />
      </Routes>
   );

@@ -3,15 +3,15 @@
      
    }
  .signup-container {
-     max-width: 500px;
+     max-width: 400px;
+     min-height: 57vh;
      align-items: center;
      justify-content: center;
-     height: 400px;
      overflow: hidden;
      margin: 50px auto;
-     padding: 40px;
+     padding: 30px;
      background-color: #ffffff;
-     border-radius: 17px;
+     border-radius: 12px;
      margin-top: 26px;
      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
      font-family: 'DM Sans', sans-serif;
@@ -52,11 +52,37 @@
      outline: none;
    }
    
+   .password-input-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .password-input-container input {
+    width: 100%;
+    padding-right: 40px; 
+  }
+  
+  .toggle-password-icon {
+    position: absolute;
+    right: 10px;
+    top: 55%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    opacity: 0.7;
+  }
+  
+  .toggle-password-icon:hover {
+    opacity: 1;
+  }
+  
    .signup-form button {
-     padding: 12px;
-     background-color: #165a9c;
+     padding: 13px;
+     background-color: #007bff;
      color: white;
      border: none;
+     margin-top: 15px;
      border-radius: 9px;
      font-size: 16px;
      cursor: pointer;
@@ -64,7 +90,7 @@
    }
    
    .signup-form button:hover {
-     background-color: #020080;
+    background-color: #0056b3;
    }
    
    
@@ -96,6 +122,21 @@
        font-size: 14px;
        border-radius: 9px;
      }
+     
+  .toggle-password-icon {
+    position: absolute;
+    right: 10px;
+    top:55%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    opacity: 0.7;
+  }
+  
+  .toggle-password-icon:hover {
+    opacity: 1;
+  }
    
      .signup-form button {
        padding: 10px;

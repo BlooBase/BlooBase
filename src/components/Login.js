@@ -107,7 +107,7 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Divider */}
+        
         <section className="divider">
           <span>or continue with</span>
         </section>
@@ -132,12 +132,12 @@ const Login = () => {
           </button>
         </section>
 
-        {/* Error Message */}
+        
         {error && <p className="error-message">{error}</p>}
 
-        {/* Register Link */}
+        
         <p className="register-link">
-          Don't have an account? <Link to="/Register">Sign up</Link>
+          Don't have an account? <Link to="/Signup">Sign up</Link>
         </p>
       </section>
     </main>

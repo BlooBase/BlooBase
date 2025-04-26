@@ -83,10 +83,11 @@
 
 .password-input-wrapper input {
   width: 100%;
-  padding-right: 40px; /* space for the icon */
+  padding-right: 40px; 
 }
 
 .toggle-password-icon {
+  top:40%;
   position: absolute;
   right: 10px;
   width: 24px;

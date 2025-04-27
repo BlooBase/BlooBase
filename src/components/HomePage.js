@@ -35,7 +35,7 @@ const HomePage = () => {
 
     const bgImg = new Image();
     bgImg.src = './assets/BG.png';
-  }, []);
+  });
 
   const handleProductClick = (product) => {
     // Navigate to product detail page or show modal

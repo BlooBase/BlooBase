@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import '../Home.css';
 import { Link } from 'react-router-dom';
 
@@ -11,18 +11,53 @@ const HomePage = () => {
     { id: 4, name: 'Dangle Pottery', price: 'R72.00', store: 'Gemstone Gallery', image: '/pottery.jpg' },
   ];
 
+  const [imagesLoaded, setImagesLoaded] = useState({
+    logo: false,
+    products: {}
+  });
+
+  // Preload images
+  useEffect(() => {
+    
+    const logoImg = new Image();
+    logoImg.src = "/bloobase.png";
+    logoImg.onload = () => setImagesLoaded(prev => ({ ...prev, logo: true }));
+
+    
+    products.forEach(product => {
+      const img = new Image();
+      img.src = product.image;
+      img.onload = () => setImagesLoaded(prev => ({
+        ...prev,
+        products: { ...prev.products, [product.id]: true }
+      }));
+    });
+
+    const bgImg = new Image();
+    bgImg.src = './assets/BG.png';
+  }, []);
+
   const handleProductClick = (product) => {
     // Navigate to product detail page or show modal
     console.log('Product clicked:', product);
-    
   };
 
   return (
     <main className="homepage">
+      {/*to preload background image */}
+      <section id="bg-preload"></section>
+      
       <section className="header-section">
         <section className="homepage-container">
           <header className="logo-header">
-            <img src="/bloobase.png" alt="BlooBase Logo" className="ghost-logo" />
+            {!imagesLoaded.logo && <div className="logo-placeholder">BlooBase</div>}
+            <img 
+              src="/bloobase.png" 
+              alt="BlooBase Logo" 
+              className={`ghost-logo ${imagesLoaded.logo ? 'fade-in' : 'hidden'}`}
+              onLoad={() => setImagesLoaded(prev => ({ ...prev, logo: true }))}
+              loading="eager"
+            />
           </header>
 
           <header className="header">
@@ -46,8 +81,8 @@ const HomePage = () => {
         <h2 className="products-heading">Browse Products</h2>
         <section className="products-grid">
           {products.map((product) => (
-            <section 
-              key={product.id} 
+            <section
+              key={product.id}
               className="product-item"
               onClick={() => handleProductClick(product)}
               role="button"
@@ -60,10 +95,20 @@ const HomePage = () => {
               }}
             >
               <section className="product-image-container">
+                {!imagesLoaded.products[product.id] && (
+                  <section className="product-image-placeholder">
+                    <section className="loading-spinner"></section>
+                  </section>
+                )}
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="product-image"
+                  className={`product-image ${imagesLoaded.products[product.id] ? 'fade-in' : 'hidden'}`}
+                  onLoad={() => setImagesLoaded(prev => ({
+                    ...prev,
+                    products: { ...prev.products, [product.id]: true }
+                  }))}
+                  loading="lazy"
                 />
               </section>
               <section className="product-info">

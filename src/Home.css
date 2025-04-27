@@ -82,6 +82,7 @@ body {
   height: 100%;
   background-color: #f5f7fa;
   display: flex;
+  border-radius: 16px;
   align-items: center;
   justify-content: center;
 }

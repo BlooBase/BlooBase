@@ -47,7 +47,7 @@ const Signup = () => {
       <section className="signup-container">
         {/* Logo with loading state */}
         <header className="logo">
-          {!imageLoaded && <div className="image-placeholder">BlooBase</div>}
+          {!imageLoaded && <section className="image-placeholder">BlooBase</section>}
           <img 
             src="/bloobase.png" 
             alt="BlooBase Logo" 

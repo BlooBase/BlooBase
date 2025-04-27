@@ -66,7 +66,7 @@
 .toggle-password-icon {
   position: absolute;
   right: 10px;
-  top: 55%;
+  top: 53%;
   transform: translateY(-50%);
   width: 24px;
   height: 24px;
@@ -129,7 +129,7 @@
   .toggle-password-icon {
     position: absolute;
     right: 10px;
-    top: 55%;
+    top: 52%;
     transform: translateY(-50%);
     width: 20px;
     height: 20px;

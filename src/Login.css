@@ -87,13 +87,18 @@
 }
 
 .toggle-password-icon {
-  top:40%;
   position: absolute;
+  top: 50%;
   right: 10px;
+  transform: translateY(-50%);
   width: 24px;
   height: 24px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 
 
 .login-button:hover:not(:disabled) {

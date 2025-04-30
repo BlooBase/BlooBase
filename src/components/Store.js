@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import '../Store.css';
 import Navbar from '../components/Navbar'; // Ensure this path is correct
 import { useEffect } from 'react';
-
+import FloatingCart from '../components/FloatingCart';
 
 const productList = [
     {
@@ -126,6 +126,8 @@ const Store = () => {
       </section>
 
       <section className="opacity-fade1" />
+
+      <FloatingCart />
 
     </section>
   );

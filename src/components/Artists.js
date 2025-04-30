@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import '../Artists.css'; // Use a dedicated CSS file
+import '../Artists.css'; 
 import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar'; // Ensure this path is correct
+import Navbar from '../components/Navbar'; 
+import FloatingCart from '../components/FloatingCart';
 
 const Products = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -150,6 +151,7 @@ const filteredProducts = productList.filter((product) =>
         <section className="opacity-fade" />
       </section>
 
+      <FloatingCart />
       <footer className="page-footer">
         © 2025. All Rights Reserved.
       </footer>

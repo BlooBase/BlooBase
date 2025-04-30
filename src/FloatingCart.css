@@ -1,0 +1,29 @@
+.floating-cart {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    background-color: #fff5e1; /* pastel background */
+    border: 1.2px solid black;   /* thin black outline */
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    z-index: 9999;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .floating-cart:active {
+    cursor: grabbing;
+  }
+  
+  .floating-cart img {
+    padding-right: 3px;
+    width: 43x;
+    height: 43px;
+    object-fit: contain;
+    pointer-events: none; /* Prevents drag conflict with mouse down */
+  }
+  

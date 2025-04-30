@@ -4,7 +4,7 @@
   align-items: center;
   padding: 6px 16px; /* Reduced vertical & horizontal padding */
   height: 50px;
-  position: sticky;
+  position: fixed;
   top: 0;
   width: 100%;
   z-index: 1000;
@@ -23,6 +23,8 @@
   .page-title {
     font-size: 1.5rem;
     margin: 0;
+    padding-left: 20px;
+    text-align: center;
   }
   
   .user-info {
@@ -35,10 +37,66 @@
     display: flex;
     align-items: center;
   }
+
+  .dropdown-card {
+    position: absolute;
+    top: 60px; /* adjust based on navbar height */
+    right: 16px;
+    background: #fff5e1;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 999;
+  }
+  
+  .dropdown-item {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #efe2c8;
+  }
+  
   
   .username {
     font-weight: 700; /* Makes it bold */
     font-size: 1.5rem;
+  }
+
+  .options-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+    cursor: pointer;
+  }
+  
+  .options-button:hover {
+    background-color: #d3d3d3; /* Light grey hover highlight */
+  }
+  
+  .options {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+  }
+  
+  /* Add this class dynamically when selected */
+  .options-button.selected .options {
+    transform: rotate(90deg);
   }
   
   .user-avatar {
@@ -76,6 +134,16 @@
   
     .user-info {
       gap: 6px;
+    }
+
+    .options-button {
+      width: 20px;
+      height: 13px;
+    }
+
+    .options {
+      width: 17px;
+      height: 17px;
     }
   }
   

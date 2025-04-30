@@ -125,7 +125,7 @@ const filteredProducts = productList.filter((product) =>
         <section className="products-grid-wrapper">
           <section className="products-grid">
             {filteredProducts.map((product) => (
-              <Link to={`/product/${product.id}`} key={product.id} className="product-link">
+              <Link to={`/artists/${product.id}`} key={product.id} className="product-link">
                 <section className="product-card" style={{ backgroundColor: product.color }}>
                   {product.image && (
                     <img

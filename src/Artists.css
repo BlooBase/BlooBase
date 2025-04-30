@@ -10,6 +10,7 @@ body {
 .page-wrapper {
   min-height: 100vh;
   display: flex;
+  padding-top: 50px;
   flex-direction: column;
   background-image: url('./assets/BGArtists.png');
   background-size: cover;

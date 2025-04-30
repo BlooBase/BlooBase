@@ -1,30 +1,43 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=DM+Sans:wght@400;700&display=swap');
 
-
-/* Preload background image using a hidden element,so it loads faster */
+/* Preload background image using a hidden element, so it loads faster */
 #bg-preload {
   display: none;
   background-image: url('./assets/BG.png');
 }
+
 body {
   margin: 0;
   font-family: 'DM Sans', sans-serif;
-  background-image: url('./assets/BG.png');
-  background-size: cover;       
-  background-repeat: no-repeat;  
-  background-attachment: fixed;  
-  background-position: center; 
+  background-color: #fff;
   min-height: 100vh;
-  background-repeat: no-repeat;
-  background-size: cover;
   overflow-x: hidden;
   position: relative;
+}
+
+.homepage {
+  background-color: #fff; 
+}
+
+.header-section {
+  background-color:#f5f7fa;
+  background-image: url('./assets/BG.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  border-bottom-left-radius: 45px;
+  border-bottom-right-radius: 45px;
+  overflow: hidden;
+  z-index: 0;
 }
 
 .homepage-container {
   text-align: center;
   padding: 60px 20px;
   position: relative;
+  background-color: transparent;
 }
 
 .logo-header {
@@ -34,6 +47,45 @@ body {
 .ghost-logo {
   width: 120px;
   height: auto;
+}
+
+.hidden{
+  opacity: 0;
+  display: none;
+}
+
+.fade-in{
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(22, 90, 156, 0.1);
+  border-radius: 50%;
+  border-top-color: #165a9c;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.product-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #f5f7fa;
+  display: flex;
+  border-radius: 16px;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-buttons {
@@ -53,7 +105,6 @@ body {
   font-size: 1.1rem;
   border: none;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .nav-button:hover {
@@ -72,14 +123,12 @@ body {
   font-size: 1.3rem;
   margin-top: 15px;
   color: #165a9c;
-  
 }
 
 .header {
   display: flex;
   align-items: center;
   position: absolute;
-  font-family: 'Chewy';
   top: 20px;
   left: 20px;
   gap: 10px;
@@ -97,39 +146,149 @@ body {
 }
 
 .footer-text {
-  margin-top: 390px;   
+  margin-top: 40px;
   text-align: center;
   color: #165a9c;
   font-size: 1rem;
-  padding-bottom: 40px;
+  padding: 20px 0;
+  background-color: #fff;
 }
 
-/*Mobile version*/
+.products-section {
+  margin-top: 10px;
+  padding: 40px 20px;
+  background-color: #fff;
+  position: relative;
+  z-index: 1;
+  
+}
+
+.products-heading {
+  color: #165a9c;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  max-width: 860px;
+  margin: 18px auto;
+  
+}
+
+.product-item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 320px;
+  text-align: center;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  margin: -0.5px;
+  position: relative;
+  background-color: white;
+  justify-content: space-between;
+  border-radius: 16px;
+}
+
+.product-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+
+.product-item:active {
+  transform: scale(0.98);
+}
+
+.product-image-container {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  display: flex;
+  margin-top: -4px;
+  border-bottom-left-radius: 0px; 
+  border-bottom-right-radius: 0px;
+}
+
+.product-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+  margin-top: 1.5px;
+  border-bottom-left-radius: 0px; 
+  border-bottom-right-radius: 0px;
+ 
+}
+
+.product-item:hover .product-image {
+  transform: scale(1.00);
+}
+
+.product-info {
+  padding: 0px 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-top: 10px;
+}
+
+.product-name {
+  font-size: 1.1rem;
+  color: #165a9c;
+  margin: 5px 0;
+  line-height: 1.3;
+}
+
+.product-price {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #2c7fc7;
+  margin: 5px 0;
+}
+
+.store-name {
+  font-size: 0.85rem;
+  color: #777;
+  margin: 5px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Mobile version */
 @media (max-width: 768px) {
   .nav-buttons {
-    flex-direction: column; 
-    align-items: center; 
-    gap: 15px; 
-    margin: 20px 0; 
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0;
   }
 
   .nav-button {
     width: 100%;
-    max-width: 300px; 
-    padding: 10px 20px; 
-    font-size: 1rem; 
+    max-width: 300px;
+    padding: 10px 20px;
+    font-size: 1rem;
   }
 
   .homepage-container {
-    padding: 40px 15px; 
+    padding: 40px 15px;
   }
 
   .hero-title {
-    font-size: 2.5rem; 
+    font-size: 2.5rem;
   }
 
   .hero-subtitle {
-    font-size: 1.1rem; 
+    font-size: 1.1rem;
   }
 
   .header {
@@ -143,11 +302,59 @@ body {
   }
 
   .brand-title {
-    font-size: 1.5rem; 
+    font-size: 1.5rem;
   }
 
   .footer-text {
-    margin-top: 200px; 
-    font-size: 0.9rem; 
+    margin-top: 20px;
+    font-size: 0.9rem;
+    padding: 15px 0;
+  }
+
+  .products-section {
+    padding: 10px 35px;
+  
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
+  
+  }
+
+  .product-item {
+    height: 200px;
+  }
+
+  .loading-spinner {
+    width: 30px;
+    height: 30px;
+    border-width: 3px;
+  }
+
+  .product-image-container {
+    height: 180px;
+    margin-top: -9px;
+    border-bottom-left-radius: 0px; 
+    border-bottom-right-radius: 0px;
+  }
+
+  .product-info {
+    padding: 8px;
+    margin-top: -29px;
+  }
+
+  .product-name {
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+  }
+
+  .product-price {
+    font-size: 0.85rem;
+    margin-bottom: 2px;
+  }
+
+  .store-name {
+    font-size: 0.75rem;
   }
 }

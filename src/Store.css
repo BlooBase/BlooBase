@@ -1,0 +1,113 @@
+/* Base page styles */
+
+.store-page {
+  min-height: 110vh;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  font-family: 'Poppins', sans-serif;
+  z-index: 1;
+}
+
+  /* Header */
+  .store-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    z-index: 2;
+  }
+  
+  .store-image {
+    width: 280px;
+    max-width: 100%;
+    border-radius: 30px;
+    margin-bottom: 1rem;
+    z-index: 2;
+  }
+  
+  .store-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    z-index: 2;
+  }
+
+  .opacity-fade1 {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+     height: 200px;
+    pointer-events: none;
+    z-index: 0; /* Lower than footer */
+  }
+  
+  .opacity-fade1::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
+  }
+  
+  /* Main content layout */
+  .store-main {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    z-index: 2;
+  }
+  
+  /* Column (section) shared styles */
+  .store-column {
+    border-radius: 30px;
+    padding: 1.5rem;
+    box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.3);
+    flex: 1 1 300px;
+    max-width: 600px;
+    z-index: 2;
+  }
+  
+  /* Section headers */
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    z-index: 2;
+  }
+  
+  /* Description text */
+  .store-description,
+  .store-genre {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+  }
+  
+  /* Responsive layout */
+  @media (max-width: 768px) {
+    .store-main {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0 1.5rem; /* Adds side padding to the content area */
+    }
+  
+    .store-column {
+      flex: 1 1 auto;
+      width: 100%;
+      max-width: none;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  
+    .store-header {
+      padding: 0 1.5rem;
+    }
+  
+    .store-title,
+    .store-description,
+    .store-genre {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+  }
+  
+  
+  

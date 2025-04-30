@@ -7,7 +7,8 @@ import VerifyArtisan from './components/verifyArtisan';
 import Login from './components/Login';
 import DashBoard from './components/Dashboard';
 import Artists from './components/Artists';
-//import Navbar from './components/Navbar';
+import Signup from './components/Signup';
+import Store from './components/Store';
 
 const App = () => {
   return (
@@ -19,6 +20,9 @@ const App = () => {
       <Route path="/Login" element={<Login/>} />
       <Route path="/Artists" element={<Artists/>} />
       <Route path="/Dashboard" element={<DashBoard/>}/>
+      <Route path="/Signup" element={<Signup/>}/>
+      <Route path="/Artists" element={<Artists />} />
+      <Route path="/Artists/:id" element={<Store />} />
       <Route path="/" element={<HomePage />} />
      </Routes>
   );

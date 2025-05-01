@@ -44,7 +44,7 @@ const signupNormUser = ({ name, email, password, confirmPassword, role }) => {
     .then((userCredential) => {
       const user = userCredential.user;
       addUserToFirestore(user.uid, email, name, role);
-      alert("Account created!");
+    
     })
     .catch((error) => {
       alert(`Signup failed: ${error.message}`);

@@ -1,6 +1,6 @@
 import React from "react";
 import "../CreateShop.css"; //Note that CreateShop.css contains styling for CreateShop.js,verifyArtisan.js and UploadProducts.js
-//import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const verifyArtisan = () => {
   return (
@@ -11,7 +11,7 @@ const verifyArtisan = () => {
       </section>
 
       <section className="verify-header">
-        <img src="./profile.png" alt="Profile" className="verify-step-icon" />
+        <img src="./user_profile.png" alt="Profile" className="verify-step-icon" />
         <span className="verify-step">1. Create a profile</span>
         <img src="./product.png" alt="Product" className="verify-step-icon" />
         <span className="verify-step">2. Upload your products</span>

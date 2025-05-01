@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Masonry from 'masonry-layout';
 import '../Artists.css'; 
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar'; 
 import FloatingCart from '../components/FloatingCart';
+import imagesLoaded from 'imagesloaded'; 
 
 const Products = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [cardLoaded, setCardLoaded] = useState({});
 
   const productList = [
     {
@@ -90,6 +93,30 @@ const filteredProducts = productList.filter((product) =>
     avatarLocal: '/pfp.jpeg'
   };
 
+  const gridRef = useRef(null);
+
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+  
+    const msnry = new Masonry(grid, {
+      itemSelector: '.product-card',
+      columnWidth: '.grid-sizer',
+      gutter: 20,
+      percentPosition: true,
+    });
+  
+    // Wait for images to load before layout
+    imagesLoaded(grid, () => {
+      msnry.layout();
+    });
+  
+    // Optional cleanup
+    return () => {
+      msnry.destroy();
+    };
+  }, [filteredProducts]);
+
   return (
     <section className="page-wrapper">
       <Navbar
@@ -123,29 +150,49 @@ const filteredProducts = productList.filter((product) =>
         ))}
       </section>
 
-        <section className="products-grid-wrapper">
-          <section className="products-grid">
-            {filteredProducts.map((product) => (
-              <Link to={`/artists/${product.id}`} key={product.id} className="product-link">
-                <section className="product-card" style={{ backgroundColor: product.color }}>
-                  {product.image && (
+      <section className="products-grid-wrapper">
+          <section className="products-grid" ref={gridRef}>
+            <div className="grid-sizer" /> {/* Required for Masonry layout sizing */}
+            {filteredProducts.map((product) => {
+  const isLoaded = cardLoaded[product.id];
+
+              return (
+                <Link to={`/artists/${product.id}`} key={product.id} className="product-link">
+                  <section
+                    className={`product-card ${!isLoaded ? 'loading' : ''}`}
+                    style={{
+                      backgroundColor: product.color,
+                      opacity: isLoaded ? 1 : 0.5,
+                      transition: 'opacity 0.4s ease',
+                    }}
+                  >
                     <img
                       src={product.image}
                       alt={product.title}
                       className="product-image"
+                      loading="lazy"
+                      onLoad={() =>
+                        setCardLoaded((prev) => ({ ...prev, [product.id]: true }))
+                      }
+                      onError={() =>
+                        setCardLoaded((prev) => ({ ...prev, [product.id]: true }))
+                      }
                     />
-                  )}
-                  <h3 className="product-title" style={{ color: product.textColor }}>
-                    {product.title}
-                  </h3>
-                  <p className="product-description" style={{ color: product.textColor }}>
-                    {product.description}
-                  </p>
-                </section>
-              </Link>
-            ))}
+                    <h3 className="product-title" style={{ color: product.textColor }}>
+                      {product.title}
+                    </h3>
+                    <p className="product-description" style={{ color: product.textColor }}>
+                      {product.description}
+                    </p>
+                  </section>
+                </Link>
+              );
+            })}
+
+
           </section>
         </section>
+
 
         {/* Add the blur fade effect inside products-container */}
         <section className="opacity-fade" />

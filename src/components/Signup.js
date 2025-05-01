@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../Signup.css";
 import { Link } from "react-router-dom";
-import { signupNormUser } from "../firebase/firebase";
+import { signupNormUser,GoogleSignup,getUserName } from "../firebase/firebase";
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -13,8 +13,14 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const[showConfirmPassword,setConfirmShowPassword] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-
-  
+  const [googleRole, setGoogleRole] = useState("");
+  const handleGoogleSignup = () => {
+    if (!googleRole) {
+      alert("Please select a role before signing up with Google.");
+      return;
+    }
+    GoogleSignup(googleRole);
+  };
   // Preload images
   useEffect(() => {
     const logoImg = new Image();
@@ -38,7 +44,7 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    signupNormUser(formData)
+    signupNormUser(formData);
   };
 
   const togglePasswordVisibility = () => {
@@ -157,6 +163,29 @@ const Signup = () => {
 
           <button type="submit">Sign Up</button>
         </form>
+        
+        <section className="google-signup-section">
+          <label htmlFor="google-role">Role for Google Signup</label>
+        <select
+          name="google-role"
+          value={googleRole}
+          onChange={(e) => setGoogleRole(e.target.value)}
+          className="google-role-selector"
+          required
+        >
+          <option value="">Select a role</option>
+          <option value="Buyer">Buyer</option>
+          <option value="Seller">Seller</option>
+        </select>
+
+        <button type="button" className="google-signup-button" onClick={handleGoogleSignup}>
+          <img src="/google.png" alt="Google icon" className="google-icon" />
+          Sign Up with Google
+        </button>
+      </section>
+
+
+
 
         <p className="register-link">
           Already have an account? <Link to="/Login">Login</Link>

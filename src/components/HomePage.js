@@ -3,57 +3,54 @@ import '../Home.css';
 import { Link } from 'react-router-dom';
 
 const HomePage = () => {
-  // Sample product data (replace with actual data fetching)
-  const products = [
-    { id: 1, name: 'Elegant Gold Ring', price: 'R45.99', store: 'Sparkle Gems', image: '/jewelry.jpg' },
-    { id: 2, name: 'Bohemian Clothing', price: 'R79.50', store: 'Bee Finds', image: '/fashion.jpg' },
-    { id: 3, name: 'Kulu paintings', price: 'R39.00', store: 'Crafted Wonders', image: '/art.jpg' },
-    { id: 4, name: 'Dangle Pottery', price: 'R72.00', store: 'Gemstone Gallery', image: '/pottery.jpg' },
+  // Sample category data
+  const categories = [
+    { id: 1, name: 'Jewelry', image: '/jewelry.jpg' },
+    { id: 2, name: 'Fashion', image: '/fashion.jpg' },
+    { id: 3, name: 'Art', image: '/art.jpg' },
+    { id: 4, name: 'Pottery', image: '/pottery.jpg' },
   ];
 
   const [imagesLoaded, setImagesLoaded] = useState({
     logo: false,
-    products: {}
+    categories: {}
   });
 
   // Preload images
   useEffect(() => {
-    
     const logoImg = new Image();
     logoImg.src = "/bloobase.png";
     logoImg.onload = () => setImagesLoaded(prev => ({ ...prev, logo: true }));
 
-    
-    products.forEach(product => {
+    categories.forEach(category => {
       const img = new Image();
-      img.src = product.image;
+      img.src = category.image;
       img.onload = () => setImagesLoaded(prev => ({
         ...prev,
-        products: { ...prev.products, [product.id]: true }
+        categories: { ...prev.categories, [category.id]: true }
       }));
     });
 
     const bgImg = new Image();
     bgImg.src = './assets/BG.png';
-  });
+  }, []);
 
-  const handleProductClick = (product) => {
-    // Navigate to product detail page or show modal
-    console.log('Product clicked:', product);
+  const handleCategoryClick = (category) => {
+    console.log('Category clicked:', category);
+    // You can navigate to category-specific pages here
   };
 
   return (
     <main className="homepage">
-      {/*to preload background image */}
       <section id="bg-preload"></section>
-      
+
       <section className="header-section">
         <section className="homepage-container">
           <header className="logo-header">
             {!imagesLoaded.logo && <div className="logo-placeholder">BlooBase</div>}
-            <img 
-              src="/bloobase.png" 
-              alt="BlooBase Logo" 
+            <img
+              src="/bloobase.png"
+              alt="BlooBase Logo"
               className={`ghost-logo ${imagesLoaded.logo ? 'fade-in' : 'hidden'}`}
               onLoad={() => setImagesLoaded(prev => ({ ...prev, logo: true }))}
               loading="eager"
@@ -78,43 +75,41 @@ const HomePage = () => {
       </section>
 
       <section className="products-section">
-        <h2 className="products-heading">Browse Products</h2>
+        <h2 className="products-heading">Browse Categories</h2>
         <section className="products-grid">
-          {products.map((product) => (
+          {categories.map((category) => (
             <section
-              key={product.id}
+              key={category.id}
               className="product-item"
-              onClick={() => handleProductClick(product)}
+              onClick={() => handleCategoryClick(category)}
               role="button"
               tabIndex="0"
-              aria-label={`View details of ${product.name}`}
+              aria-label={`View ${category.name} category`}
               onKeyPress={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
-                  handleProductClick(product);
+                  handleCategoryClick(category);
                 }
               }}
             >
               <section className="product-image-container">
-                {!imagesLoaded.products[product.id] && (
+                {!imagesLoaded.categories[category.id] && (
                   <section className="product-image-placeholder">
                     <section className="loading-spinner"></section>
                   </section>
                 )}
                 <img
-                  src={product.image}
-                  alt={product.name}
-                  className={`product-image ${imagesLoaded.products[product.id] ? 'fade-in' : 'hidden'}`}
+                  src={category.image}
+                  alt={category.name}
+                  className={`product-image ${imagesLoaded.categories[category.id] ? 'fade-in' : 'hidden'}`}
                   onLoad={() => setImagesLoaded(prev => ({
                     ...prev,
-                    products: { ...prev.products, [product.id]: true }
+                    categories: { ...prev.categories, [category.id]: true }
                   }))}
                   loading="lazy"
                 />
               </section>
               <section className="product-info">
-                <h3 className="product-name">{product.name}</h3>
-                <p className="product-price">{product.price}</p>
-                <p className="store-name">{product.store}</p>
+                <h3 className="product-name">{category.name}</h3>
               </section>
             </section>
           ))}

@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBLRZEHtvWJex2S_6wUgU9-0PyUZ6XvYdc",
@@ -16,6 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
 async function addUserToFirestore(userId, email, name, role) {
   try {
@@ -51,4 +53,12 @@ const signupNormUser = ({ name, email, password, confirmPassword, role }) => {
     });
 };
 
-export { signupNormUser,db,doc,setDoc};
+export {
+  auth,
+  db,
+  storage,
+  doc,
+  setDoc,
+  signupNormUser,
+  addUserToFirestore
+};

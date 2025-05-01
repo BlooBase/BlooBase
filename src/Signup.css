@@ -27,7 +27,7 @@
 
 .logo {
   text-align: center;
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
 }
 
 .logo img {
@@ -35,12 +35,38 @@
   height: auto;
 }
 
+.image-placeholder {
+  font-size: 24px;
+  font-weight: bold;
+  color: #165a9c;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.hidden {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .signup-form {
   display: flex;
   flex-direction: column;
 }
 
-.signup-form input {
+.signup-form label {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+}
+
+.signup-form input,
+.signup-form select {
   margin-bottom: 15px;
   padding: 12px;
   font-size: 16px;
@@ -48,17 +74,20 @@
   border-radius: 9px;
 }
 
-.signup-form input:focus {
+.signup-form input:focus,
+.signup-form select:focus {
   border-color: #030099;
   outline: none;
 }
 
-.password-input-container {
+.password-input-container,
+.confirm-password-input-container {
   position: relative;
   width: 100%;
 }
 
-.password-input-container input {
+.password-input-container input,
+.confirm-password-input-container input {
   width: 100%;
   padding-right: 40px;
 }
@@ -83,7 +112,7 @@
   background-color: #007bff;
   color: white;
   border: none;
-  margin-top: 15px;
+  margin-top: 10px;
   border-radius: 9px;
   font-size: 16px;
   cursor: pointer;
@@ -99,6 +128,13 @@
   margin-top: 15px;
 }
 
+.role-selector {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive adjustments */
 @media (max-width: 724px) {
   .signup-container {
     max-width: 340px;
@@ -119,7 +155,8 @@
     width: 100px;
   }
 
-  .signup-form input {
+  .signup-form input,
+  .signup-form select {
     margin-bottom: 12px;
     padding: 10px;
     font-size: 14px;
@@ -127,23 +164,12 @@
   }
 
   .toggle-password-icon {
-    position: absolute;
-    right: 10px;
-    top: 52%;
-    transform: translateY(-50%);
     width: 20px;
     height: 20px;
-    cursor: pointer;
-    opacity: 0.7;
-  }
-
-  .toggle-password-icon:hover {
-    opacity: 1;
   }
 
   .signup-form button {
     padding: 10px;
     font-size: 14px;
-    border-radius: 9px;
   }
 }

@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../Artists.css'; // Use a dedicated CSS file
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar'; // Ensure this path is correct
+import { collection, getDocs } from "firebase/firestore";
+import { ref, getDownloadURL } from "firebase/storage";
+import { db, storage } from '../firebase/firebase';
 
 const Products = () => {
   const [searchQuery, setSearchQuery] = useState('');

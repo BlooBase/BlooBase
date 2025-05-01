@@ -1,0 +1,149 @@
+.signup-wrapper {
+  overflow: hidden;
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.signup-container {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.signup-title {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #165a9c;
+  font-size: 24px;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 20px; 
+}
+
+.logo img {
+  width: 120px;
+  height: auto;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-form input {
+  margin-bottom: 15px;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 9px;
+}
+
+.signup-form input:focus {
+  border-color: #030099;
+  outline: none;
+}
+
+.password-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.toggle-password-icon {
+  position: absolute;
+  right: 10px;
+  top: 53%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.toggle-password-icon:hover {
+  opacity: 1;
+}
+
+.signup-form button {
+  padding: 13px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  margin-top: 15px;
+  border-radius: 9px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.signup-form button:hover {
+  background-color: #0056b3;
+}
+
+.register-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+@media (max-width: 724px) {
+  .signup-container {
+    max-width: 340px;
+    padding: 20px;
+    margin: 0 auto;
+  }
+
+  .signup-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .logo {
+    margin-bottom: 15px;
+  }
+
+  .logo img {
+    width: 100px;
+  }
+
+  .signup-form input {
+    margin-bottom: 12px;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 9px;
+  }
+
+  .toggle-password-icon {
+    position: absolute;
+    right: 10px;
+    top: 52%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    opacity: 0.7;
+  }
+
+  .toggle-password-icon:hover {
+    opacity: 1;
+  }
+
+  .signup-form button {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 9px;
+  }
+}

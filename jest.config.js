@@ -1,30 +1,24 @@
 module.exports = {
   rootDir: './',
   collectCoverage: true,
-  collectCoverageFrom: [ //parts of code you want to check covered for
-    "src/**/*.{js,jsx}",
-    "!src/**/*.test.js",
-    "!**/node_modules/**" 
-
-    /*'index.js',
-    'sum.js', // Include other files you want to cover
-    'firebase.js',
-    'CreateShop.js',
-    'UploadProducts.js',
-    'verifyArtisan.js',
-    'Search.js',
-    'App.js',
-    'index.js',
-    'Login.js',
-    'Register.js',
-    'Homepage.js',
-    'setupTests.js',
-    'reportWebVitals.js',*/
-
-    
+  collectCoverageFrom: [
+    'src/multiply.js',
+    'src/sum.js',
+    'src/cart_test.js',
+    'src/checkoutTotal.js',
+    'src/clearCart.js',
+    '!**/node_modules/**',
+    '!src/**/*.test.js', // Exclude test files from coverage
+    '!src/reportWebVitals.js', // Exclude reportWebVitals
+    '!src/setupTests.js', // Exclude setupTests
   ],
-  coverageReporters: ["lcov", "text"],
+  coverageReporters: ['lcov', 'text'],
   transform: {
-    "^.+\\.[jt]sx?$": "babel-jest"
-  }
+    '^.+\\.[jt]sx?$': 'babel-jest', // Transform JS/JSX/TS/TSX files
+  },
+  testEnvironment: 'jsdom', // Required for React components
+  setupFilesAfterEnv: ['./src/setupTests.js'], // Include Jest DOM extensions
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy', // Mock CSS imports
+  },
 };

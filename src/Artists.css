@@ -1,0 +1,210 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'DM Sans', sans-serif;
+  overflow-y: auto; /* Allow scrolling */
+}
+
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: url('./assets/BGArtists.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  position: relative;  /* Added this to allow absolute positioning of the blur */
+}
+
+.products-container {
+  flex: 1;
+  padding: 10px 20px; /* was 60px before */
+  font-family: 'DM Sans', sans-serif;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-footer {
+  position: relative; /* Creates a stacking context */
+  z-index: 1; /* Ensure it's above the blur */
+  padding: 40px 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #165a9c;
+  background-color: #fff3f3;
+  width: 100%;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); /* subtle top shadow */
+}
+
+.product-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.products-grid {
+  column-count: 3;
+  column-gap: 40px; /* Increased the space between columns */
+  max-width: 1200px;
+  width: 100%;
+}
+
+.product-card {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  break-inside: avoid;
+  margin-bottom: 40px; /* Increased the space between cards vertically */
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.55);
+}
+
+.product-image {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.search-bar-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px; /* for spacing below navbar */
+  margin-bottom: 5px; /* spacing before the grid */
+}
+
+.search-bar {
+  width: 100%;
+  max-width: 400px; /* adjust this as wide as you want */
+  padding: 14px 20px;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.genre-button {
+  padding: 14px 20px;
+  font-size: 1rem;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.genre-button:hover {
+  background-color: #f0f0f0;
+}
+
+.genre-button.active {
+  background-color: #e0e0e0;
+  color: #000;
+}
+
+
+.products-grid-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 15px;
+  padding-bottom: 80px; /* Ensures space for the blur effect */
+}
+
+.opacity-fade {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+   height: 120px;
+  pointer-events: none;
+  z-index: 0; /* Lower than footer */
+}
+
+.opacity-fade::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
+}
+
+.genre-filter-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 30px 0;
+}
+
+
+
+.product-title {
+  font-size: 1.5rem;
+  color: #165a9c;
+  margin-bottom: 10px;
+}
+
+.product-description {
+  color: #165a9c;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .search-bar-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px; /* for spacing below navbar */
+    margin-bottom: 5px; /* spacing before the grid */
+  }
+
+  .products-container {
+    flex: 1; /* this fills the remaining space and pushes the footer down */
+    padding: 20px 20px 20px; 
+    font-family: 'DM Sans', sans-serif;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .products-grid {
+    column-count: 1; /* Change from 3 columns to 1 */
+    column-gap: 0;
+    width: 100%;
+    display: block;
+    padding: 0 10%;
+  }
+
+  .product-card {
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  .artists-heading {
+    font-size: 1.5rem;
+    margin-bottom: 40px;
+    padding: 15px 30px;
+  }
+
+  .page-footer {
+    font-size: 0.8rem;
+    padding: 30px 0;
+  }
+}

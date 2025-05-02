@@ -49,7 +49,14 @@ const Navbar = ({ pageTitle, user, bgColor = '#f8f9fa', textColor = '#343a40' })
               <div className="dropdown-card">
                 <button className="dropdown-item">Account</button>
                 <button className="dropdown-item">Cart</button>
-                <button className="dropdown-item">Card Creator</button>
+                <Link
+                  to="/CardCreator"
+                  className="dropdown-item"
+                  style={{ textDecoration: 'none', color: '#000000' }} // <-- explicit color
+                >
+                  Card Creator
+                </Link>
+
                 <button className="dropdown-item">Log Out</button>
               </div>
             )}

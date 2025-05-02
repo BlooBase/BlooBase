@@ -9,6 +9,7 @@ import DashBoard from './components/Dashboard';
 import Artists from './components/Artists';
 import Signup from './components/Signup';
 import Store from './components/Store';
+import CardCreator from './components/CardCreator';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
       <Route path="/Artists" element={<Artists />} />
       <Route path="/Artists/:id" element={<Store />} />
       <Route path="/" element={<HomePage />} />
+      <Route path="/CardCreator" element={<CardCreator />} />
      </Routes>
   );
 };

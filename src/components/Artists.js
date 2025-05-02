@@ -152,9 +152,9 @@ const filteredProducts = productList.filter((product) =>
 
       <section className="products-grid-wrapper">
           <section className="products-grid" ref={gridRef}>
-            <div className="grid-sizer" /> {/* Required for Masonry layout sizing */}
+            <section className="grid-sizer" /> {/* Required for Masonry layout sizing */}
             {filteredProducts.map((product) => {
-  const isLoaded = cardLoaded[product.id];
+              const isLoaded = cardLoaded[product.id];
 
               return (
                 <Link to={`/artists/${product.id}`} key={product.id} className="product-link">

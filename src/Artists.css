@@ -217,6 +217,10 @@ body {
     margin-bottom: 5px; /* spacing before the grid */
   }
 
+  .products-grid-wrapper {
+    padding-left: 0; /* ✅ Remove left padding on mobile */
+    padding-right: 30px; /* Just in case */
+  }
 
   .products-container {
     flex: 1; /* this fills the remaining space and pushes the footer down */
@@ -229,16 +233,18 @@ body {
   }
 
   .products-grid {
-    column-count: 1; /* Change from 3 columns to 1 */
-    column-gap: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* ✅ This centers the column */
     width: 100%;
-    display: block;
-    padding: 0 10%;
+    padding: 0 16px; /* ✅ Small side padding */
+    box-sizing: border-box;
   }
 
   .product-card {
     width: 100%;
-    margin-bottom: 30px;
+    max-width: 400px; /* ✅ Prevents card from stretching too far */
+    margin: 0 0 30px 0; /* ✅ Remove horizontal margins */
   }
 
   .artists-heading {

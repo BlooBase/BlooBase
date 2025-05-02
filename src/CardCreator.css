@@ -1,0 +1,243 @@
+/* CardCreator.css */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap');
+
+.card-creator-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #ffeaf7; /* Page background remains the same */
+  font-family: 'DM Sans', sans-serif;
+  padding: 40px;
+  padding-top: 80px;
+}
+
+.card-creator {
+  display: flex;
+  gap: 40px;
+  background-color: #fff; /* White background for the card creator */
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  padding: 30px;
+  flex-wrap: wrap;
+  align-items: center;
+  color: #333; /* Dark grey text color */
+}
+
+.remove-image-button:hover {
+    background-color: #f5c6cb;
+  }
+  
+
+  .artist-card-preview {
+    display: inline-block;
+    width: 300px;
+    padding: 20px;
+    border-radius: 20px;
+    box-sizing: border-box;
+    background-color: #ffeaf7;
+    text-align: center;
+    overflow: hidden;
+    break-inside: avoid;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+                box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    white-space: normal;
+    word-wrap: break-word;
+    margin-top: 10px;
+    will-change: transform, box-shadow;
+  }
+  
+  .artist-card-preview:hover {
+    transform: scale(1.5);
+    box-shadow: 0 30px 40px rgba(0, 0, 0, 0.3);
+  }
+
+.placeholder-image {
+  color: #ccc;
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 20px;
+}
+
+.opacity-fade2 {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+     height: 200px;
+    pointer-events: none;
+    z-index: 0; /* Lower than footer */
+  }
+  
+  .opacity-fade2::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
+  }
+
+.card-controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  max-width: 300px;
+}
+
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.upload-box {
+  width: 100%;
+  height: 180px;
+  background-color: #eee;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23ccc" height="48" viewBox="0 0 24 24" width="48" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-6-8l-4 4-4-4H8V8h8v3h-1z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+}
+
+.color-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the content horizontally */
+  }
+  
+  .button-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center; /* Ensures the buttons are evenly spaced */
+  }
+  
+  .status-message {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #3a3a3a;
+    margin-top: 10px;
+    text-align: center;
+    padding: 8px 12px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .color-circle input[type="color"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+
+.action-button {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 1rem;
+  border-radius: 40px;
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-button:hover {
+  background-color: #f0f0f0;
+}
+
+@media (max-width: 768px) {
+  .card-creator {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card-preview,
+  .card-controls {
+    width: 100%;
+    max-width: 90%;
+  }
+
+
+  .action-button {
+    width: 100%;
+  }
+}
+
+.artist-card-preview {
+  width: 300px;
+  padding: 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background-color: #ffeaf7;
+}
+
+.artist-card-image {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+  margin-bottom: 12px;
+}
+
+.drop-placeholder {
+  width: 100%;
+  height: 350px;
+  border: 2px dashed #aaa;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: italic;
+  background-color: #fff;
+  margin-bottom: 12px;
+}
+
+.artist-name {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.artist-description {
+  font-size: 1rem;
+  margin: 6px 0 0;
+  line-height: 1.4;
+}
+
+.text-input {
+  width: 100%;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #333; /* Dark grey text for input */
+}

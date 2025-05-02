@@ -22,6 +22,12 @@ jobs:
         with:
           submodules: true
           lfs: false
+
+      - name: Fix Git Permissions
+        run: |
+          sudo chown -R $USER:$USER .git
+          sudo chmod -R u+w .git
+
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
       - name: Get Id Token

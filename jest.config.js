@@ -7,6 +7,7 @@ module.exports = {
     'src/cart_test.js',
     'src/checkoutTotal.js',
     'src/clearCart.js',
+    'src/Api_GET.js',
     '!**/node_modules/**',
     '!src/**/*.test.js', // Exclude test files from coverage
     '!src/reportWebVitals.js', // Exclude reportWebVitals

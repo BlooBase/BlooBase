@@ -31,6 +31,7 @@
 
   .artist-card-preview {
     display: inline-block;
+    position: relative;
     width: 300px;
     padding: 20px;
     border-radius: 20px;
@@ -42,6 +43,7 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
                 box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+                
     white-space: normal;
     word-wrap: break-word;
     margin-top: 10px;
@@ -52,6 +54,58 @@
     transform: scale(1.5);
     box-shadow: 0 30px 40px rgba(0, 0, 0, 0.3);
   }
+
+  .animate-card {
+    animation: liftUp 1s ease;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .animate-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    pointer-events: none;
+    animation: sweepEffect 1s ease;
+    z-index: 2;
+  }
+  
+  @keyframes liftUp {
+    0% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-10px) scale(1.03);
+    }
+    100% {
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  @keyframes sweepEffect {
+    0% {
+      transform: translateX(-150%);
+      opacity: 0.2;
+    }
+    50% {
+      transform: translateX(50%);
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateX(150%);
+      opacity: 0;
+    }
+  }
+  
 
 .placeholder-image {
   color: #ccc;
@@ -133,17 +187,42 @@
     justify-content: center; /* Ensures the buttons are evenly spaced */
   }
   
-  .status-message {
+  .status-notification {
+    position: fixed;
+    top: 80px; /* below navbar */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #165a9c;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 1rem;
+    font-weight: 500;
     font-size: 1rem;
-    font-weight: 600;
-    color: #3a3a3a;
-    margin-top: 10px;
-    text-align: center;
-    padding: 8px 12px;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    animation: fadeInOut 2.5s ease-in-out;
+    z-index: 1000;
   }
+  
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-10px);
+    }
+    10% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    90% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-10px);
+    }
+  }
+  
   
   .color-circle input[type="color"] {
     position: absolute;

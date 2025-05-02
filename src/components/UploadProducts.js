@@ -17,7 +17,7 @@ const UploadProducts = () => {
       </section>
 
       <section className="upload-header">
-        <img src="./profile.png" alt="Profile" className="upload-step-icon" />
+        <img src="./user_profile.png" alt="Profile" className="upload-step-icon" />
         <span className="upload-step">1. Create a profile</span>
         <img src="./product.png" alt="Product" className="upload-step-icon" />
         <span className="upload-step">2. Upload your products</span>
@@ -44,7 +44,7 @@ const UploadProducts = () => {
 
         <section className="upload-form-row">
           <label htmlFor="product-images" className="upload-input" style={{ padding: "0.75rem", cursor: "pointer" }}>
-            Upload Product Images
+            Upload Images of Product
             <input
               type="file"
               id="product-images"

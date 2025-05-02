@@ -8,7 +8,6 @@
   padding: 20px;
   font-family: 'DM Sans', sans-serif;
 }
-
 .signup-container {
   background: white;
   padding: 40px;
@@ -17,54 +16,44 @@
   width: 100%;
   max-width: 400px;
 }
-
 .signup-title {
   text-align: center;
   margin-bottom: 25px;
   color: #165a9c;
   font-size: 24px;
 }
-
 .logo {
   text-align: center;
   margin-bottom: 20px;
 }
-
 .logo img {
   width: 120px;
   height: auto;
 }
-
 .image-placeholder {
   font-size: 24px;
   font-weight: bold;
   color: #165a9c;
 }
-
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }
-
 .hidden {
   display: none;
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 .signup-form {
   display: flex;
   flex-direction: column;
 }
-
 .signup-form label {
   margin-bottom: 6px;
   font-weight: 500;
   color: #333;
 }
-
 .signup-form input,
 .signup-form select {
   margin-bottom: 15px;
@@ -73,25 +62,21 @@
   border: 1px solid #ccc;
   border-radius: 9px;
 }
-
 .signup-form input:focus,
 .signup-form select:focus {
   border-color: #030099;
   outline: none;
 }
-
 .password-input-container,
 .confirm-password-input-container {
   position: relative;
   width: 100%;
 }
-
 .password-input-container input,
 .confirm-password-input-container input {
   width: 100%;
   padding-right: 40px;
 }
-
 .toggle-password-icon {
   position: absolute;
   right: 10px;
@@ -102,11 +87,9 @@
   cursor: pointer;
   opacity: 0.7;
 }
-
 .toggle-password-icon:hover {
   opacity: 1;
 }
-
 .signup-form button {
   padding: 13px;
   background-color: #007bff;
@@ -118,20 +101,35 @@
   cursor: pointer;
   transition: background 0.3s ease;
 }
-
 .signup-form button:hover {
   background-color: #0056b3;
 }
-
 .register-link {
   text-align: center;
   margin-top: 15px;
 }
-
 .role-selector {
   margin-bottom: 15px;
   display: flex;
   flex-direction: column;
+}
+
+/* Error styling */
+.input-error {
+  border-color: #dc3545 !important;
+  background-color: #fff8f8;
+}
+.error-message {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: -12px;
+  margin-bottom: 10px;
+  display: block;
+}
+.password-input-container .error-message,
+.confirm-password-input-container .error-message {
+  margin-top: -12px;
+  margin-bottom: 10px;
 }
 
 /* Responsive adjustments */
@@ -141,20 +139,16 @@
     padding: 20px;
     margin: 0 auto;
   }
-
   .signup-title {
     font-size: 20px;
     margin-bottom: 20px;
   }
-
   .logo {
     margin-bottom: 15px;
   }
-
   .logo img {
     width: 100px;
   }
-
   .signup-form input,
   .signup-form select {
     margin-bottom: 12px;
@@ -162,14 +156,17 @@
     font-size: 14px;
     border-radius: 9px;
   }
-
   .toggle-password-icon {
     width: 20px;
     height: 20px;
   }
-
   .signup-form button {
     padding: 10px;
     font-size: 14px;
+  }
+  .error-message {
+    font-size: 11px;
+    margin-top: -10px;
+    margin-bottom: 8px;
   }
 }

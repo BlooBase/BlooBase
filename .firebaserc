@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "bloobase-fc939"
-  }
+    "default": "bloobase-fc939",
+    "bloobase": "bloobase-fc939"
+  },
+  "targets": {},
+  "etags": {}
 }

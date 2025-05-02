@@ -64,10 +64,6 @@ const CardCreator = () => {
     triggerAnimation('Card Published');
   };
 
-  const handleUpdate = () => {
-    triggerAnimation('Card Updated');
-  };
-
   const handleRemove = () => {
     triggerAnimation('Card Removed');
   };
@@ -178,7 +174,6 @@ const CardCreator = () => {
 
           <section className="button-row">
             <button className="action-button" onClick={handlePublish}>Publish</button>
-            <button className="action-button" onClick={handleUpdate}>Update</button>
             <button className="action-button" onClick={handleRemove}>Remove</button>
           </section>
 

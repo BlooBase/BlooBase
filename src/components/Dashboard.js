@@ -41,11 +41,11 @@ const Dashboard = () => {
         {/*replace info with data from the database*/}
         <section className="stats-row">
           <article className="stat-card">
-            <span>New Artisans <img src="artisan.png" alt="artisan-img" className="icons" /></span>
-            <p className="stat-value">15</p>
+            <span>Artisans <img src="artisan.png" alt="artisan-img" className="icons" /></span>
+            <p className="stat-value">35</p>
           </article>
           <article className="stat-card">
-            <span>Weekly Sales<img src="sales.png" alt="sales-img" className="icons" /></span>
+            <span>Sales<img src="sales.png" alt="sales-img" className="icons" /></span>
             <p className="stat-value sales">R9 700</p>
           </article>
           <article className="stat-card">
@@ -53,7 +53,7 @@ const Dashboard = () => {
             <p className="stat-value">70</p>
           </article>
           <article className="stat-card">
-            <span>Weekly Orders<img src="product.png" alt="order-img" className="icons" /></span>
+            <span>Orders<img src="product.png" alt="order-img" className="icons" /></span>
             <p className="stat-value">105</p>
           </article>
         </section>

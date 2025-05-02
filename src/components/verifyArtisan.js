@@ -1,6 +1,6 @@
 import React from "react";
 import "../CreateShop.css"; //Note that CreateShop.css contains styling for CreateShop.js,verifyArtisan.js and UploadProducts.js
-import { Link } from "react-router-dom";
+
 
 const verifyArtisan = () => {
   return (

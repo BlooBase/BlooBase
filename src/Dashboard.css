@@ -17,7 +17,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: -2rem;
+  margin-top: -2.3rem;
   flex-wrap: wrap;
 }
 
@@ -452,7 +452,9 @@ h1 {
     align-items: center;
     gap: 0.5rem;
     position: relative;
+    margin-top: -1.8rem;
   }
+
 
   .nav-menu {
     display: none;

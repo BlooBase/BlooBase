@@ -1,15 +1,48 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap');
 
-body {
+html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
   font-family: 'DM Sans', sans-serif;
   overflow-y: auto; /* Allow scrolling */
 }
 
-.page-wrapper {
-  min-height: 100vh;
+body {
   display: flex;
+  flex-direction: column;
+}
+
+.placeholder-card {
+  width: 100%;
+  height: 400px; /* match approx height of real card */
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  animation: loadingShimmer 1.2s infinite ease-in-out;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes loadingShimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.product-card.loading {
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+
+.page-wrapper {
+  min-height: 170vh;
+  flex: 1; /* Ensures wrapper takes up remaining height */
+  display: flex;
+  flex-direction: column;
+  padding-top: 50px;
   flex-direction: column;
   background-image: url('./assets/BGArtists.png');
   background-size: cover;
@@ -47,13 +80,23 @@ body {
 }
 
 .products-grid {
-  column-count: 3;
-  column-gap: 40px; /* Increased the space between columns */
-  max-width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-auto-rows: auto;
+  justify-content: space-between; /* makes the row fill the width */
+  gap: 30px; /* controls spacing between cards */
   width: 100%;
+  max-width: 2500px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .product-card {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 40px;
+  margin: 0 1% 40px;
+  box-sizing: border-box;
   background: rgba(255, 255, 255, 0.4);
   border-radius: 20px;
   padding: 20px;
@@ -61,8 +104,8 @@ body {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   break-inside: avoid;
-  margin-bottom: 40px; /* Increased the space between cards vertically */
 }
+
 
 .product-card:hover {
   transform: translateY(-5px);
@@ -120,9 +163,9 @@ body {
 
 .products-grid-wrapper {
   width: 100%;
-  max-width: 1200px;
   margin-top: 15px;
   padding-bottom: 80px; /* Ensures space for the blur effect */
+  padding-left: 60px;
 }
 
 .opacity-fade {
@@ -174,6 +217,11 @@ body {
     margin-bottom: 5px; /* spacing before the grid */
   }
 
+  .products-grid-wrapper {
+    padding-left: 0; /* ✅ Remove left padding on mobile */
+    padding-right: 30px; /* Just in case */
+  }
+
   .products-container {
     flex: 1; /* this fills the remaining space and pushes the footer down */
     padding: 20px 20px 20px; 
@@ -185,16 +233,18 @@ body {
   }
 
   .products-grid {
-    column-count: 1; /* Change from 3 columns to 1 */
-    column-gap: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* ✅ This centers the column */
     width: 100%;
-    display: block;
-    padding: 0 10%;
+    padding: 0 16px; /* ✅ Small side padding */
+    box-sizing: border-box;
   }
 
   .product-card {
     width: 100%;
-    margin-bottom: 30px;
+    max-width: 400px; /* ✅ Prevents card from stretching too far */
+    margin: 0 0 30px 0; /* ✅ Remove horizontal margins */
   }
 
   .artists-heading {

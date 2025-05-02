@@ -131,12 +131,12 @@ const Dashboard = () => {
                 <section className="graph-bar forecast" style={{ height: '70%' }}><span className="graph-tooltip">Jun: R3,500 (forecast)</span></section>
               </section>
               <section className="graph-x-axis">
-                <span>Jan</span>
-                <span>Feb</span>
-                <span>Mar</span>
-                <span>Apr</span>
                 <span>May</span>
-                <span>Jun</span>
+                <span>June</span>
+                <span>July</span>
+                <span>Aug</span>
+                <span>Sep</span>
+                <span>Oct</span>
               </section>
             </section>
             <section className="graph-legend">
@@ -154,7 +154,7 @@ const Dashboard = () => {
             <h3>Admin Tasks: 3/5</h3>
             <section className="task-progress">
               <p>Tasks</p>
-              <progress className="progress-bar" value="50" max="100"></progress>
+              <progress className="progress-bar" value="60" max="100"></progress>
               <p>60%</p>
             </section>
             <ol className="task-list">

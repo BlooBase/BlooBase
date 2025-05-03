@@ -9,6 +9,8 @@ import DashBoard from './components/Dashboard';
 import Artists from './components/Artists';
 import Signup from './components/Signup';
 import TermsAndConditions from './components/TermsAndConditions';
+import Store from './components/Store';
+import CardCreator from './components/CardCreator';
 
 const App = () => {
   return (
@@ -18,10 +20,12 @@ const App = () => {
       <Route path="/UploadProducts" element={<UploadProducts/>} />
       <Route path="/verifyArtisan" element={<VerifyArtisan/>} />
       <Route path="/Login" element={<Login/>} />
-      <Route path="/Artists" element={<Artists/>} />
+      <Route path="/Artists" element={<Artists />} />
+      <Route path="/Artists/:id" element={<Store />} />
       <Route path="/Dashboard" element={<DashBoard/>}/>
       <Route path="/Signup" element={<Signup/>}/>
       <Route path="/TermsAndConditions" element={<TermsAndConditions/>}/>
+      <Route path="/CardCreator" element={<CardCreator />} />
       <Route path="/" element={<HomePage />} />
     
      </Routes>

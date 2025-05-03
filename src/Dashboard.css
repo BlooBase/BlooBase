@@ -1,112 +1,109 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
+  font-family: 'DM Sans', sans-serif;
+  background-image: url('./assets/BGArtists.png');
 }
 
 .dashboard-container {
   padding: 2vw;
+  margin-top: 60px;
 }
 
-.Welcome {
-  color: #007bff;
-  font-size: clamp(1.5rem, 5vw, 2rem);
+.navbar {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 0 1rem;
+  gap: 0rem;
+  flex-wrap: wrap;
+  right: -9px;
+  background-color: #f8f9fa;
+  color: #343a40;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.nav-left {
+  flex: 0 0 auto;
+}
+
+.nav-center {
+  flex: 1;
+  text-align: left;
+}
+
+.nav-right {
+  flex: 0 0 auto;
+  position: relative; 
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.options-button {
+  cursor: pointer;
+}
+
+.options-button.selected {
+  background: #e9ecef;
+  border-radius: 10px;
+}
+
+.options {
+  width: 24px;
+  height: 24px;
+}
+
+.dropdown-card {
+  position: absolute;
+  top: 100%;
+  left: -10px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  padding: 0.5rem;
+  z-index: 1000;
+  width: 150px; 
+  margin-top: 5px; 
+}
+
+.dropdown-item {
+  display: block;
+  width: 90%;
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: clamp(0.9rem, 3vw, 1rem);
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #f8f9fa;
+}
+
+.username {
+  font-size: clamp(0.9rem, 3vw, 1rem);
+  margin: 0; 
+}
+
+.user-avatar {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
 }
 
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: -2.3rem;
+  margin-bottom: -2.3rem;
   flex-wrap: wrap;
 }
 
-.logo {
-  font-size: clamp(1.2rem, 4vw, 1.5rem);
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  color: #007bff;
-}
-.logo-image-small {
-  width: 16px; 
-  height: auto;
-  margin-right: 8px; 
-}
-
-.nav-menu {
-  display: flex;
-}
-
-.nav-menu a {
-  margin: 0 0.8rem;
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  font-size: clamp(0.9rem, 3vw, 1rem);
-}
-
-.nav-menu a:hover {
-  color: #007bff;
-}
-
-.hamburger-menu {
-  display: none;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 30px;
-  height: 20px;
-  cursor: pointer;
-}
-
-.hamburger-menu span {
-  width: 100%;
-  height: 3px;
-  background: #333;
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-
-.hamburger-menu.active span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
-}
-
-.hamburger-menu.active span:nth-child(2) {
-  opacity: 0;
-}
-
-.hamburger-menu.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -7px);
-}
-
-.mobile-menu {
-  display: none;
-  flex-direction: column;
-  background: #fff;
-  position: absolute;
-  top: 60px;
-  left: 0;
-  width: 100%;
-  padding: 1rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-}
-
-.mobile-menu.active {
-  display: flex;
-}
-
-.mobile-menu a {
-  margin: 0.5rem 0;
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  font-size: clamp(1rem, 4vw, 1.2rem);
-}
-
-.mobile-menu a:hover {
-  color: #007bff;
-}
 
 h1 {
   font-size: clamp(1.5rem, 5vw, 1.75rem);
@@ -130,7 +127,7 @@ h1 {
 .stat-card {
   background: #fff;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 28px;
   text-align: center;
   flex: 1;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -153,7 +150,7 @@ h1 {
 .user-card {
   background: #fff;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 28px;
   text-align: center;
   width: 100%;
   max-width: 200px;
@@ -163,14 +160,14 @@ h1 {
 .user-image {
   width: clamp(80px, 20vw, 100px);
   height: clamp(80px, 20vw, 100px);
-  border-radius: 50%;
+  border-radius: 28px;
   margin-bottom: 0.5rem;
 }
 
 .progress-card {
   background: #fff;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 28px;
   flex: 1;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   min-width: 250px;
@@ -198,14 +195,14 @@ h1 {
   flex: 1;
   height: 12px;
   background: #eee;
-  border-radius: 6px;
+  border-radius: 28px;
   margin: 0 0.5rem;
 }
 
 .store-progress {
   height: 100%;
   background: #2c7fc7;
-  border-radius: 6px;
+  border-radius: 28px;
 }
 
 .store-value {
@@ -218,7 +215,7 @@ h1 {
 .transactions {
   background: #fff;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 28px;
   text-align: center;
   width: 100%;
   max-width: 200px;
@@ -247,7 +244,7 @@ h1 {
 .calendar-section {
   background: #fff;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 28x;
   flex: 1;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   min-width: 250px;
@@ -276,7 +273,7 @@ h1 {
 .dates span.active {
   background: #2c7fc7;
   padding: 0.3rem 0.6rem;
-  border-radius: 5px;
+  border-radius: 28px;
 }
 
 .event {
@@ -288,7 +285,7 @@ h1 {
 .graph-section {
   background: #fff;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 28px;
   flex: 1;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   min-width: 250px;
@@ -400,7 +397,7 @@ h1 {
   background: #333;
   color: #fff;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 28px;
   width: 100%;
   max-width: 250px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -447,6 +444,11 @@ h1 {
     padding: 1rem;
   }
 
+  .navbar {
+    padding: 0 0.5rem;
+    gap: 0.5rem;
+  }
+
   .dashboard-header {
     flex-direction: row;
     align-items: center;
@@ -455,20 +457,9 @@ h1 {
     margin-top: -1.8rem;
   }
 
-
-  .nav-menu {
-    display: none;
-  }
-  .nav-menu a {
-    margin: 0.3rem;
-  }
-
-  .hamburger-menu {
-    display: flex;
-  }
-
-  .mobile-menu {
-    top: 80px;
+  .dropdown-card {
+    right: -50px;
+    width: 200px; 
   }
 
   .stats-row {
@@ -506,11 +497,16 @@ h1 {
     padding: 0.5rem;
   }
 
+  .navbar {
+    padding: 0 0.3rem;
+  }
+
   .logo {
     font-size: clamp(1rem, 3.5vw, 1.2rem);
   }
-  .nav-menu a{
-    font-size: clamp(0.8rem,2.5vw,0.9rem);
+
+  .dropdown-card {
+    right: -40px; 
   }
 
   .stat-card {

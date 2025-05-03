@@ -3,7 +3,6 @@ import "../Dashboard.css";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [optionsOpen, setOptionsOpen] = useState(false);
   const optionsRef = useRef(null);
 
@@ -21,9 +20,7 @@ const Dashboard = () => {
     };
   }, [optionsRef]);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  
 
   // Mock user data (replace with actual user data from your app)
   const user = {

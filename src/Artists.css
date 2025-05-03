@@ -5,7 +5,7 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'DM Sans', sans-serif;
-  overflow-y: auto; /* Allow scrolling */
+  overflow-y: auto;
 }
 
 body {
@@ -15,7 +15,7 @@ body {
 
 .placeholder-card {
   width: 100%;
-  height: 400px; /* match approx height of real card */
+  height: 400px; 
   background-color: #f0f0f0;
   border-radius: 20px;
   animation: loadingShimmer 1.2s infinite ease-in-out;

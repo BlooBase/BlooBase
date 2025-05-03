@@ -46,7 +46,7 @@ const Navbar = ({ pageTitle, user, bgColor = '#f8f9fa', textColor = '#343a40' })
             </section>
 
             {optionsOpen && (
-              <div className="dropdown-card">
+              <section className="dropdown-card">
                 <button className="dropdown-item">Account</button>
                 <button className="dropdown-item">Cart</button>
                 <Link
@@ -58,7 +58,7 @@ const Navbar = ({ pageTitle, user, bgColor = '#f8f9fa', textColor = '#343a40' })
                 </Link>
 
                 <button className="dropdown-item">Log Out</button>
-              </div>
+              </section>
             )}
 
             <p className="username" style={{ color: textColor }}>{user.name}</p>

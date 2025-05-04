@@ -1,14 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
 import '../Home.css';
 import { Link } from 'react-router-dom';
 import { retrieveProducts } from '../firebase/retrieveProducts';
 
 const HomePage = () => {
-  const [products, setProducts] = useState([]);
+   const [optionsOpen, setOptionsOpen] = useState(false);
+   const [products, setProducts] = useState([]);
+  const optionsRef = useRef(null);
+
+  
+    // Effect to close options dropdown when clicking outside
+    useEffect(() => {
+      function handleClickOutside(event) {
+        if (optionsRef.current && !optionsRef.current.contains(event.target)) {
+          setOptionsOpen(false);
+        }
+      }
+      
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [optionsRef]);
+  
+
   const [imagesLoaded, setImagesLoaded] = useState({
     logo: false,
     products: {}
   });
+
+  const user = {
+    name: "Admin",
+    avatarLocal: "/user_profile.png", 
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -61,36 +85,88 @@ const HomePage = () => {
   return (
     <main className="homepage">
       <section id="bg-preload"></section>
-
-      <section className="header-section">
-        <section className="homepage-container">
-          <header className="logo-header">
-            {!imagesLoaded.logo && <div className="logo-placeholder">BlooBase</div>}
-            <img
-              src="/bloobase.png"
-              alt="BlooBase Logo"
-              className={`ghost-logo ${imagesLoaded.logo ? 'fade-in' : 'hidden'}`}
-              onLoad={() => setImagesLoaded(prev => ({ ...prev, logo: true }))}
-              loading="eager"
-            />
+      <header className="navbar">
+            <section className="nav-left">
+              <Link to="/" className="site-title" style={{ textDecoration: "none" }}>
+                <section style={{ display: "flex", alignItems: "center", gap: "0.9rem" }}>
+                  <img
+                    src="/BlooBase.png"
+                    alt="BlooBase logo"
+                    style={{ height: "32px", width: "30px", objectFit: "contain",marginLeft:"19px"}}
+                  />
+                  <h2 style={{ color: "#343a40", margin: 0 }}>BlooBase</h2>
+                </section>
+              </Link>
+            </section>
+    
+            <section className="nav-center">
+              <h3 className="page-title" style={{ color: "#343a40", margin: 0 }}>
+              
+              </h3>
+            </section>
+    
+            <section className="nav-right" ref={optionsRef}>
+              <section className="user-info">
+                <section
+                  className={`options-button ${optionsOpen ? "selected" : ""}`}
+                  onClick={() => setOptionsOpen((prev) => !prev)}
+                >
+                  <img
+                    className="options"
+                    src="/options-lines.png"
+                    alt="Options Button"
+                  />
+                </section>
+                
+               {/* <p className="username" style={{ color: "#343a40" }}>
+                  {user.name}
+                </p>*/}
+                <img
+                  className="user-avatar"
+                  src={user.avatarLocal}
+                  alt={`${user.name}'s avatar`}
+                />
+    
+                {optionsOpen && (
+                  <section className="dropdown-card-home">
+                    <Link
+                      to="/Login"
+                      className="dropdown-item-home"
+                      style={{ textDecoration: "none", color: "#000000" }}
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="/Signup"
+                      className="dropdown-item-home"
+                      style={{ textDecoration: "none", color: "#000000" }}
+                    >
+                      Sign up
+                    </Link>
+                    <Link
+                      to="/Artists"
+                      className="dropdown-item-home"
+                      style={{ textDecoration: "none", color: "#000000" }}
+                    >
+                      Artists
+                    </Link>
+                    <Link
+                      to="/Artists"
+                      className="dropdown-item-home"
+                      style={{ textDecoration: "none", color: "#000000" }}
+                    >
+                     
+                    </Link>
+                   
+                  </section>
+                )}
+              </section>
+            </section>
+    
+            
           </header>
-
-          <header className="header">
-            <h1 className="brand-title">BlooBase</h1>
-          </header>
-
-          <nav className="nav-buttons">
-            <Link to="/artists" className="nav-button">Artists</Link>
-            <Link to="/signup" className="nav-button">Sign Up</Link>
-            <Link to="/login" className="nav-button">Log In</Link>
-          </nav>
-
-          <h1 className="hero-title">For Artists By Artists</h1>
-          <p className="hero-subtitle">
-            The ever expanding global artist marketplace for all your needs.
-          </p>
-        </section>
-      </section>
+    
+    
 
       <section className="products-section">
         <h2 className="products-heading">Browse Products</h2>

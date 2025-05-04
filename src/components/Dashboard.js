@@ -22,7 +22,7 @@ const Dashboard = () => {
 
   
 
-  // Mock user data (replace with actual user data from your app)
+  // Mock user data (replace with actual user data )
   const user = {
     name: "Admin",
     avatarLocal: "/user_profile.png", 
@@ -265,7 +265,7 @@ const Dashboard = () => {
             <h3>Admin Tasks: 3/5</h3>
             <section className="task-progress">
               <p>Tasks</p>
-              <progress className="progress-bar" value="60" max="100"></progress>
+              <progress className="progress-bar-task" value="60" max="100"></progress>
               <p>60%</p>
             </section>
             <ol className="task-list">

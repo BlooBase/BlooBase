@@ -11,7 +11,7 @@
 .signup-container {
   background: white;
   padding: 40px;
-  border-radius: 12px;
+  border-radius: 28px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
@@ -19,7 +19,7 @@
 .signup-title {
   text-align: center;
   margin-bottom: 25px;
-  color: #165a9c;
+  color: #00aaff;
   font-size: 24px;
 }
 .logo {
@@ -74,7 +74,7 @@
 }
 .password-input-container input,
 .confirm-password-input-container input {
-  width: 100%;
+  width: 87%;
   padding-right: 40px;
 }
 .toggle-password-icon {

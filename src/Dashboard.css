@@ -1,12 +1,13 @@
-body {
+.dashboard-page {
   margin: 0;
   font-family: 'DM Sans', sans-serif;
-  background-image: url('./assets/BGArtists.png');
+ 
 }
 
 .dashboard-container {
   padding: 2vw;
   margin-top: 60px;
+  background-color: #fff5e1;
 }
 
 .navbar {
@@ -60,7 +61,7 @@ body {
 .dropdown-card {
   position: absolute;
   top: 100%;
-  left: -10px;
+  left: -12px;
   background: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 50%;
@@ -411,7 +412,7 @@ h1 {
   border-radius: 5px;
 }
 
-.progress-bar {
+.progress-bar-task {
   background: #555555;
   height: 10px;
   width: clamp(80px, 20vw, 100px);

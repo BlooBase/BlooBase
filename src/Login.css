@@ -12,7 +12,7 @@
 .login-container {
   background: white;
   padding: 40px;
-  border-radius: 12px;
+  border-radius: 28px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
@@ -20,7 +20,7 @@
 
 .login-title {
   text-align: center;
-  color: #1a1a1a;
+  color: #00aaff;
   margin-bottom: 10px;
   font-size: 24px;
   font-weight: 600;

@@ -1,0 +1,96 @@
+/* Settings Page Styles */
+.profile-heading {
+    font-size: 1.8rem;
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-md);
+    font-weight: 700;
+  }
+  
+  .settings-form {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .form-container {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: #f9f9f9;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .form-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+  
+  .form-input {
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  
+  .form-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(22, 90, 156, 0.15);
+  }
+  
+  .settings-buttons {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+  }
+  
+  .delete-button {
+    background-color: #ffefef;
+    color: #d00;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .delete-button:hover,
+  .delete-button:focus {
+    background-color: #ffcccc;
+    color: #a00;
+  }
+  
+  /* Mobile-friendly adjustments */
+  @media (max-width: 768px) {
+    .settings-form {
+      padding: 0 20px;
+    }
+  
+    .settings-buttons {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .delete-button,
+    .nav-button {
+      width: 100%;
+      font-size: 1rem;
+      padding: 10px;
+    }
+  }
+  

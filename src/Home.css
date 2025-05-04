@@ -6,6 +6,15 @@
   background-image: url('./assets/BG.png');
 }
 
+:root {
+  --spacing-sm: 10px;
+  --spacing-md: 20px;
+  --spacing-lg: 40px;
+  --primary-color: #165a9c;
+  --secondary-color: #f5f7fa;
+  --highlight-color: #2c7fc7;
+}
+
 body {
   margin: 0;
   font-family: 'DM Sans', sans-serif;
@@ -20,7 +29,7 @@ body {
 }
 
 .header-section {
-  background-color:#f5f7fa;
+  background-color: var(--secondary-color);
   background-image: url('./assets/BG.png');
   background-size: cover;
   background-repeat: no-repeat;
@@ -34,13 +43,13 @@ body {
 
 .homepage-container {
   text-align: center;
-  padding: 60px 20px;
+  padding: var(--spacing-lg) var(--spacing-sm);
   position: relative;
   background-color: transparent;
 }
 
 .logo-header {
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-md);
 }
 
 .ghost-logo {
@@ -48,12 +57,12 @@ body {
   height: auto;
 }
 
-.hidden{
+.hidden {
   opacity: 0;
   display: none;
 }
 
-.fade-in{
+.fade-in {
   animation: fadeIn 0.5s;
 }
 
@@ -61,11 +70,12 @@ body {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-.dropdown-card-home{
+
+.dropdown-card-home {
   position: absolute;
   top: 140%;
   right: 4px;
-  background:#fff5e1;
+  background: #fff5e1;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 11%;
   padding: 0.5rem;
@@ -74,7 +84,7 @@ body {
   margin-bottom: 2px; 
 }
 
-.dropdown-item-home{
+.dropdown-item-home {
   display: block;
   width: 80%;
   padding: 0.5rem 1rem;
@@ -89,12 +99,13 @@ body {
 .dropdown-item-home:hover {
   background: #f8f9fa;
 }
+
 .loading-spinner {
   width: 40px;
   height: 40px;
   border: 4px solid rgba(22, 90, 156, 0.1);
   border-radius: 50%;
-  border-top-color: #165a9c;
+  border-top-color: var(--primary-color);
   animation: spin 1s linear infinite;
   margin: 0 auto;
 }
@@ -107,7 +118,7 @@ body {
 .product-image-placeholder {
   width: 100%;
   height: 100%;
-  background-color: #f5f7fa;
+  background-color: var(--secondary-color);
   display: flex;
   border-radius: 16px;
   align-items: center;
@@ -117,13 +128,13 @@ body {
 .nav-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin: 30px 0;
+  gap: var(--spacing-md);
+  margin: var(--spacing-lg) 0;
 }
 
 .nav-button {
   background-color: #fdf9dd;
-  color: #165a9c;
+  color: var(--primary-color);
   padding: 12px 24px;
   border-radius: 10px;
   font-weight: bold;
@@ -133,22 +144,23 @@ body {
   transition: all 0.2s ease;
 }
 
-.nav-button:hover {
-  background-color: #165a9c;
+.nav-button:hover,
+.nav-button:focus {
+  background-color: var(--primary-color);
   color: #fff;
 }
 
 .hero-title {
   font-family: 'DM Sans', sans-serif;
-  font-size: 3.5rem;
-  color: #165a9c;
-  margin-top: 60px;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--primary-color);
+  margin-top: var(--spacing-lg);
 }
 
 .hero-subtitle {
   font-size: 1.3rem;
   margin-top: 15px;
-  color: #165a9c;
+  color: var(--primary-color);
 }
 
 .header {
@@ -167,40 +179,40 @@ body {
 
 .brand-title {
   font-size: 1.8rem;
-  color: #2c7fc7;
+  color: var(--highlight-color);
   margin: 0;
 }
 
 .footer-text {
-  margin-top: 40px;
+  margin-top: var(--spacing-lg);
   text-align: center;
-  color: #165a9c;
+  color: var(--primary-color);
   font-size: 1rem;
-  padding: 20px 0;
+  padding: var(--spacing-sm) 0;
   background-color: #fff;
 }
 
 .products-section {
-  margin-top: 20px;
-  padding: 40px 20px;
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-lg) var(--spacing-sm);
   background-color: #fff;
   position: relative;
   z-index: 1;
 }
 
 .products-heading {
-  color: #165a9c;
+  color: var(--primary-color);
   font-size: 2rem;
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-md);
   text-align: center;
 }
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap:0px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--spacing-sm);
   max-width: 760px;
-  margin: 18px 10px;
+  margin: 18px auto;
 }
 
 .product-item {
@@ -266,7 +278,7 @@ body {
 
 .product-name {
   font-size: 1.1rem;
-  color: #165a9c;
+  color: var(--primary-color);
   margin: 5px 0;
   line-height: 1.3;
 }
@@ -274,7 +286,7 @@ body {
 .product-price {
   font-weight: bold;
   font-size: 1rem;
-  color: #2c7fc7;
+  color: var(--highlight-color);
   margin: 5px 0;
 }
 
@@ -320,9 +332,11 @@ body {
     left: 10px;
     gap: 8px;
   }
-  .dropdown-card-home{
-    top:150%;
+
+  .dropdown-card-home {
+    top: 150%;
   }
+
   .ghost-logo {
     width: 140px;
   }

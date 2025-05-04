@@ -90,7 +90,7 @@ const HomePage = () => {
               <Link to="/" className="site-title" style={{ textDecoration: "none" }}>
                 <section style={{ display: "flex", alignItems: "center", gap: "0.9rem" }}>
                   <img
-                    src="/BlooBase.png"
+                    src="/bloobase.png"
                     alt="BlooBase logo"
                     style={{ height: "32px", width: "30px", objectFit: "contain",marginLeft:"19px"}}
                   />

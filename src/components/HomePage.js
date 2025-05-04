@@ -1,13 +1,15 @@
 import React, { useEffect, useState,useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../Home.css';
 import { Link } from 'react-router-dom';
 import { retrieveProducts } from '../firebase/retrieveProducts';
+import { getUserRole } from '../firebase/firebase';
 
 const HomePage = () => {
    const [optionsOpen, setOptionsOpen] = useState(false);
    const [products, setProducts] = useState([]);
-  const optionsRef = useRef(null);
-
+   const optionsRef = useRef(null);
+   const navigate=useNavigate();
   
     // Effect to close options dropdown when clicking outside
     useEffect(() => {
@@ -81,6 +83,25 @@ const HomePage = () => {
   const handleProductClick = (product) => {
     console.log('Product clicked:', product);
   };
+  const handleHomepage = async () => {
+    try {
+      const role = await getUserRole();
+      if (role === "Buyer") {
+        navigate("/BuyerHomepage");
+      } else if (role === "Seller") {
+        navigate("/SellerHomepage");
+      }else if(role="Admin"){
+        navigate("/Dashboard")
+      }
+       else {
+        navigate("/"); // default or error route
+      }
+
+    } catch (error) {
+      console.error("Error fetching user role:", error);
+      alert("Unable to determine user role. Please try again.");
+    }
+  };
 
   return (
     <main className="homepage">
@@ -129,36 +150,36 @@ const HomePage = () => {
     
                 {optionsOpen && (
                   <section className="dropdown-card-home">
-                    <Link
-                      to="/Login"
-                      className="dropdown-item-home"
-                      style={{ textDecoration: "none", color: "#000000" }}
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      to="/Signup"
-                      className="dropdown-item-home"
-                      style={{ textDecoration: "none", color: "#000000" }}
-                    >
-                      Sign up
-                    </Link>
-                    <Link
-                      to="/Artists"
-                      className="dropdown-item-home"
-                      style={{ textDecoration: "none", color: "#000000" }}
-                    >
-                      Artists
-                    </Link>
-                    <Link
-                      to="/Artists"
-                      className="dropdown-item-home"
-                      style={{ textDecoration: "none", color: "#000000" }}
-                    >
-                     
-                    </Link>
-                   
-                  </section>
+                  <button
+                    onClick={() => navigate("/Login")}
+                    className="dropdown-item-home"
+                    style={{ textDecoration: "none", color: "#000000", background: "none", border: "none", cursor: "pointer" }}
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => navigate("/Signup")}
+                    className="dropdown-item-home"
+                    style={{ textDecoration: "none", color: "#000000", background: "none", border: "none", cursor: "pointer" }}
+                  >
+                    Sign up
+                  </button>
+                  <button
+                    onClick={() => navigate("/Artists")}
+                    className="dropdown-item-home"
+                    style={{ textDecoration: "none", color: "#000000", background: "none", border: "none", cursor: "pointer" }}
+                  >
+                    Artists
+                  </button>
+                  <button
+                    onClick={handleHomepage}
+                    className="dropdown-item-home"
+                    style={{ textDecoration: "none", color: "#000000", background: "none", border: "none", cursor: "pointer" }}
+                  >
+                    Homepage
+                  </button>
+                </section>
+                
                 )}
               </section>
             </section>

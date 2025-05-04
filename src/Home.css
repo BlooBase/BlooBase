@@ -198,16 +198,16 @@ body {
 .products-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 17px;
+  gap:0px;
   max-width: 760px;
-  margin: 18px auto;
+  margin: 18px 10px;
 }
 
 .product-item {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 300px;
   height: 320px;
   text-align: center;
   border: 1px solid #ddd;

@@ -15,7 +15,7 @@ const hardcodedProducts = [
     description: '3d Modeling and Character Design, @poiandkeely',
     color: '#FFEFF8',
     textColor: '#A38FF7',
-    genre: '3D Modeling',
+    genre: 'Digital Art',
   },
   {
     id: 'h2',
@@ -24,7 +24,7 @@ const hardcodedProducts = [
     description: "Author and artist of 'Goodnight Punpun', 'Solanin' and 'A Girl On the Shore'.",
     color: '#ffffff',
     textColor: '#598EA0',
-    genre: 'Digital Art',
+    genre: 'Drawing',
   },
   {
     id: 'h3',
@@ -42,7 +42,7 @@ const hardcodedProducts = [
     description: "Artist of 'One Punch Man' and 'Eyeshield 21'.",
     color: '#1e1e1e',
     textColor: '#ffffff',
-    genre: 'Digital Art',
+    genre: 'Drawing',
   },
   {
     id: 'h5',
@@ -51,7 +51,7 @@ const hardcodedProducts = [
     description: 'Digital Media editor, artist and director, @CultureStudios',
     color: '#8C2C54',
     textColor: '#FFDFE2',
-    genre: 'Video Editing',
+    genre: 'Digital Art',
   },
   {
     id: 'h6',
@@ -69,7 +69,7 @@ const hardcodedProducts = [
     description: 'Physical inking artist and illustrator',
     color: '#ffffff',
     textColor: '#181818',
-    genre: 'Physical Art',
+    genre: 'Photography',
   },
 ];
 
@@ -158,7 +158,7 @@ const Store = () => {
           className="store-column products"
           style={{ backgroundColor: artist.textColor, color: artist.color }}
         >
-          <h2 className="section-title">Art</h2>
+          <h2 className="section-title">Products</h2>
           {/* Product listings go here */}
         </section>
       </section>

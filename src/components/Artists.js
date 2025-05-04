@@ -19,7 +19,7 @@ const hardcodedProducts = [
     description: '3d Modeling and Character Design, @poiandkeely',
     color: '#FFEFF8',
     textColor: '#A38FF7',
-    genre: '3D Modeling',
+    genre: 'Digital Art',
   },
   {
     id: 'h2',
@@ -28,7 +28,7 @@ const hardcodedProducts = [
     description: "Author and artist of 'Goodnight Punpun', 'Solanin' and 'A Girl On the Shore'.",
     color: '#ffffff',
     textColor: '#598EA0',
-    genre: 'Digital Art',
+    genre: 'Drawing',
   },
   {
     id: 'h3',
@@ -46,7 +46,7 @@ const hardcodedProducts = [
     description: "Artist of 'One Punch Man' and 'Eyeshield 21'.",
     color: '#1e1e1e',
     textColor: '#ffffff',
-    genre: 'Digital Art',
+    genre: 'Drawing',
   },
   {
     id: 'h5',
@@ -55,7 +55,7 @@ const hardcodedProducts = [
     description: 'Digital Media editor, artist and director, @CultureStudios',
     color: '#8C2C54',
     textColor: '#FFDFE2',
-    genre: 'Video Editing',
+    genre: 'Digital Art',
   },
   {
     id: 'h6',
@@ -73,7 +73,7 @@ const hardcodedProducts = [
     description: 'Physical inking artist and illustrator',
     color: '#ffffff',
     textColor: '#181818',
-    genre: 'Physical Art',
+    genre: 'Photography',
   },
 ];
 
@@ -85,7 +85,7 @@ const Products = () => {
 
   const gridRef = useRef(null);
 
-  const genres = ['All', 'Physical Art', '3D Modeling', 'Digital Art', 'Video Editing', 'Photography', 'Sculpting'];
+  const genres = ['All', 'Drawing', 'Painting', 'Digital Art', 'Photography', 'Sculptures', 'Mixed media'];
 
   const user = {
     name: 'DigitalJosh',

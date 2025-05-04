@@ -12,9 +12,11 @@ describe('uploadImage', () => {
   const mockFile = { name: 'test.png', type: 'image/png' };
 
   beforeAll(() => {
-    global.crypto = {
-      randomUUID: jest.fn(() => 'mocked-uuid'),
-    };
+    Object.defineProperty(global, 'crypto', {
+      value: {
+        randomUUID: jest.fn(() => 'mocked-uuid'),
+      },
+    });
   });
 
   beforeEach(() => {

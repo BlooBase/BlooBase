@@ -17,6 +17,9 @@ const CardCreator = () => {
   const [textColor, setTextColor] = useState(storedData.textColor || '#93aed9');
   const [name, setName] = useState(storedData.name || 'Name');
   const [description, setDescription] = useState(storedData.description || 'Bio');
+  const [genre, setGenre] = useState(storedData.genre || 'Genre'); // New state for genre
+
+  const genres = ['Digital Art', 'Drawing', 'Painting', 'Photography', 'Sculptures', 'Mixed Media']; // Predefined genres
 
   useEffect(() => {
     localStorage.setItem('cardData', JSON.stringify({
@@ -74,7 +77,7 @@ const CardCreator = () => {
         image, // Pass the File object
         color: backgroundColor,
         description,
-        genre: 'Digital Art', // Default genre
+        genre,
         textColor,
         title: name,
       });
@@ -187,6 +190,21 @@ const CardCreator = () => {
               onChange={(e) => setDescription(e.target.value)}
               className="text-input"
             />
+          </label>
+
+          <label style={{ color: '#242424' }}>
+            Genre:
+            <select
+              value={genre}
+              onChange={(e) => setGenre(e.target.value)}
+              className="text-input"
+            >
+              {genres.map((g) => (
+                <option key={g} value={g}>
+                  {g}
+                </option>
+              ))}
+            </select>
           </label>
 
           <section className="color-picker-row">

@@ -90,7 +90,7 @@ const HomePage = () => {
         navigate("/BuyerHomepage");
       } else if (role === "Seller") {
         navigate("/SellerHomepage");
-      }else if(role="Admin"){
+      }else if(role==="Admin"){
         navigate("/Dashboard")
       }
        else {

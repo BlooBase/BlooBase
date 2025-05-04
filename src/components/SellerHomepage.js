@@ -5,7 +5,8 @@ import { getUserName } from '../firebase/firebase';
 
 const SellerHomePage = () => {
   const [user, setUser] = useState({ name: '' });
-  const [stores, setStores] = useState([
+  const [stores, setStores] = useState(null);
+  setStores([
     { id: 1, name: 'Jane\'s Jewelry', location: 'New York', inventoryCount: 50, image: '../detourPotters.png' },
     
   ]);

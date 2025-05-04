@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../Settings.css";
 import { Link, useNavigate } from "react-router-dom";
-import {auth,updateCredentials,deleteAccount,logout} from "../firebase/firebase"; // Adjust path if needed
+import {updateCredentials,deleteAccount,logout} from "../firebase/firebase"; // Adjust path if needed
 
 const SellerSettings = () => {
   const navigate = useNavigate();

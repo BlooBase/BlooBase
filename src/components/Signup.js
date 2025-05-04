@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../Signup.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 import { signupNormUser,GoogleSignup, logout } from "../firebase/firebase";
 const Signup = () => {
   const [formData, setFormData] = useState({

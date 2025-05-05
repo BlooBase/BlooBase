@@ -5,11 +5,8 @@ import { getUserName } from '../firebase/firebase';
 
 const SellerHomePage = () => {
   const [user, setUser] = useState({ name: '' });
-  const [stores, setStores] = useState(null);
-  setStores([
-    { id: 1, name: 'Jane\'s Jewelry', location: 'New York', inventoryCount: 50, image: '../detourPotters.png' },
-    
-  ]);
+  const [stores, setStores] = useState([]);
+ 
   const [imagesLoaded, setImagesLoaded] = useState({ stores: {}, logo: false });
 
  
@@ -36,7 +33,12 @@ const SellerHomePage = () => {
         }));
     });
   }, [stores]);
-
+  useEffect(() => {
+    setStores([
+      { id: 1, name: 'Detour Potters', location: 'Fish' , image: '../detourPotters.png' },
+      
+    ]);
+  }, []);
   return (
     <main className="homepage">
       <section className="header-section">
@@ -84,7 +86,6 @@ const SellerHomePage = () => {
               </section>
               <section className="product-info">
                 <h3 className="product-name">{store.name}</h3>
-                <p className="product-price">Location: {store.location}</p>
                 <p className="product-stock">Inventory: {store.inventoryCount} items</p>
                 <Link to={`/edit-store/${store.id}`} className="nav-button">Edit</Link>
               </section>

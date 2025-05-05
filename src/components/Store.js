@@ -4,6 +4,7 @@ import '../Store.css';
 import Navbar from '../components/Navbar';
 import FloatingCart from '../components/FloatingCart';
 import { retrieveSellersCached } from '../firebase/retrieveSellersCached';
+import { retrieveSellerProducts } from '../firebase/retrieveSellerProducts';
 
 const user = {
   name: 'DigitalJosh',
@@ -15,6 +16,8 @@ const Store = () => {
   const { id } = useParams();
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  const [productsLoading, setProductsLoading] = useState(true);
 
   useEffect(() => {
     const fetchStores = async () => {
@@ -34,6 +37,23 @@ const Store = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (id) {
+        try {
+          const sellerProducts = await retrieveSellerProducts(id);
+          setProducts(sellerProducts);
+        } catch (err) {
+          console.error('Error fetching seller products:', err);
+        } finally {
+          setProductsLoading(false);
+        }
+      }
+    };
+
+    fetchProducts();
+  }, [id]);
 
   if (loading) return <p>Loading...</p>;
 
@@ -67,7 +87,34 @@ const Store = () => {
           style={{ backgroundColor: artist.textColor, color: artist.color }}
         >
           <h2 className="section-title">Products</h2>
-          {/* Product listings go here */}
+          {productsLoading ? (
+            <p>Loading products...</p>
+          ) : (
+            <section className="products-grid">
+              {products.map((product) => (
+                <section
+                  key={product.id}
+                  className="product-item"
+                  role="button"
+                  tabIndex="0"
+                  aria-label={`View details of ${product.name}`}
+                >
+                  <section className="product-image-container">
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="product-image"
+                      loading="lazy"
+                    />
+                  </section>
+                  <section className="product-info">
+                    <h3 className="product-name">{product.name}</h3>
+                    <p className="product-price">{product.price}</p>
+                  </section>
+                </section>
+              ))}
+            </section>
+          )}
         </section>
       </section>
 

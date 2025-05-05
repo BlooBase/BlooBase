@@ -90,7 +90,7 @@ const SellerSettings = () => {
           </header>
 
           <nav className="nav-buttons">
-            <Link to="/BuyerHomepage" className="nav-button">
+            <Link to="/SellerHomepage" className="nav-button">
               Back
             </Link>
             <button onClick={handleLogout} className="nav-button">

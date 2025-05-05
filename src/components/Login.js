@@ -118,7 +118,7 @@ const Login = () => {
 
        
         <section className="divider">
-          <p>or continue with</p>
+          <span>or continue with</span>
         </section>
 
        

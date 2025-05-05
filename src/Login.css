@@ -15,7 +15,7 @@
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 350px;
 }
 
 .login-title {
@@ -140,8 +140,7 @@
   flex-direction: column;
   gap: 15px;
 }
-
-.social-button {
+.google-login-button{
   display: flex;
   align-items: center;
   justify-content: center;
@@ -154,9 +153,9 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
+  width: 100%;
 }
-
-.social-button:hover:not(:disabled) {
+.google-login-button:hover:not(:disabled) {
   background-color: #f8f9fa;
 }
 

@@ -5,10 +5,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import FloatingCart from '../components/FloatingCart';
 import '../Artists.css';
-
-import { collection, getDocs } from 'firebase/firestore';
-import { ref, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../firebase/firebase';
+import { retrieveSellers } from '../firebase/retrieveSellers';
 
 // Hardcoded fallback products
 const hardcodedProducts = [
@@ -95,37 +92,17 @@ const Products = () => {
 
   useEffect(() => {
     const fetchArtists = async () => {
+      // Step 1: Immediately show hardcoded products
+      setProducts(hardcodedProducts);
+  
       try {
-        const snapshot = await getDocs(collection(db, 'Sellers'));
-        const fetched = [];
-
-        for (const doc of snapshot.docs) {
-          const data = doc.data();
-
-          let imageUrl = '';
-          if (data.image) {
-            const imgRef = ref(storage, data.image);
-            imageUrl = await getDownloadURL(imgRef);
-          }
-
-          fetched.push({
-            id: doc.id,
-            title: data.title || 'Untitled',
-            description: data.description || '',
-            image: imageUrl,
-            color: data.color || '#ffffff',
-            textColor: data.textColor || '#000000',
-            genre: data.genre || 'Unknown',
-          });
-        }
-
-        setProducts([...hardcodedProducts, ...fetched]);
+        const combinedSellers = await retrieveSellers(); // this includes hardcoded + Firestore
+        setProducts(combinedSellers); // Replaces with full list once loaded
       } catch (err) {
-        console.error('Firebase fetch failed. Using fallback:', err);
-        setProducts(hardcodedProducts);
+        console.error('Error fetching artists:', err);
       }
     };
-
+  
     fetchArtists();
   }, []);
 

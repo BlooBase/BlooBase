@@ -42,10 +42,10 @@ const Login = () => {
       await GoogleLogin();
       const userRole = await getUserRole(); 
       if (userRole === "Seller" ) {
-        navigate("/Homepage");
+        navigate("/SellerHomepage");
       }
       else if(userRole === "Buyer"){
-        navigate("/HomePage")
+        navigate("/BuyerHomePage")
       }
       else if(userRole==="Admin"){
         navigate("/dashboard")

@@ -10,14 +10,12 @@ const HomePage = () => {
    const [products, setProducts] = useState([]);
    const [filteredProducts, setFilteredProducts] = useState([]);
    const [searchQuery, setSearchQuery] = useState('');
-   const [filterOpen, setFilterOpen] = useState(false);
-   const [selectedFilters, setSelectedFilters] = useState({
-      price: '',
-      category: ''
-   });
+   const [selectedCategory, setSelectedCategory] = useState('All');
    const optionsRef = useRef(null);
-   const filterRef = useRef(null);
    const navigate = useNavigate();
+
+   // Categories similar to the genres in Artists page
+   const categories = ['All', 'Clothing', 'Accessories', 'Crafts', 'Jewelry','Art', 'Furniture', 'Mixed media'];
 
    // Effect to close options dropdown when clicking outside
    useEffect(() => {
@@ -25,16 +23,13 @@ const HomePage = () => {
          if (optionsRef.current && !optionsRef.current.contains(event.target)) {
             setOptionsOpen(false);
          }
-         if (filterRef.current && !filterRef.current.contains(event.target)) {
-            setFilterOpen(false);
-         }
       }
 
       document.addEventListener("mousedown", handleClickOutside);
       return () => {
          document.removeEventListener("mousedown", handleClickOutside);
       };
-   }, [optionsRef, filterRef]);
+   }, [optionsRef]);
 
    const [imagesLoaded, setImagesLoaded] = useState({
       logo: false,
@@ -90,9 +85,16 @@ const HomePage = () => {
       bgImg.src = './assets/BG.png';
    }, []);
 
-   // Filter products based on search query and selected filters
+   // Filter products based on search query and selected category
    useEffect(() => {
       let result = [...products];
+
+      // Filter by category
+      if (selectedCategory !== 'All') {
+         result = result.filter(product =>
+            product.category?.toLowerCase() === selectedCategory.toLowerCase()
+         );
+      }
 
       // Search by product name
       if (searchQuery) {
@@ -101,24 +103,8 @@ const HomePage = () => {
          );
       }
 
-      // Filter by category
-      if (selectedFilters.category) {
-         result = result.filter(product =>
-            product.category?.toLowerCase() === selectedFilters.category.toLowerCase()
-         );
-      }
-
-      // Filter by price
-      if (selectedFilters.price) {
-         if (selectedFilters.price === 'low-high') {
-            result.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-         } else if (selectedFilters.price === 'high-low') {
-            result.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-         }
-      }
-
       setFilteredProducts(result);
-   }, [searchQuery, selectedFilters, products]);
+   }, [searchQuery, selectedCategory, products]);
 
    const handleProductClick = (product) => {
       console.log('Product clicked:', product);
@@ -140,13 +126,6 @@ const HomePage = () => {
          console.error("Error fetching user role:", error);
          alert("Unable to determine user role. Please try again.");
       }
-   };
-
-   const handleFilterChange = (type, value) => {
-      setSelectedFilters(prev => ({
-         ...prev,
-         [type]: value
-      }));
    };
 
    return (
@@ -227,56 +206,34 @@ const HomePage = () => {
 
          <section className="products-section">
             <h2 className="products-heading">Browse Products</h2>
-            <section className="search-filter-container">
-              <section className="search-bar-wrapper">
-               <input
-               
-                  type="text"
-                  className="search-bar"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-               />
-                </section>
-               <section className="filter-container" ref={filterRef}>
-                  <section
-                     className="filter-button"
-                     onClick={() => setFilterOpen((prev) => !prev)}
-                  >
-                     <img
-                        src="/filter.png"
-                        alt="Filter Icon"
-                        className="symbol-icon"
-                     />
-                     <span>Filter products</span>
-                  </section>
-                  {filterOpen && (
-                     <section className="filter-dropdown">
-                        <h4>Price</h4>
-                        <select
-                           value={selectedFilters.price}
-                           onChange={(e) => handleFilterChange('price', e.target.value)}
-                        >
-                           <option value="">Sort by Price</option>
-                           <option value="low-high">Low to High</option>
-                           <option value="high-low">High to Low</option>
-                        </select>
-                        <h4>Category</h4>
-                        <select
-                           value={selectedFilters.category}
-                           onChange={(e) => handleFilterChange('category', e.target.value)}
-                        >
-                           <option value="">All Categories</option>
-                           <option value="Clothing">Clothing</option>
-                           <option value="Accessories">Accessories</option>
-                           <option value="Crafts">Crafts</option>
-                           <option value="Jewelry">Jewelry</option>
-                           <option value="Furniture">Furniture</option>
-                        </select>
-                     </section>
-                  )}
+            
+            {/* Search bar with internal icon */}
+            <section className="search-bar-wrapper">
+               <section className="search-input-container">
+                  <input
+                     type="text"
+                     className="search-bar"
+                     placeholder="Search products..."
+                     value={searchQuery}
+                     onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  
                </section>
             </section>
+
+            {/* Category filter buttons similar to Artists page */}
+            <section className="category-filter-wrapper">
+               {categories.map((category) => (
+                  <button
+                     key={category}
+                     className={`category-button ${selectedCategory === category ? 'active' : ''}`}
+                     onClick={() => setSelectedCategory(category)}
+                  >
+                     {category}
+                  </button>
+               ))}
+            </section>
+            
             <section className="products-grid">
                {filteredProducts.map((product) => (
                   <section

@@ -151,7 +151,7 @@ const Signup = () => {
             <input
               type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
-              placeholder="Confirm Passwrd"
+              placeholder="Confirm Password"
               value={formData.confirmPassword}
               onChange={handleChange}
               required

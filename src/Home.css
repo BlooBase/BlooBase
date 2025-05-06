@@ -97,9 +97,6 @@ body {
   cursor: pointer;
 }
 
-.dropdown-item-home:hover {
-  background: #f8f9fa;
-}
 
 .loading-spinner {
   width: 40px;

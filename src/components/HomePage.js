@@ -172,28 +172,28 @@ const HomePage = () => {
                      <section className="dropdown-card-home">
                         <button
                            onClick={() => navigate("/Login")}
-                           className="dropdown-item-home"
+                           className="dropdown-item"
                            style={{ textDecoration: "none", color: "#000000", background: "none", border: "none", cursor: "pointer" }}
                         >
                            Login
                         </button>
                         <button
                            onClick={() => navigate("/Signup")}
-                           className="dropdown-item-home"
+                           className="dropdown-item"
                            style={{ textDecoration: "none", color: "#000000", background: "none", border: "none", cursor: "pointer" }}
                         >
                            Sign up
                         </button>
                         <button
                            onClick={() => navigate("/Artists")}
-                           className="dropdown-item-home"
+                           className="dropdown-item"
                            style={{ textDecoration: "none", color: "#000000", background: "none", border: "none", cursor: "pointer" }}
                         >
                            Artists
                         </button>
                         <button
                            onClick={handleHomepage}
-                           className="dropdown-item-home"
+                           className="dropdown-item"
                            style={{ textDecoration: "none", color: "#000000", background: "none", border: "none", cursor: "pointer" }}
                         >
                            Homepage

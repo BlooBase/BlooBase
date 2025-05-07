@@ -15,15 +15,15 @@ const firebaseConfig = {
   measurementId: "G-YDRE0F2FHC"
 };
 
-const API_BASE_URL = 'http://localhost:5000'; // Define your backend URL
+//base url for our api
+const apiURL = 'http://localhost:5000'; 
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app); // No direct Firestore access anymore
-const storage = getStorage(app); // No direct Storage access anymore
-
-// Utility function for making API requests
-const apiRequest = async (url, method = 'GET', body = null) => {
+const db = getFirestore(app);
+const storage = getStorage(app); 
+//API requests fucntion
+const apiRequest = async (url, /*default method****/method = 'GET', body = null) => {
   const headers = {
     'Content-Type': 'application/json',
     // You might need to add authorization headers if your API requires it
@@ -35,7 +35,7 @@ const apiRequest = async (url, method = 'GET', body = null) => {
   if (body) {
     config.body = JSON.stringify(body);
   }
-  const response = await fetch(`${API_BASE_URL}${url}`, config); // Prepend the base URL here
+  const response = await fetch(`${apiURL}${url}`, config); 
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error || `HTTP error! status: ${response.status}`);

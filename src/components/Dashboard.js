@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../Dashboard.css";
-import { Link } from "react-router-dom";
-import { getRoleSize,getUserName,getCollectionSize } from "../firebase/firebase";
+import { Link,useNavigate } from "react-router-dom";
+import { getRoleSize,getUserName,getCollectionSize,logout } from "../firebase/firebase";
 
 const Dashboard = () => {
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -78,6 +78,11 @@ const Dashboard = () => {
   
     fetchUserName();
   }, []);
+  const navigate = useNavigate();
+  const handleLogout = async(e) =>{
+    await logout();
+    navigate('/');
+  }
 
   return (
     <section className="dashboard-container">
@@ -140,20 +145,13 @@ const Dashboard = () => {
                   Artisans
                 </Link>
                 <Link
-                  to="/reviews"
-                  className="dropdown-item"
-                  style={{ textDecoration: "none", color: "#000000" }}
-                >
-                  Reviews
-                </Link>
-                <Link
                   to="/settings"
                   className="dropdown-item"
                   style={{ textDecoration: "none", color: "#000000" }}
                 >
                   Settings
                 </Link>
-                <button className="dropdown-item">Log Out</button>
+                <button className="dropdown-item" onClick={handleLogout}>Log Out</button>
               </section>
             )}
           </section>

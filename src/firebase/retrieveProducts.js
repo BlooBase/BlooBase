@@ -20,7 +20,6 @@ export async function retrieveProducts() {
         } catch (error) {
           console.error(`Error fetching image for product ${doc.id}:`, error);
         }
-        console.log("Resolved imageUrl:", imageUrl);
 
         return {
           id: doc.id,

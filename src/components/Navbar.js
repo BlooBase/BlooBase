@@ -5,11 +5,7 @@ import '../Navbar.css';
 const Navbar = ({ pageTitle, user, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const location = useLocation();
-
-  const navLinks = [
-    { path: '/', label: 'Artists' },
-    { path: '/CardCreator', label: 'Card Creator' }
-  ];
+  const currentPath = location.pathname;
 
   return (
     <section
@@ -23,10 +19,10 @@ const Navbar = ({ pageTitle, user, bgColor = '#f8f9fa', textColor = '#343a40' })
       <section className="nav-left">
         <Link to="/" className="site-title" style={{ textDecoration: 'none' }}>
           <section style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <img
+          <img
+              className="logo-img"
               src="/bloobase.png"
               alt="BlooBase logo"
-              style={{ height: '32px', width: '32px', objectFit: 'contain' }}
             />
             <h2 style={{ color: textColor, margin: 0 }}>BlooBase</h2>
           </section>
@@ -53,22 +49,39 @@ const Navbar = ({ pageTitle, user, bgColor = '#f8f9fa', textColor = '#343a40' })
 
             {optionsOpen && (
               <section className="dropdown-card">
-                <button className="dropdown-item">Account</button>
-                <button className="dropdown-item">Cart</button>
-
-                {navLinks.map(link => (
-                  location.pathname !== link.path && (
-                    <Link
-                      key={link.path}
-                      to={link.path}
-                      className="dropdown-item"
-                      style={{ textDecoration: 'none', color: '#000000' }}
-                    >
-                      {link.label}
-                    </Link>
-                  )
-                ))}
-
+                {currentPath !== '/Account' && (
+                  <button className="dropdown-item">Account</button>
+                )}
+                {currentPath !== '/Cart' && (
+                  <button className="dropdown-item">Cart</button>
+                )}
+                {currentPath !== '/Artists' && (
+                  <Link
+                    to="/Artists"
+                    className="dropdown-item"
+                    style={{ textDecoration: 'none', color: '#000000' }}
+                  >
+                    Artists
+                  </Link>
+                )}
+                {currentPath !== '/CardCreator' && (
+                  <Link
+                    to="/CardCreator"
+                    className="dropdown-item"
+                    style={{ textDecoration: 'none', color: '#000000' }}
+                  >
+                    Card Creator
+                  </Link>
+                )}
+                {currentPath !== '/Orders' && (
+                  <Link
+                    to="/CardCreator"
+                    className="dropdown-item"
+                    style={{ textDecoration: 'none', color: '#000000' }}
+                  >
+                    Orders
+                  </Link>
+                )}
                 <button className="dropdown-item">Log Out</button>
               </section>
             )}

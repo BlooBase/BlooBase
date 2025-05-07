@@ -25,18 +25,26 @@ const FloatingCart = () => {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
+    const handleMove = (clientX, clientY) => {
+      const newTop = clientY - offset.y;
+      const newLeft = clientX - offset.x;
+      const rect = cartRef.current?.getBoundingClientRect();
+      const clamped = clampPosition(newTop, newLeft, rect?.width || 100, rect?.height || 100);
+      setPosition(clamped);
+      localStorage.setItem('floatingCartPosition', JSON.stringify(clamped));
+    };
+
     const handleMouseMove = (e) => {
-      if (dragging) {
-        const newTop = e.clientY - offset.y;
-        const newLeft = e.clientX - offset.x;
-        const rect = cartRef.current?.getBoundingClientRect();
-        const clamped = clampPosition(newTop, newLeft, rect?.width || 100, rect?.height || 100);
-        setPosition(clamped);
-        localStorage.setItem('floatingCartPosition', JSON.stringify(clamped));
+      if (dragging) handleMove(e.clientX, e.clientY);
+    };
+
+    const handleTouchMove = (e) => {
+      if (dragging && e.touches[0]) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
       }
     };
 
-    const handleMouseUp = () => setDragging(false);
+    const stopDragging = () => setDragging(false);
 
     const handleResize = () => {
       const rect = cartRef.current?.getBoundingClientRect();
@@ -45,22 +53,33 @@ const FloatingCart = () => {
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mouseup', stopDragging);
+    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchend', stopDragging);
     window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mouseup', stopDragging);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', stopDragging);
       window.removeEventListener('resize', handleResize);
     };
   }, [dragging, offset, position]);
 
   const startDragging = (e) => {
     const rect = cartRef.current.getBoundingClientRect();
-    setOffset({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
+    if (e.type === 'mousedown') {
+      setOffset({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      });
+    } else if (e.type === 'touchstart' && e.touches[0]) {
+      setOffset({
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top,
+      });
+    }
     setDragging(true);
   };
 
@@ -70,6 +89,7 @@ const FloatingCart = () => {
       className="floating-cart"
       style={{ top: `${position.top}px`, left: `${position.left}px` }}
       onMouseDown={startDragging}
+      onTouchStart={startDragging}
     >
       <Link to="/Cart">
         <img src="/cart1.png" alt="Cart" style={{ pointerEvents: 'none' }} />

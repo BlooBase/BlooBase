@@ -23,14 +23,14 @@ const CardCreator = () => {
 
   useEffect(() => {
     localStorage.setItem('cardData', JSON.stringify({
-      image,
+      image: imagePreview, // Save base64 string for preview
       backgroundColor,
       textColor,
       name,
       description
     }));
-  }, [image, backgroundColor, textColor, name, description]);
-
+  }, [imagePreview, backgroundColor, textColor, name, description]);
+  
   const handleCardTilt = (e) => {
     const card = cardRef.current;
     if (!card) return;

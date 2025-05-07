@@ -16,6 +16,7 @@ import Store from './components/Store';
 import CardCreator from './components/CardCreator';
 import SellerHomePage from './components/SellerHomepage';
 import SellerSettings from './components/SellerSettings';
+import Cart from './components/Cart'; // Import the Cart component
 
 const App = () => {
   const { currentUser } = useAuth();
@@ -40,6 +41,7 @@ const App = () => {
       <Route path="/Signup" element={<Signup />} />
       <Route path="/Artists" element={<Artists />} />
       <Route path="/Artists/:id" element={<Store />} />
+      <Route path="/Cart" element={<Cart />} /> {/* Add the Cart route */}
       <Route path="/TermsAndConditions" element={<TermsAndConditions />} />
       <Route path="/CardCreator" element={<CardCreator />} />
     </Routes>

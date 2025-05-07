@@ -91,29 +91,32 @@ const Store = () => {
             <p>Loading products...</p>
           ) : (
             <section className="products-grid">
-              {products.map((product) => (
-                <section
-                  key={product.id}
-                  className="product-item"
-                  role="button"
-                  tabIndex="0"
-                  aria-label={`View details of ${product.name}`}
-                >
-                  <section className="product-image-container">
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="product-image"
-                      loading="lazy"
-                    />
-                  </section>
-                  <section className="product-info">
-                    <h3 className="product-name">{product.name}</h3>
-                    <p className="product-price">{product.price}</p>
-                  </section>
+            {products.map((product) => (
+              <section
+                key={product.id}
+                className="product-item"
+              >
+                <section className="product-image-container">
+                  <img
+                    src={product.imageUrl}
+                    alt={product.name}
+                    className="product-image"
+                    loading="lazy"
+                  />
                 </section>
-              ))}
-            </section>
+                <section className="product-info">
+                  <h3 className="product-name">{product.name}</h3>
+                  <p className="product-price">{product.price}</p>
+                  <button
+                    className="add-to-cart-button"
+                    onClick={() => console.log(`Added ${product.name} to cart`)}
+                  >
+                    Add to Cart
+                  </button>
+                </section>
+              </section>
+            ))}
+          </section>
           )}
         </section>
       </section>

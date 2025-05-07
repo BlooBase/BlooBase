@@ -1,11 +1,58 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../Dashboard.css";
 import { Link } from "react-router-dom";
+import { getRoleSize,getUserName,getCollectionSize } from "../firebase/firebase";
 
 const Dashboard = () => {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const optionsRef = useRef(null);
+  async function getAllRoleSizes() {
+    try {
+      const [buyerCount, sellerCount, adminCount] = await Promise.all([
+        getRoleSize("Buyer"),
+        getRoleSize("Seller"),
+        getRoleSize("Admin"),
+      ]);
+  
+      return {
+        Buyer: buyerCount,
+        Seller: sellerCount,
+        Admin: adminCount,
+      };
+    } catch (error) {
+      console.error("Error getting role sizes:", error);
+      return {
+        Buyer: 0,
+        Seller: 0,
+        Admin: 0,
+      };
+    }
+  }
+  const [roleCounts, setRoleCounts] = useState(null);
+  const [Stores, setStoresCount] = useState(null);
+  const [Orders, setOrdersCount] = useState(null);
+  useEffect(() => {
+    async function fetchData() {
+      const roles = await getAllRoleSizes();
+      setRoleCounts(roles);
 
+      // Get the user's name
+      const name = await getUserName();
+      setUserName(name || "User");
+
+      // Get Stores and Orders collection sizes
+      const stores = await getCollectionSize("Stores");
+      const orders = await getCollectionSize("Orders");
+      setStoresCount(stores);
+      setOrdersCount(orders);
+    }
+
+    fetchData();
+  }, []);
+
+  
+
+  
   // Effect to close options dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
@@ -21,12 +68,16 @@ const Dashboard = () => {
   }, [optionsRef]);
 
   
+  const [user, setUserName] = useState("User");
 
-  // Mock user data (replace with actual user data )
-  const user = {
-    name: "Admin",
-    avatarLocal: "/user_profile.png", 
-  };
+  useEffect(() => {
+    async function fetchUserName() {
+      const name = await getUserName();
+      setUserName(name || "User");
+    }
+  
+    fetchUserName();
+  }, []);
 
   return (
     <section className="dashboard-container">
@@ -119,25 +170,25 @@ const Dashboard = () => {
             <span>
               Artisans <img src="artisan.png" alt="artisan-img" className="icons" />
             </span>
-            <p className="stat-value">35</p>
+            <p className="stat-value">{roleCounts? roleCounts.Seller: "Loading.."}</p>
           </article>
           <article className="stat-card">
             <span>
               Sales <img src="sales.png" alt="sales-img" className="icons" />
             </span>
-            <p className="stat-value sales">R9 700</p>
+            <p className="stat-value sales">0</p>
           </article>
           <article className="stat-card">
             <span>
               Stores <img src="shop.png" alt="store-img" className="icons" />
             </span>
-            <p className="stat-value">70</p>
+            <p className="stat-value">{Stores? Stores:"Loading.."}</p>
           </article>
           <article className="stat-card">
             <span>
               Orders <img src="product.png" alt="order-img" className="icons" />
             </span>
-            <p className="stat-value">105</p>
+            <p className="stat-value">{Orders? Orders:"Loading.."}</p>
           </article>
         </section>
 
@@ -265,7 +316,7 @@ const Dashboard = () => {
             <h3>Admin Tasks: 3/5</h3>
             <section className="task-progress">
               <p>Tasks</p>
-              <progress className="progress-bar-task" value="60" max="100"></progress>
+              <progress className="progress-bar" value="60" max="100"></progress>
               <p>60%</p>
             </section>
             <ol className="task-list">

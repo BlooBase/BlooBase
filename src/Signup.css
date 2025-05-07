@@ -1,3 +1,4 @@
+/* Base styles for the signup wrapper */
 .signup-wrapper {
   overflow: hidden;
   min-height: 100vh;
@@ -8,52 +9,74 @@
   padding: 20px;
   font-family: 'DM Sans', sans-serif;
 }
+
+/* Styles for the main signup container */
 .signup-container {
   background: white;
   padding: 40px;
-  border-radius: 28px;
+  border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 350px;
 }
+
+/* Style for the signup title */
 .signup-title {
   text-align: center;
   margin-bottom: 25px;
-  color: #00aaff;
+  color: #165a9c;
   font-size: 24px;
 }
+
+/* Styles for the logo section */
 .logo {
   text-align: center;
   margin-bottom: 20px;
 }
+
+/* Style for the logo image */
 .logo img {
   width: 120px;
   height: auto;
 }
+
+/* Placeholder style for when the image is loading */
 .image-placeholder {
   font-size: 24px;
   font-weight: bold;
   color: #165a9c;
 }
+
+/* Fade-in animation */
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }
+
+/* Hidden class for conditional rendering */
 .hidden {
   display: none;
 }
+
+/* Fade-in animation keyframes */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* Styles for the signup form */
 .signup-form {
   display: flex;
   flex-direction: column;
 }
+
+/* Style for form labels */
 .signup-form label {
   margin-bottom: 6px;
   font-weight: 500;
   color: #333;
 }
+
+/* Styles for form input and select elements */
 .signup-form input,
 .signup-form select {
   margin-bottom: 15px;
@@ -62,21 +85,28 @@
   border: 1px solid #ccc;
   border-radius: 9px;
 }
+
+/* Focus styles for input and select elements */
 .signup-form input:focus,
 .signup-form select:focus {
   border-color: #030099;
   outline: none;
 }
+
+/* Container for password input with toggle icon */
 .password-input-container,
 .confirm-password-input-container {
   position: relative;
-  width: 100%;
+  width: 97%;
 }
+
+/* Style for password input fields within the container */
 .password-input-container input,
 .confirm-password-input-container input {
-  width: 87%;
-  padding-right: 40px;
+  width: 97%;
 }
+
+/* Style for the toggle password icon */
 .toggle-password-icon {
   position: absolute;
   right: 10px;
@@ -87,9 +117,13 @@
   cursor: pointer;
   opacity: 0.7;
 }
+
+/* Hover effect for the toggle password icon */
 .toggle-password-icon:hover {
   opacity: 1;
 }
+
+/* Style for the signup button */
 .signup-form button {
   padding: 13px;
   background-color: #007bff;
@@ -101,54 +135,46 @@
   cursor: pointer;
   transition: background 0.3s ease;
 }
+
+/* Hover effect for the signup button */
 .signup-form button:hover {
   background-color: #0056b3;
 }
+
+/* Style for the register link */
 .register-link {
   text-align: center;
   margin-top: 15px;
 }
+
+/* Style for the role selector container */
 .role-selector {
   margin-bottom: 15px;
   display: flex;
   flex-direction: column;
 }
 
-/* Error styling */
-.input-error {
-  border-color: #dc3545 !important;
-  background-color: #fff8f8;
-}
-.error-message {
-  color: #dc3545;
-  font-size: 12px;
-  margin-top: -12px;
-  margin-bottom: 10px;
-  display: block;
-}
-.password-input-container .error-message,
-.confirm-password-input-container .error-message {
-  margin-top: -12px;
-  margin-bottom: 10px;
-}
-
-/* Responsive adjustments */
+/* Responsive adjustments for smaller screens */
 @media (max-width: 724px) {
   .signup-container {
     max-width: 340px;
     padding: 20px;
     margin: 0 auto;
   }
+
   .signup-title {
     font-size: 20px;
     margin-bottom: 20px;
   }
+
   .logo {
     margin-bottom: 15px;
   }
+
   .logo img {
     width: 100px;
   }
+
   .signup-form input,
   .signup-form select {
     margin-bottom: 12px;
@@ -156,27 +182,65 @@
     font-size: 14px;
     border-radius: 9px;
   }
-  .password-input-container,
-.confirm-password-input-container {
-  position: relative;
-  width: 100%;
-}
-.password-input-container input,
-.confirm-password-input-container input {
-  width: 85%;
-  padding-right: 40px;
-}
+
   .toggle-password-icon {
     width: 20px;
     height: 20px;
   }
+
   .signup-form button {
     padding: 10px;
     font-size: 14px;
   }
-  .error-message {
-    font-size: 11px;
-    margin-top: -10px;
-    margin-bottom: 8px;
-  }
+}
+
+/* Styles for the Google signup section */
+.google-signup-section {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label for the Google role selector */
+.google-signup-section label {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Style for the Google role select element */
+.google-role-selector {
+  margin-bottom: 15px;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 9px;
+}
+
+/* Style for the Google signup button */
+.google-signup-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect for the Google signup button */
+.google-signup-button:hover {
+  background-color: #f0f0f0;
+}
+
+/* Style for the Google icon */
+.google-icon {
+  width: 20px;
+  height: 20px;
 }

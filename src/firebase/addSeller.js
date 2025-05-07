@@ -12,7 +12,6 @@ import { uploadImage } from "./uploadImage"; // Ensure this is correctly importe
  * @param {string} sellerData.genre - Genre of the art.
  * @param {string} sellerData.textColor - Text color.
  * @param {string} sellerData.title - Title of the art piece.
- * @param {string} [sellerData.id] - Optional ID for the document (otherwise generated).
  */
 export async function addSeller(sellerData) {
   try {
@@ -22,8 +21,7 @@ export async function addSeller(sellerData) {
       genre,
       image, // File object
       textColor,
-      title,
-      id // Optional
+      title
     } = sellerData;
 
     if (!color || !description || !genre || !image || !textColor || !title) {
@@ -33,9 +31,8 @@ export async function addSeller(sellerData) {
     // Upload the image and get the storage path
     const imagePath = await uploadImage(image, "shop_images");
 
-    const docRef = id
-      ? doc(db, "Sellers", id)
-      : doc(db, "Sellers", crypto.randomUUID());
+    // Always generate a new unique ID
+    const docRef = doc(db, "Sellers", crypto.randomUUID());
 
     await setDoc(docRef, {
       color,

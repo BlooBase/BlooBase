@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider } from "firebase/auth";
-import { db, doc, setDoc } from '../firebase/firebase';
+import { loginNormUser, GoogleLogin,getUserRole } from '../firebase/firebase';
 import '../Login.css';
 
 const Login = () => {
@@ -11,57 +10,59 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const auth = getAuth();
-
-  const createOrUpdateUserDoc = async (user) => {
-    try {
-      await setDoc(doc(db, "users", user.uid), {
-        username: user.displayName || user.email.split('@')[0],
-        email: user.email,
-        created_at: new Date(),
-        last_login: new Date()
-      }, { merge: true });
-    } catch (err) {
-      console.error("Error creating/updating user doc:", err);
-    }
-  };
-
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      await createOrUpdateUserDoc(userCredential.user);
-      navigate('/Dashboard');
+      await loginNormUser({ email, password });
+      const userRole = await getUserRole();
+      if (userRole === "Seller") {
+        navigate("/SellerHomepage");
+      } else if (userRole === "Buyer") {
+        navigate("/BuyerHomePage");
+      }
+      else if (userRole === "Admin") {
+        navigate("/Dashboard");
+      }
+      else {
+        console.log(userRole)
+        alert("User role not recognized");
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      await GoogleLogin();
+      const userRole = await getUserRole(); 
+      if (userRole === "Seller" ) {
+        navigate("/SellerHomepage");
+      }
+      else if(userRole === "Buyer"){
+        navigate("/BuyerHomePage")
+      }
+      else if(userRole==="Admin"){
+        navigate("/dashboard")
+      }
+      else {
+        alert("User role not recognized");
+      }
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+  
+  
 
-  const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      const userCredential = await signInWithPopup(auth, provider);
-      await createOrUpdateUserDoc(userCredential.user);
-      navigate('/Dashboard');
-    } catch (err) {
-      setError("Google login failed: " + err.message);
-    }
-  };
-
-  const handleFacebookLogin = async () => {
-    const provider = new FacebookAuthProvider();
-    try {
-      const userCredential = await signInWithPopup(auth, provider);
-      await createOrUpdateUserDoc(userCredential.user);
-      navigate('/Dashboard');
-    } catch (err) {
-      setError("Facebook login failed: " + err.message);
-    }
-  };
+  
 
   return (
     <main className="login-wrapper">
@@ -120,30 +121,34 @@ const Login = () => {
           <span>or continue with</span>
         </section>
 
-        {/* Social Login Buttons */}
-        <section className="social-buttons">
-          <button 
-            onClick={handleGoogleLogin} 
-            className="social-button google-button"
-            disabled={loading}
-          >
-            <img src="./google.png" alt="Google" className="social-icon" />
-            Google
-          </button>
-          <button 
-            onClick={handleFacebookLogin} 
-            className="social-button facebook-button"
-            disabled={loading}
-          >
-            <img src="./facebook.png" alt="Facebook" className="social-icon" />
-            Facebook
-          </button>
-        </section>
-
+       
        
         {error && <p className="error-message">{error}</p>}
 
-       
+        <button
+  onClick={handleGoogleLogin}
+  className="google-login-button"
+  style={{
+    marginTop: '1rem',
+    padding: '0.75rem 1rem',
+    backgroundColor: '#fff',
+    border: '1px solid #ccc',
+    borderRadius: '5px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    fontWeight: '500',
+  }}
+>
+  <img
+    src="https://developers.google.com/identity/images/g-logo.png"
+    alt="Google"
+    style={{ width: '20px', height: '20px', marginRight: '0.5rem' }}
+  />
+  Continue with Google
+</button>
+
         <p className="register-link">
           Don't have an account? <Link to="/Signup">Sign up</Link>
         </p>

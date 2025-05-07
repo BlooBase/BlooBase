@@ -2,20 +2,24 @@
 .signup-wrapper {
   overflow: hidden;
   min-height: 100vh;
-  background-color: #f5f7fa;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
   font-family: 'DM Sans', sans-serif;
+  background-image: url('./assets/BG0.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
 }
 
 /* Styles for the main signup container */
 .signup-container {
-  background: white;
+  background:#f1ece1;
   padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+  box-shadow: 0 7px 40px rgba(0, 0, 0, 0.3);
   width: 100%;
   max-width: 350px;
 }
@@ -78,59 +82,98 @@
 
 /* Styles for form input and select elements */
 .signup-form input,
-.signup-form select {
+.signup-form select,
+.google-role-selector {
   margin-bottom: 15px;
   padding: 12px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 9px;
+  border-radius: 14px;
+  background-color: #f0fdff;
 }
 
 /* Focus styles for input and select elements */
 .signup-form input:focus,
-.signup-form select:focus {
+.signup-form select:focus,
+.google-role-selector:focus {
   border-color: #030099;
   outline: none;
 }
 
 /* Container for password input with toggle icon */
-.password-input-container,
-.confirm-password-input-container {
-  position: relative;
-  width: 97%;
+/* ✅ SHARED INPUT GROUP STYLES */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
 }
 
-/* Style for password input fields within the container */
-.password-input-container input,
-.confirm-password-input-container input {
-  width: 97%;
+.input-group label {
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
 }
 
-/* Style for the toggle password icon */
+/* ✅ Consistent Input Style */
+.input-group input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  font-size: 14px;
+  background-color: #ffffff;
+  transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* ✅ Wrapper for icon + input */
 .toggle-password-icon {
   position: absolute;
+  top: 22px;
+  bottom: 0;
   right: 10px;
-  top: 53%;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; /* enough room for padding and clickability */
+  height: 100%; /* fills the height of the input */
   cursor: pointer;
   opacity: 0.7;
 }
 
-/* Hover effect for the toggle password icon */
 .toggle-password-icon:hover {
   opacity: 1;
 }
 
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Ensure input has enough right padding so text doesn't overlap icon */
+.password-input-wrapper input {
+  width: 100%;
+  padding-right: 48px; /* allows room for icon */
+  border-radius: 14px;
+  background-color: #ffffff;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+
 /* Style for the signup button */
 .signup-form button {
   padding: 13px;
-  background-color: #007bff;
+  background-color: #165a9c;
   color: white;
   border: none;
   margin-top: 10px;
-  border-radius: 9px;
+  border-radius: 14px;
   font-size: 16px;
   cursor: pointer;
   transition: background 0.3s ease;
@@ -176,11 +219,13 @@
   }
 
   .signup-form input,
-  .signup-form select {
+  .signup-form select,
+  .google-role-selector {
     margin-bottom: 12px;
     padding: 10px;
     font-size: 14px;
-    border-radius: 9px;
+    border-radius: 14px;
+    background-color: #f0fdff;
   }
 
   .toggle-password-icon {
@@ -191,6 +236,13 @@
   .signup-form button {
     padding: 10px;
     font-size: 14px;
+    border-radius: 14px;
+  }
+
+  .google-signup-button {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 14px;
   }
 }
 
@@ -208,15 +260,6 @@
   color: #333;
 }
 
-/* Style for the Google role select element */
-.google-role-selector {
-  margin-bottom: 15px;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 9px;
-}
-
 /* Style for the Google signup button */
 .google-signup-button {
   display: flex;
@@ -224,12 +267,12 @@
   justify-content: center;
   gap: 10px;
   padding: 13px;
-  background-color: #ffffff;
+  background-color: white;
   border: 1px solid #ccc;
   color: #333;
   font-size: 16px;
   font-weight: 500;
-  border-radius: 9px;
+  border-radius: 14px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }

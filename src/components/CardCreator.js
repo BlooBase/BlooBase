@@ -114,15 +114,9 @@ const CardCreator = () => {
     }
   };
 
-  const user = {
-    name: 'DigitalJosh',
-    avatarUrl: 'https://i.pravatar.cc/100',
-    avatarLocal: '/pfp.jpeg'
-  };
-
   return (
     <section className="card-creator-wrapper" style={{ backgroundColor }}>
-      <Navbar pageTitle="Card Creator" user={user} bgColor="#fff6fb" textColor="#165a9c" />
+      <Navbar pageTitle="Card Creator"  bgColor="#fff6fb" textColor="#165a9c" />
 
         {/* Notification bubble */}
       {statusMessage && (

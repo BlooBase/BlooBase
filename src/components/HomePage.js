@@ -106,10 +106,6 @@ const HomePage = () => {
       setFilteredProducts(result);
    }, [searchQuery, selectedCategory, products]);
 
-   const handleProductClick = (product) => {
-      console.log('Product clicked:', product);
-   };
-
    const handleHomepage = async () => {
       try {
          const role = await getUserRole();
@@ -239,15 +235,9 @@ const HomePage = () => {
                   <section
                      key={product.id}
                      className="product-item"
-                     onClick={() => handleProductClick(product)}
                      role="button"
                      tabIndex="0"
                      aria-label={`View details of ${product.name}`}
-                     onKeyPress={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                           handleProductClick(product);
-                        }
-                     }}
                   >
                      <section className="product-image-container">
                         {!imagesLoaded.products[product.id] && (
@@ -270,6 +260,12 @@ const HomePage = () => {
                         <h3 className="product-name">{product.name}</h3>
                         <p className="product-price">{product.price}</p>
                         <p className="store-name">{product.Seller}</p>
+                        <button
+                           className="add-to-cart-button"
+                           onClick={() => console.log(`Added ${product.name} to cart`)}
+                        >
+                           Add to Cart
+                        </button>
                      </section>
                   </section>
                ))}

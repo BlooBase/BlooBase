@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { retrieveProducts } from '../firebase/retrieveProducts'; // Import the product retrieval function
 import '../Cart.css';
 import cartTotal from './cartTotal'; // Import the cart total calculation function
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Cart = () => {
+  const navigate = useNavigate(); // Initialize navigation
   const [cartItems, setCartItems] = useState([]);
   const [imagesLoaded, setImagesLoaded] = useState({ products: {} });
 
@@ -38,6 +40,9 @@ const Cart = () => {
 
   // Convert price strings to numbers and calculate the total
   const total = cartTotal(cartItems);
+  const handleCheckout = () => {
+    navigate('/Checkout'); // Navigate to the Checkout Page
+  };
 
   return (
     <section className="cart-page">
@@ -75,7 +80,7 @@ const Cart = () => {
       <section className="cart-footer">
         <section className="cart-summary">
           <p className="cart-total">Total: <span>R{total.toFixed(2)}</span></p>
-          <button className="cart-checkout-button" onClick={() => alert('Proceeding to checkout...')}>
+          <button className="cart-checkout-button" onClick={handleCheckout}>
             Checkout
           </button>
         </section>

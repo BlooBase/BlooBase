@@ -1,0 +1,48 @@
+.checkout-page {
+    padding: 2rem;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+  }
+  
+  .checkout-header {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+  }
+  
+  .checkout-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+  }
+  
+  .card-element {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+  
+  .checkout-button {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .checkout-button:hover {
+    background-color: var(--highlight-color);
+    transform: translateY(-2px);
+  }
+  
+  .checkout-button:active {
+    transform: translateY(0);
+  }

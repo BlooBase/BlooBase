@@ -371,6 +371,17 @@ body {
   .search-bar-wrapper {
     margin: 20px 0;
   }
+
+  /* Prevent blue flash on mobile */
+  .add-to-cart-button:focus {
+    outline: none;
+  }
+
+  /* Add button press effect for mobile */
+  .add-to-cart-button:active {
+    transform: scale(0.95); /* Button press effect */
+    background-color: #124a7a; /* Slightly darker shade */
+  }
   
   .search-input-container {
     max-width: 90%;

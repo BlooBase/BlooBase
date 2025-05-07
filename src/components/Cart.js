@@ -12,6 +12,7 @@ const stripePromise = loadStripe('pk_test_51RM99WQ7pA4YvjQvIvIwI09MPnYHtckTQP8oa
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [imagesLoaded, setImagesLoaded] = useState({ products: {} });
+  const [orderType, setOrderType] = useState('Delivery'); // State for order type
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -81,9 +82,20 @@ const Cart = () => {
       </section>
       <section className="cart-footer">
         <section className="cart-checkout-card">
-          <p className="cart-total">Total: <span>R{total.toFixed(2)}</span></p>
+          <p className="cart-total">Total: <label>R{total.toFixed(2)}</label></p>
+          <fieldset className="order-type-dropdown">
+            <label htmlFor="order-type">Order Preference:</label>
+            <select
+              id="order-type"
+              value={orderType}
+              onChange={(e) => setOrderType(e.target.value)}
+            >
+              <option value="Delivery">Delivery</option>
+              <option value="Pickup">Pickup</option>
+            </select>
+          </fieldset>
           <Elements stripe={stripePromise}>
-            <CheckoutForm total={total} />
+            <CheckoutForm total={total} orderType={orderType} />
           </Elements>
         </section>
       </section>

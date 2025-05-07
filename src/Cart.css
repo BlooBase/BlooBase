@@ -260,3 +260,35 @@
     font-size: 0.8rem; /* Further reduce font size */
   }
 }
+
+.order-type-dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+  border: none; /* Remove the square border around the entire section */
+}
+
+.order-type-dropdown label {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+
+.order-type-dropdown select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+  border: 2px solid var(--primary-color); /* Thicker border for the dropdown */
+  border-radius: 12px; /* Rounded corners for a softer look */
+  background-color: #f9f9f9; /* Light background for a subtle effect */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.order-type-dropdown select:focus {
+  border-color: var(--highlight-color); /* Highlight border on focus */
+  outline: none; /* Remove default outline */
+}

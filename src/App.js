@@ -17,7 +17,6 @@ import CardCreator from './components/CardCreator';
 import SellerHomePage from './components/SellerHomepage';
 import SellerSettings from './components/SellerSettings';
 import Cart from './components/Cart'; // Import the Cart component
-import Checkout from './components/Checkout'; // Import the Checkout Page
 
 const App = () => {
   const { currentUser } = useAuth();
@@ -43,7 +42,6 @@ const App = () => {
       <Route path="/Artists" element={<Artists />} />
       <Route path="/Artists/:id" element={<Store />} />
       <Route path="/Cart" element={<Cart />} /> {/* Add the Cart route */}
-      <Route path="/Checkout" element={<Checkout />} />
       <Route path="/TermsAndConditions" element={<TermsAndConditions />} />
       <Route path="/CardCreator" element={<CardCreator />} />
     </Routes>

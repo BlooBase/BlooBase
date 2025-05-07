@@ -75,21 +75,70 @@
 
 .cart-footer {
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center align the content */
   margin-top: 2rem;
+  gap: 2rem; /* Add spacing between Total and CheckoutForm */
 }
 
-.cart-summary {
+.cart-checkout-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem;
+  padding: 2rem;
   border: 1px solid #ddd;
   border-radius: 12px;
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
+  margin: 0 auto; /* Center the card horizontally */
+  gap: 1.5rem; /* Add spacing between elements */
+}
+
+.cart-total {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.cart-total span {
+  color: var(--highlight-color);
+}
+
+.checkout-form {
+  width: 100%; /* Ensure the form takes up the full width */
+  max-width: 400px; /* Limit the width of the form */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Add spacing between form elements */
+}
+
+.card-element {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.checkout-button {
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.checkout-button:hover {
+  background-color: var(--highlight-color);
+  transform: translateY(-2px);
+}
+
+.checkout-button:active {
+  transform: translateY(0);
 }
 
 .cart-remove-button {
@@ -110,37 +159,6 @@
 }
 
 .cart-remove-button:active {
-  transform: translateY(0);
-}
-
-.cart-total {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
-  margin-bottom: 1rem;
-}
-
-.cart-total span {
-  color: var(--highlight-color);
-}
-
-.cart-checkout-button {
-  padding: 0.8rem 2rem;
-  font-size: 1rem;
-  background-color: var(--primary-color);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.cart-checkout-button:hover {
-  background-color: var(--highlight-color);
-  transform: translateY(-2px);
-}
-
-.cart-checkout-button:active {
   transform: translateY(0);
 }
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { retrieveProducts } from '../firebase/retrieveProducts'; // Import the product retrieval function
 import '../Cart.css';
 import cartTotal from './cartTotal'; // Import the cart total calculation function
+import Navbar from './Navbar';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -41,7 +42,7 @@ const Cart = () => {
 
   return (
     <section className="cart-page">
-      <h1 className="cart-header">Your Cart</h1>
+      <Navbar pageTitle="Cart" bgColor="#fff6fb" textColor="#165a9c"/>
       <section className="cart-products-grid">
         {cartItems.map((item) => (
           <section key={item.id} className="cart-product-item">

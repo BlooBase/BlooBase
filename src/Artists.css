@@ -43,8 +43,8 @@ body {
   display: flex;
   flex-direction: column;
   padding-top: 50px;
-  flex-direction: column;background-image: url('./assets/BGArtists.png');
-  
+  flex-direction: column;
+  background-image: url('./assets/BGArtists.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;

@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '../Navbar.css';
+import {auth} from '../firebase/firebase'; // Import auth from your firebase config
+import { getUserName } from '../firebase/firebase';
 
-const Navbar = ({ pageTitle, user, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
+const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const location = useLocation();
   const currentPath = location.pathname;
+  const [user, setUser] = useState({ name: '' });
+
+  useEffect(() => {
+      const fetchUserData = async () => {
+        const userName = await getUserName();
+        setUser({ name: userName });
+      };
+      fetchUserData();
+    }, []);
 
   return (
     <section
@@ -49,11 +60,34 @@ const Navbar = ({ pageTitle, user, bgColor = '#f8f9fa', textColor = '#343a40' })
 
             {optionsOpen && (
               <section className="dropdown-card">
-                {currentPath !== '/Account' && (
-                  <button className="dropdown-item">Account</button>
-                )}
-                {currentPath !== '/Cart' && (
-                  <button className="dropdown-item">Cart</button>
+                {auth.currentUser && currentPath !== '/Account' && (
+                    auth.Role = "Buyer" ? (
+                      <Link
+                        //to="/BuyerHomepage"  Gives Error Check Tafara
+                        className="dropdown-item"
+                        style={{ textDecoration: 'none', color: '#000000' }}
+                      >
+                        Account
+                      </Link>
+                    ) : auth.Role = "Seller" ? (
+                      <Link
+                        //to="/SellerHomepage"  Gives Error Check Tafara
+                        className="dropdown-item"
+                        style={{ textDecoration: 'none', color: '#000000' }}
+                      >
+                        Account
+                      </Link>
+                    ) : null
+                  )}
+
+                {auth.currentUser && currentPath !== '/Cart' && (
+                  <Link
+                    to="/Cart"
+                    className="dropdown-item"
+                    style={{ textDecoration: 'none', color: '#000000' }}
+                  >
+                    Cart
+                  </Link>
                 )}
                 {currentPath !== '/Artists' && (
                   <Link
@@ -64,7 +98,7 @@ const Navbar = ({ pageTitle, user, bgColor = '#f8f9fa', textColor = '#343a40' })
                     Artists
                   </Link>
                 )}
-                {currentPath !== '/CardCreator' && (
+                {auth.Role = "Seller" && auth.currentUser && currentPath !== '/CardCreator' && (
                   <Link
                     to="/CardCreator"
                     className="dropdown-item"
@@ -73,25 +107,58 @@ const Navbar = ({ pageTitle, user, bgColor = '#f8f9fa', textColor = '#343a40' })
                     Card Creator
                   </Link>
                 )}
-                {currentPath !== '/Orders' && (
+                {auth.currentUser && currentPath !== '/Orders' && (
+                  
                   <Link
-                    to="/CardCreator"
+                    to="/Orders"
                     className="dropdown-item"
                     style={{ textDecoration: 'none', color: '#000000' }}
                   >
                     Orders
                   </Link>
+              
                 )}
-                <button className="dropdown-item">Log Out</button>
+
+                {!auth.currentUser ? (
+                  <>
+                    <Link
+                    to="/LogIn"
+                    className="dropdown-item"
+                    style={{ textDecoration: 'none', color: '#000000' }}
+                  >
+                    Log In
+                  </Link>
+                    <Link
+                    to="/SignUp"
+                    className="dropdown-item"
+                    style={{ textDecoration: 'none', color: '#000000' }}
+                  >
+                    Sign Up
+                  </Link>
+                  </>
+                ) : (
+                  <Link
+                    to="/HomePage"
+                    className="dropdown-item"
+                    style={{ textDecoration: 'none', color: '#000000' }}
+                  >
+                    Log Out
+                  </Link>
+                )}
               </section>
             )}
 
-            <p className="username" style={{ color: textColor }}>{user.name}</p>
-            <img
-              className="user-avatar"
-              src={user.avatarLocal}
-              alt={`${user.name}'s avatar`}
-            />
+
+          {auth.currentUser && (
+            <>
+              <p className="username" style={{ color: textColor }}>{user.name}</p>
+              <img
+                className="user-avatar"
+                src={'/user_profile.png'}
+                alt={`${user.name}'s avatar`}
+              />
+            </>
+          )}
           </section>
         )}
       </section>

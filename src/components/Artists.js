@@ -84,12 +84,6 @@ const Products = () => {
 
   const genres = ['All', 'Drawing', 'Painting', 'Digital Art', 'Photography', 'Sculptures', 'Mixed media'];
 
-  const user = {
-    name: 'DigitalJosh',
-    avatarUrl: 'https://i.pravatar.cc/100',
-    avatarLocal: '/pfp.jpeg',
-  };
-
   useEffect(() => {
     const fetchArtists = async () => {
       // Step 1: Immediately show hardcoded products
@@ -134,7 +128,7 @@ const Products = () => {
 
   return (
     <section className="page-wrapper">
-      <Navbar pageTitle="Artists" user={user} bgColor="#fff6fb" textColor="#165a9c" />
+      <Navbar pageTitle="Artists" bgColor="#fff6fb" textColor="#165a9c" />
 
       <section className="products-container">
         <section className="search-bar-wrapper">

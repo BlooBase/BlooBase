@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { loginNormUser, GoogleLogin,getUserRole } from '../firebase/firebase';
 import '../Login.css';
@@ -9,6 +9,8 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   const navigate = useNavigate();
   const handleEmailLogin = async (e) => {
     e.preventDefault();
@@ -61,12 +63,32 @@ const Login = () => {
   };
   
   
-
+  useEffect(() => {
+      const logoImg = new Image();
+      logoImg.src = "/bloobase.png";
+      logoImg.onload = () => setImageLoaded(true);
   
+      // Preload eye icons too
+      const eyeImg = new Image();
+      eyeImg.src = "/eye.png";
+      
+      const crossedEyeImg = new Image();
+      crossedEyeImg.src = "/crossed-eye.png";
+    }, []);
+
 
   return (
     <main className="login-wrapper">
       <section className="login-container">
+      <header className="logo">
+          {!imageLoaded && <section className="image-placeholder">BlooBase</section>}
+          <img 
+            src="/bloobase.png" 
+            alt="BlooBase Logo" 
+            className={imageLoaded ? "fade-in" : "hidden"}
+            onLoad={() => setImageLoaded(true)}
+          />
+        </header>
         <h2 className="login-title">Welcome Back</h2>
         <p className="login-subtitle">Sign in to your account</p>
 
@@ -118,11 +140,11 @@ const Login = () => {
 
        
         <section className="divider">
-          <span>or continue with</span>
+          <p>or continue with</p>
         </section>
 
        
-       
+
         {error && <p className="error-message">{error}</p>}
 
         <button
@@ -149,7 +171,7 @@ const Login = () => {
   Continue with Google
 </button>
 
-        <p className="register-link">
+        <p className="register-link" >
           Don't have an account? <Link to="/Signup">Sign up</Link>
         </p>
       </section>

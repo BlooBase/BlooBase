@@ -7,6 +7,7 @@
   background-attachment: fixed; /* Make the background fixed while scrolling */
   background-position: center; /* Center the background image */
   min-height: 100vh; /* Ensure the page takes up the full viewport height */
+  padding-top: 90px;
 }
 
 .cart-header {

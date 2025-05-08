@@ -6,6 +6,8 @@ import Navbar from '../components/Navbar';
 import FloatingCart from '../components/FloatingCart';
 import '../Artists.css';
 import { retrieveSellers } from '../firebase/retrieveSellers';
+import { auth } from '../firebase/firebase'; // Import Firebase auth
+import { getUserRole } from '../firebase/firebase'; // Import the function to get the user's role
 
 // Hardcoded fallback products
 const hardcodedProducts = [
@@ -79,7 +81,8 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('All');
   const [cardLoaded, setCardLoaded] = useState({});
-
+  const [userRole, setUserRole] = useState(null); // State to store the user's role
+  
   const gridRef = useRef(null);
 
   const genres = ['All', 'Drawing', 'Painting', 'Digital Art', 'Photography', 'Sculptures', 'Mixed media'];
@@ -98,6 +101,17 @@ const Products = () => {
     };
   
     fetchArtists();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (auth.currentUser) {
+        const role = await getUserRole();
+        setUserRole(role);
+      }
+    };
+
+    fetchUserRole();
   }, []);
 
   const filteredProducts = products.filter(
@@ -199,7 +213,9 @@ const Products = () => {
         <section className="opacity-fade" />
       </section>
 
-      <FloatingCart />
+      {/* Conditionally render FloatingCart */}
+      {auth.currentUser && userRole === 'Buyer' && <FloatingCart />}
+
       <footer className="page-footer">© 2025. All Rights Reserved.</footer>
     </section>
   );

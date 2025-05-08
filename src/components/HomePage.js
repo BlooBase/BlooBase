@@ -4,15 +4,29 @@ import '../Home.css';
 import { Link } from 'react-router-dom';
 import { retrieveProducts } from '../firebase/retrieveProducts';
 import { getUserRole } from '../firebase/firebase';
+import { auth } from '../firebase/firebase'; // Import Firebase auth
 
 const HomePage = () => {
    const [optionsOpen, setOptionsOpen] = useState(false);
    const [products, setProducts] = useState([]);
    const [filteredProducts, setFilteredProducts] = useState([]);
    const [searchQuery, setSearchQuery] = useState('');
+   const [userRole, setUserRole] = useState(null); // State to store the user's role
    const [selectedCategory, setSelectedCategory] = useState('All');
    const optionsRef = useRef(null);
    const navigate = useNavigate();
+
+   // Fetch the user's role on component mount
+   useEffect(() => {
+      const fetchUserRole = async () => {
+         if (auth.currentUser) {
+            const role = await getUserRole();
+            setUserRole(role);
+         }
+      };
+
+      fetchUserRole();
+   }, []);
 
    // Categories similar to the genres in Artists page
    const categories = ['All', 'Clothing', 'Accessories', 'Crafts', 'Jewelry','Art', 'Furniture', 'Mixed media'];
@@ -260,12 +274,14 @@ const HomePage = () => {
                         <h3 className="product-name">{product.name}</h3>
                         <p className="product-price">{product.price}</p>
                         <p className="store-name">{product.Seller}</p>
-                        <button
-                           className="add-to-cart-button"
-                           onClick={() => console.log(`Added ${product.name} to cart`)}
-                        >
-                           Add to Cart
-                        </button>
+                        {auth.currentUser && userRole === 'Buyer' && (
+                           <button
+                              className="add-to-cart-button"
+                              onClick={() => console.log(`Added ${product.name} to cart`)}
+                           >
+                              Add to Cart
+                           </button>
+                        )}
                      </section>
                   </section>
                ))}

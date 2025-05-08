@@ -5,6 +5,8 @@ import Navbar from '../components/Navbar';
 import FloatingCart from '../components/FloatingCart';
 import { retrieveSellersCached } from '../firebase/retrieveSellersCached';
 import { retrieveSellerProducts } from '../firebase/retrieveSellerProducts';
+import { auth } from '../firebase/firebase'; // Import Firebase auth
+import { getUserRole } from '../firebase/firebase'; // Import the function to get the user's role
 
 const user = {
   name: 'DigitalJosh',
@@ -18,6 +20,7 @@ const Store = () => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
+  const [userRole, setUserRole] = useState(null); // State to store the user's role
 
   useEffect(() => {
     const fetchStores = async () => {
@@ -54,6 +57,17 @@ const Store = () => {
 
     fetchProducts();
   }, [id]);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (auth.currentUser) {
+        const role = await getUserRole();
+        setUserRole(role);
+      }
+    };
+
+    fetchUserRole();
+  }, []);
 
   if (loading) return <p>Loading...</p>;
 
@@ -107,12 +121,14 @@ const Store = () => {
                 <section className="product-info">
                   <h3 className="product-name">{product.name}</h3>
                   <p className="product-price">{product.price}</p>
-                  <button
-                    className="add-to-cart-button"
-                    onClick={() => console.log(`Added ${product.name} to cart`)}
-                  >
-                    Add to Cart
-                  </button>
+                  {auth.currentUser && userRole === 'Buyer' && (
+                      <button
+                        className="add-to-cart-button"
+                        onClick={() => console.log(`Added ${product.name} to cart`)}
+                      >
+                        Add to Cart
+                      </button>
+                    )}
                 </section>
               </section>
             ))}
@@ -123,7 +139,9 @@ const Store = () => {
 
       <section className="opacity-fade1" />
 
-      <FloatingCart />
+      {/* Conditionally render FloatingCart */}
+      {auth.currentUser && userRole === 'Buyer' && <FloatingCart />}
+
     </section>
   );
 };

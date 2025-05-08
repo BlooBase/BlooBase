@@ -1,5 +1,73 @@
 /* Base page styles */
+/* Product item container */
+.product-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Align content to the top */
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem; /* Adjust padding to reduce unnecessary space */
+  margin: 1rem; /* Add consistent spacing between products */
+  max-width: 300px; /* Optional: Limit the width of product cards */
+  width: 100%;
+}
 
+/* Product image container */
+.product-image-container {
+  width: 100%;
+  height: 200px; /* Set a fixed height for consistency */
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 0.5rem; /* Reduce space between image and info */
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the image fills the container */
+}
+
+/* Product info section */
+.product-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Align content to the top */
+  text-align: center;
+  width: 100%;
+  padding: 0; /* Remove unnecessary padding */
+}
+
+.product-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0.5rem 0; /* Adjust spacing around the name */
+}
+
+.product-price {
+  font-size: 1rem;
+  color: var(--highlight-color);
+  margin: 0.5rem 0; /* Adjust spacing around the price */
+}
+
+/* Add-to-cart button */
+.add-to-cart-button {
+  margin-top: 0.5rem; /* Reduce space above the button */
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-to-cart-button:hover {
+  background-color: var(--highlight-color);
+}
 .store-page {
     min-height: 110vh;
     padding-top: 100px;

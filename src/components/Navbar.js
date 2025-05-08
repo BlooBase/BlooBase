@@ -2,21 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '../Navbar.css';
 import {auth} from '../firebase/firebase'; // Import auth from your firebase config
-import { getUserName } from '../firebase/firebase';
+import { getUserName, getUserRole } from '../firebase/firebase';
 
 const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const location = useLocation();
   const currentPath = location.pathname;
   const [user, setUser] = useState({ name: '' });
+  const [userRole, setUserRole] = useState(null); // State to store the user's role
 
   useEffect(() => {
-      const fetchUserData = async () => {
+    const fetchUserData = async () => {
+      if (auth.currentUser) {
         const userName = await getUserName();
+        const role = await getUserRole();
         setUser({ name: userName });
-      };
-      fetchUserData();
-    }, []);
+        setUserRole(role);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   return (
     <section
@@ -80,7 +85,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                     ) : null
                   )}
 
-                {auth.currentUser && currentPath !== '/Cart' && (
+                {auth.currentUser && auth.Role === "Buyer" && currentPath !== '/Cart' && (
                   <Link
                     to="/Cart"
                     className="dropdown-item"
@@ -98,7 +103,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                     Artists
                   </Link>
                 )}
-                {auth.Role = "Seller" && auth.currentUser && currentPath !== '/CardCreator' && (
+                {auth.Role === "Seller" && auth.currentUser && currentPath !== '/CardCreator' && (
                   <Link
                     to="/CardCreator"
                     className="dropdown-item"
@@ -144,6 +149,21 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                   >
                     Log Out
                   </Link>
+                )}
+
+                {/* Add user role at the bottom of the dropdown */}
+                {auth.currentUser && userRole && (
+                  <p
+                    className="user-role-display"
+                    style={{
+                      fontSize: '0.9rem',
+                      color: '#888',
+                      textAlign: 'center',
+                      fontStyle: 'italic',
+                    }}
+                  >
+                    Logged in as: {userRole}
+                  </p>
                 )}
               </section>
             )}

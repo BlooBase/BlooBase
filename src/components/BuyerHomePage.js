@@ -5,13 +5,12 @@ import { getUserName } from '../firebase/firebase';
 
 const BuyerHomePage = () => {
   const [user, setUser] = useState({ name: '' });
-  const [purchases, setPurchases] = useState([]);
-  setPurchases([
-    { id: 1, name: 'Gold Ring', image: '/jewelry.jpg', status: 'Delivered' },
-    { id: 2, name: 'Art Print', image: '/art.jpg', status: 'In Transit' },
-  ])
-  const [imagesLoaded, setImagesLoaded] = useState({ purchases: {}, logo: false });
-
+    const [purchases, setPurchases] = useState([
+      { id: 1, name: 'Gold Ring', image: '/jewelry.jpg', status: 'Delivered' },
+      { id: 2, name: 'Art Print', image: '/art.jpg', status: 'In Transit' },
+    ]);
+    const [imagesLoaded, setImagesLoaded] = useState({ purchases: {}, logo: false });
+  
   // Async function to load user data
   useEffect(() => {
     const fetchUserData = async () => {

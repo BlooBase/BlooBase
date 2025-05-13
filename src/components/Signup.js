@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../Signup.css";
-import { Link} from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { isPasswordStrong } from "../checkPasswordStrength";
 import { signupNormUser,GoogleSignup, logout } from "../firebase/firebase";
 
 const Signup = () => {
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,18 +23,23 @@ const Signup = () => {
   const [passwordError,setPasswordError] =useState(""); 
   const[passwordMatch,setPasswordMatch]=useState("");
   const handleGoogleSignup = async () => {
-    if (!googleRole) {
-      alert("Please select a role before signing up with Google.");
-      return;
-    }
-    try {
-      await GoogleSignup(googleRole);
-      await logout();
-    } catch (error) {
-      console.error("Google signup failed:", error);
-      alert("Google signup failed. Please try again.");
-    }
-  };
+      if (!googleRole) {
+        alert("Please select a role before signing up with Google.");
+        return;
+      }
+      try {
+        const result = await GoogleSignup(googleRole);
+        if (result && result.success === false) {
+          alert(result.message || "Google signup failed. Please try again.");
+          return;
+        }
+        await logout();
+        navigate("/Login");
+      } catch (error) {
+        console.error("Google signup failed:", error);
+        alert("Google signup failed. Please try again.");
+      }
+    };
   
   // Preload images
   useEffect(() => {
@@ -68,8 +76,13 @@ const Signup = () => {
       return;
     }
     try {
-      await signupNormUser(formData);
+      const result = await signupNormUser(formData);
+      if (result && result.success === false) {
+        setPasswordError(result.message);
+        return;
+      }
       await logout();
+      navigate("/Login");
     } catch (error) {
       console.error("Signup failed:", error);
       alert("Signup failed. Please try again.");

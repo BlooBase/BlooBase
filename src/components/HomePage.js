@@ -3,7 +3,11 @@ import '../Home.css';
 import { retrieveProducts } from '../firebase/retrieveProducts';
 import { getUserRole } from '../firebase/firebase';
 import { auth } from '../firebase/firebase'; // Import Firebase auth
+import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../components/Navbar';
+import FloatingCart from '../components/FloatingCart';
+import { addToCart } from '../firebase/addToCart';
+import { toast } from 'react-toastify';
 
 const HomePage = () => {
    const [products, setProducts] = useState([]);
@@ -167,7 +171,14 @@ const HomePage = () => {
                         {auth.currentUser && userRole === 'Buyer' && (
                            <button
                               className="add-to-cart-button"
-                              onClick={() => console.log(`Added ${product.name} to cart`)}
+                              onClick={async () => {
+                                 try {
+                                    await addToCart(product);
+                                    toast.success(`Added ${product.name} to cart`);
+                                 } catch (error) {
+                                    toast.error("Failed to add to cart: " + error.message);
+                                 }
+                              }}
                            >
                               Add to Cart
                            </button>
@@ -177,6 +188,9 @@ const HomePage = () => {
                ))}
             </section>
          </section>
+
+         {/* Conditionally render FloatingCart */}
+         {auth.currentUser && userRole === 'Buyer' && <FloatingCart />}
 
          <footer className="footer-text">
             © 2025 BlooBase. All rights reserved.

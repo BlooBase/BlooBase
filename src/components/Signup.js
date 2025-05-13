@@ -23,23 +23,24 @@ const Signup = () => {
   const [passwordError,setPasswordError] =useState(""); 
   const[passwordMatch,setPasswordMatch]=useState("");
   const handleGoogleSignup = async () => {
-      if (!googleRole) {
-        alert("Please select a role before signing up with Google.");
-        return;
+    if (!googleRole) {
+      alert("Please select a role before signing up with Google.");
+      return;
+    }
+    try {
+      const result = await GoogleSignup(googleRole);
+      if (!result || result.success === false) {
+        alert(result?.message || "Google signup failed. Please try again.");
+        return; // Stop here if signup failed
       }
-      try {
-        const result = await GoogleSignup(googleRole);
-        if (result && result.success === false) {
-          alert(result.message || "Google signup failed. Please try again.");
-          return;
-        }
-        await logout();
-        navigate("/Login");
-      } catch (error) {
-        console.error("Google signup failed:", error);
-        alert("Google signup failed. Please try again.");
-      }
-    };
+      await logout();
+      navigate("/Login");
+    } catch (error) {
+      console.error("Google signup failed:", error);
+      alert("Google signup failed. Please try again.");
+      return; // Stop here if error thrown
+    }
+  };
   
   // Preload images
   useEffect(() => {
@@ -64,28 +65,29 @@ const Signup = () => {
 // shows error messages if the passswords dont match or the password is weak
   const handleSignup = async (e) => {
     e.preventDefault();
-   setPasswordError("");
-   setPasswordMatch("");
-   
+    setPasswordError("");
+    setPasswordMatch("");
+
     if (!isPasswordStrong(formData.password)) {
-    setPasswordError("Password must be at least 8 characters including a capital letter,a number and a special character.");
-    return;
+      setPasswordError("Password must be at least 8 characters including a capital letter,a number and a special character.");
+      return;
     }
-    if (formData.password!==formData.confirmPassword){
+    if (formData.password !== formData.confirmPassword) {
       setPasswordMatch("Passwords do not match");
       return;
     }
     try {
       const result = await signupNormUser(formData);
-      if (result && result.success === false) {
-        setPasswordError(result.message);
-        return;
+      if (!result || result.success === false) {
+        setPasswordError(result?.message || "Signup failed. Please try again.");
+        return; // Stop here if signup failed
       }
       await logout();
       navigate("/Login");
     } catch (error) {
       console.error("Signup failed:", error);
       alert("Signup failed. Please try again.");
+      return; // Stop here if error thrown
     }
   };
   

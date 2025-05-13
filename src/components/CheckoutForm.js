@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import 'react-toastify/dist/ReactToastify.css'; // Import the toast styles
 
@@ -36,7 +36,6 @@ const CheckoutForm = () => {
           Pay Now
         </button>
       </form>
-      <ToastContainer />
     </>
   );
 };

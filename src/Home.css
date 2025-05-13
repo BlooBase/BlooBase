@@ -23,10 +23,17 @@ body {
 }
 
 .homepage {
-  background-image: url('./assets/BGArtists.png'); /* Background for entire homepage */
+  background-image: url('./assets/BG0.jpg'); /* Background for entire homepage */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  padding-top: 20px;
+  flex: 1; /* Ensures wrapper takes up remaining height */
+  display: flex;
+  flex-direction: column;
+  background-attachment: fixed;
+  background-position: center;
+  position: relative;  /* Added this to allow absolute positioning of the blur */
 }
 
 .header-section {

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../Navbar.css';
 import {auth} from '../firebase/firebase'; // Import auth from your firebase config
 import { getUserName, getUserRole } from '../firebase/firebase';
+import {logout} from "../firebase/firebase"; // Adjust path if needed
 
 const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
   const [optionsOpen, setOptionsOpen] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
   const [user, setUser] = useState({ name: '' });
@@ -23,6 +25,15 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
     };
     fetchUserData();
   }, []);
+
+  const handleLogout = async () => {
+      try {
+        await logout();
+        navigate("/");
+      } catch (error) {
+        alert("Failed to log out: " + error.message);
+      }
+    };
 
   return (
     <section
@@ -66,27 +77,28 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
 
             {optionsOpen && (
               <section className="dropdown-card">
-                {auth.currentUser && currentPath !== '/Account' && (
-                    auth.Role = "Buyer" ? (
-                      <Link
-                        //to="/BuyerHomepage"  Gives Error Check Tafara
-                        className="dropdown-item"
-                        style={{ textDecoration: 'none', color: '#000000' }}
-                      >
-                        Account
-                      </Link>
-                    ) : auth.Role = "Seller" ? (
-                      <Link
-                        //to="/SellerHomepage"  Gives Error Check Tafara
-                        className="dropdown-item"
-                        style={{ textDecoration: 'none', color: '#000000' }}
-                      >
-                        Account
-                      </Link>
-                    ) : null
-                  )}
+                {auth.currentUser && (
+                  (userRole === "Buyer" && currentPath !== '/BuyerHomepage') ? (
+                    <Link
+                      to="/BuyerHomepage"
+                      className="dropdown-item"
+                      style={{ textDecoration: 'none', color: '#000000' }}
+                    >
+                      Account
+                    </Link>
+                  ) : (userRole === "Seller" && currentPath !== '/SellerHomepage') ? (
+                    <Link
+                      to="/SellerHomepage"
+                      className="dropdown-item"
+                      style={{ textDecoration: 'none', color: '#000000' }}
+                    >
+                      Account
+                    </Link>
+                  ) : null
+                )}
 
-                {auth.currentUser && auth.Role === "Buyer" && currentPath !== '/Cart' && (
+
+                {auth.currentUser && userRole === "Buyer" && currentPath !== '/Cart' && (
                   <Link
                     to="/Cart"
                     className="dropdown-item"
@@ -104,7 +116,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                     Artists
                   </Link>
                 )}
-                {auth.Role === "Seller" && auth.currentUser && currentPath !== '/CardCreator' && (
+                {userRole === "Seller" && auth.currentUser && currentPath !== '/CardCreator' && (
                   <Link
                     to="/CardCreator"
                     className="dropdown-item"
@@ -113,7 +125,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                     Card Creator
                   </Link>
                 )}
-                {auth.currentUser && currentPath !== '/Orders' && (
+                {userRole === "Buyer" && auth.currentUser && currentPath !== '/Orders' && (
                   
                   <Link
                     to="/Orders"
@@ -145,6 +157,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                 ) : (
                   <Link
                     to="/HomePage"
+                    onClick={handleLogout}
                     className="dropdown-item"
                     style={{ textDecoration: 'none', color: '#000000' }}
                   >

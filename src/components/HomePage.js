@@ -1,20 +1,16 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState} from 'react';
 import '../Home.css';
-import { Link } from 'react-router-dom';
 import { retrieveProducts } from '../firebase/retrieveProducts';
 import { getUserRole } from '../firebase/firebase';
 import { auth } from '../firebase/firebase'; // Import Firebase auth
+import Navbar from '../components/Navbar';
 
 const HomePage = () => {
-   const [optionsOpen, setOptionsOpen] = useState(false);
    const [products, setProducts] = useState([]);
    const [filteredProducts, setFilteredProducts] = useState([]);
    const [searchQuery, setSearchQuery] = useState('');
    const [userRole, setUserRole] = useState(null); // State to store the user's role
    const [selectedCategory, setSelectedCategory] = useState('All');
-   const optionsRef = useRef(null);
-   const navigate = useNavigate();
 
    // Fetch the user's role on component mount
    useEffect(() => {
@@ -32,28 +28,11 @@ const HomePage = () => {
    const categories = ['All', 'Clothing', 'Accessories', 'Crafts', 'Jewelry','Art', 'Furniture', 'Mixed media'];
 
    // Effect to close options dropdown when clicking outside
-   useEffect(() => {
-      function handleClickOutside(event) {
-         if (optionsRef.current && !optionsRef.current.contains(event.target)) {
-            setOptionsOpen(false);
-         }
-      }
-
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-         document.removeEventListener("mousedown", handleClickOutside);
-      };
-   }, [optionsRef]);
 
    const [imagesLoaded, setImagesLoaded] = useState({
       logo: false,
       products: {}
    });
-
-   const user = {
-      name: "Admin",
-      avatarLocal: "/user_profile.png",
-   };
 
    useEffect(() => {
       const fetchProducts = async () => {
@@ -120,103 +99,14 @@ const HomePage = () => {
       setFilteredProducts(result);
    }, [searchQuery, selectedCategory, products]);
 
-   const handleHomepage = async () => {
-      try {
-         const role = await getUserRole();
-         if (role === "Buyer") {
-            navigate("/BuyerHomepage");
-         } else if (role === "Seller") {
-            navigate("/SellerHomepage");
-         } else if (role === "Admin") {
-            navigate("/Dashboard");
-         } else {
-            navigate("/");
-         }
-      } catch (error) {
-         console.error("Error fetching user role:", error);
-         alert("Unable to determine user role. Please try again.");
-      }
-   };
-
+   
    return (
       <main className="homepage">
          <section id="bg-preload"></section>
-         <header className="navbar">
-            <section className="nav-left">
-               <Link to="/" className="site-title" style={{ textDecoration: "none" }}>
-                  <section style={{ display: "flex", alignItems: "center", gap: "0.9rem" }}>
-                     <img
-                        src="/bloobase.png"
-                        alt="BlooBase logo"
-                        style={{ height: "32px", width: "30px", objectFit: "contain", marginLeft: "19px" }}
-                     />
-                     <h2 style={{ color: "#343a40", margin: 0 }}>BlooBase</h2>
-                  </section>
-               </Link>
-            </section>
-
-            <section className="nav-center">
-               
-            </section>
-
-            <section className="nav-right" ref={optionsRef}>
-               <section className="user-info">
-                  <section
-                     className={`options-button ${optionsOpen ? "selected" : ""}`}
-                     onClick={() => setOptionsOpen((prev) => !prev)}
-                  >
-                     <img
-                        className="options"
-                        src="/options-lines.png"
-                        alt="Options Button"
-                     />
-                  </section>
-
-                  <img
-                     className="user-avatar"
-                     src={user.avatarLocal}
-                     alt={`${user.name}'s avatar`}
-                  />
-
-                  {optionsOpen && (
-                     <section className="dropdown-card-home">
-                        <button
-                           onClick={() => navigate("/Login")}
-                           className="dropdown-item"
-                           style={{ textDecoration: "none", color: "#000000", background: "none", border: "none", cursor: "pointer" }}
-                        >
-                           Login
-                        </button>
-                        <button
-                           onClick={() => navigate("/Signup")}
-                           className="dropdown-item"
-                           style={{ textDecoration: "none", color: "#000000", background: "none", border: "none", cursor: "pointer" }}
-                        >
-                           Sign up
-                        </button>
-                        <button
-                           onClick={() => navigate("/Artists")}
-                           className="dropdown-item"
-                           style={{ textDecoration: "none", color: "#000000", background: "none", border: "none", cursor: "pointer" }}
-                        >
-                           Artists
-                        </button>
-                        <button
-                           onClick={handleHomepage}
-                           className="dropdown-item"
-                           style={{ textDecoration: "none", color: "#000000", background: "none", border: "none", cursor: "pointer" }}
-                        >
-                           Homepage
-                        </button>
-                     </section>
-                  )}
-               </section>
-            </section>
-         </header>
+         <Navbar pageTitle="Explore" bgColor="#fff6fb" textColor="#165a9c" />
 
          <section className="products-section">
-            <h2 className="products-heading">Browse Products</h2>
-            
+   
             {/* Search bar with internal icon */}
             <section className="search-bar-wrapper">
                <section className="search-input-container">

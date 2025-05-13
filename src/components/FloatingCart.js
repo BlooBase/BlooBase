@@ -3,6 +3,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import '../FloatingCart.css';
 import { Link } from 'react-router-dom';
 
+
+//this page is responsible for making the card float around based on the movement of the mouse
+
 const clampPosition = (top, left, cartWidth = 100, cartHeight = 100) => {
   const maxLeft = window.innerWidth - cartWidth;
   const maxTop = window.innerHeight - cartHeight;

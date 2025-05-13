@@ -99,7 +99,16 @@
   border-color: #030099;
   outline: none;
 }
-
+.password-error {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+.password-match{
+   color: red;
+  font-size: 0.85rem;
+  margin-top: -10px;
+}
 /* Container for password input with toggle icon */
 /* ✅ SHARED INPUT GROUP STYLES */
 .input-group {

@@ -8,6 +8,8 @@ import { retrieveSellerProducts } from '../firebase/retrieveSellerProducts';
 import { auth } from '../firebase/firebase'; // Import Firebase auth
 import { getUserRole } from '../firebase/firebase'; // Import the function to get the user's role
 
+
+//mock data
 const user = {
   name: 'DigitalJosh',
   avatarUrl: 'https://i.pravatar.cc/100',

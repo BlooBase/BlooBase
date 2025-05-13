@@ -111,8 +111,7 @@ const getCollectionSize= async(name)=>{
 
 const signupNormUser = ({ name, email, password, confirmPassword, role }) => {
   if (password !== confirmPassword) {
-    alert("Passwords do not match");
-    return;
+    return { success: false, message: "Passwords do not match" };
   }
 
   createUserWithEmailAndPassword(auth, email, password)

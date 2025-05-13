@@ -3,6 +3,8 @@ import "../Settings.css";
 import { Link, useNavigate } from "react-router-dom";
 import {updateCredentials,deleteAccount,logout} from "../firebase/firebase"; // Adjust path if needed
 
+
+//this page allows the artisans to make changes or delete their profiles
 const SellerSettings = () => {
   const navigate = useNavigate();
   const [imagesLoaded, setImagesLoaded] = useState({ logo: false });

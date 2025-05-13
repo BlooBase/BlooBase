@@ -1,3 +1,4 @@
+//function for calculating the cart total
 function cartTotal(cartItems) {
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
       return 0;

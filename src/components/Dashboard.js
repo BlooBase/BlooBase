@@ -191,7 +191,7 @@ const Dashboard = () => {
             <p className="stat-value">{Orders? Orders:"Loading.."}</p>
           </article>
         </section>
-
+   {/*this is mock data for testing purposes*/}
         <section className="overview-row">
           <aside className="user-card">
             <h3>New Stores</h3>

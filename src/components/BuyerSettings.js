@@ -41,7 +41,7 @@ const BuyerSettings = () => {
       newpassword: "",
     });
   };
-
+// allows user to delete their account
   const handleDeleteAccount = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete your account?"

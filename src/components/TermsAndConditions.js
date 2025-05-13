@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 const TermsAndConditions = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  //this is a page explain the T&C's of BlooBase,it has the CSS styling on the same page too
   useEffect(() => {
     const logoImg = new Image();
     logoImg.src = "/bloobase.png";

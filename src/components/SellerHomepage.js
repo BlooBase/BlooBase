@@ -33,6 +33,7 @@ const SellerHomePage = () => {
         }));
     });
   }, [stores]);
+    //mock data for testing
   useEffect(() => {
     setStores([
       { id: 1, name: 'Detour Potters', location: 'Fish' , image: '../detourPotters.png' },

@@ -2,12 +2,13 @@ module.exports = {
   rootDir: './',
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/multiply.js',
-    'src/sum.js',
+     'src/checkPasswordStrength.js',
+    'src/firebase/uploadImage.js',
     'src/cart_test.js',
     'src/checkoutTotal.js',
     'src/clearCart.js',
     'src/Api_GET.js',
+     'src/components/Login.js',
     '!**/node_modules/**',
     '!src/**/*.test.js', // Exclude test files from coverage
     '!src/reportWebVitals.js', // Exclude reportWebVitals

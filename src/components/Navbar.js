@@ -11,6 +11,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
   const [user, setUser] = useState({ name: '' });
   const [userRole, setUserRole] = useState(null); // State to store the user's role
 
+  //this is a navbar component that is called throughout the web app
   useEffect(() => {
     const fetchUserData = async () => {
       if (auth.currentUser) {
@@ -123,7 +124,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                   </Link>
               
                 )}
-
+      {/*the dropdown options change based on the page you are currently on */}
                 {!auth.currentUser ? (
                   <>
                     <Link

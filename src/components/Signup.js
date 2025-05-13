@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "../Signup.css";
 import { Link} from "react-router-dom";
+import { isPasswordStrong } from "../checkPasswordStrength";
 import { signupNormUser,GoogleSignup, logout } from "../firebase/firebase";
+
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -15,7 +17,8 @@ const Signup = () => {
   const[showConfirmPassword,setConfirmShowPassword] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [googleRole, setGoogleRole] = useState("");
-  //const navigate =useNavigate()
+  const [passwordError,setPasswordError] =useState(""); 
+  const[passwordMatch,setPasswordMatch]=useState("");
   const handleGoogleSignup = async () => {
     if (!googleRole) {
       alert("Please select a role before signing up with Google.");
@@ -50,9 +53,20 @@ const Signup = () => {
       [e.target.name]: e.target.value
     });
   };
-
+// shows error messages if the passswords dont match or the password is weak
   const handleSignup = async (e) => {
     e.preventDefault();
+   setPasswordError("");
+   setPasswordMatch("");
+   
+    if (!isPasswordStrong(formData.password)) {
+    setPasswordError("Password must be at least 8 characters including a capital letter,a number and a special character.");
+    return;
+    }
+    if (formData.password!==formData.confirmPassword){
+      setPasswordMatch("Passwords do not match");
+      return;
+    }
     try {
       await signupNormUser(formData);
       await logout();
@@ -145,6 +159,7 @@ const Signup = () => {
       )}
     </section>
   </section>
+  {passwordError && <p className="password-error">{passwordError}</p>}
 </section>
 
 <section className="input-group password-group">
@@ -158,6 +173,7 @@ const Signup = () => {
       onChange={handleChange}
       required
     />
+  {/*using svg instead of images for faster loading time*/}
     <section
       className="toggle-password-icon"
       onClick={toggleConfirmPasswordVisibility}
@@ -176,6 +192,7 @@ const Signup = () => {
       )}
     </section>
   </section>
+   {passwordMatch && <p className="password-match">{passwordMatch}</p>}
 </section>
 
 

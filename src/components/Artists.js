@@ -27,7 +27,7 @@ const hardcodedProducts = [
     description: "Author and artist of 'Goodnight Punpun', 'Solanin' and 'A Girl On the Shore'.",
     color: '#ffffff',
     textColor: '#598EA0',
-    genre: 'Drawing',
+    genre: 'Digital Art',
   },
   {
     id: 'h3',
@@ -36,7 +36,7 @@ const hardcodedProducts = [
     description: 'Korean photographer, director and artisan, @chogiseok',
     color: '#e7e4d7',
     textColor: '#141118',
-    genre: 'Photography',
+    genre: 'Mixed media',
   },
   {
     id: 'h4',
@@ -45,7 +45,7 @@ const hardcodedProducts = [
     description: "Artist of 'One Punch Man' and 'Eyeshield 21'.",
     color: '#1e1e1e',
     textColor: '#ffffff',
-    genre: 'Drawing',
+    genre: 'Digital Art',
   },
   {
     id: 'h5',
@@ -54,7 +54,7 @@ const hardcodedProducts = [
     description: 'Digital Media editor, artist and director, @CultureStudios',
     color: '#8C2C54',
     textColor: '#FFDFE2',
-    genre: 'Digital Art',
+    genre: 'Mixed media',
   },
   {
     id: 'h6',
@@ -72,7 +72,7 @@ const hardcodedProducts = [
     description: 'Physical inking artist and illustrator',
     color: '#ffffff',
     textColor: '#181818',
-    genre: 'Photography',
+    genre: 'Mixed media',
   },
 ];
 
@@ -85,7 +85,7 @@ const Products = () => {
   
   const gridRef = useRef(null);
 
-  const genres = ['All', 'Drawing', 'Painting', 'Digital Art', 'Photography', 'Sculptures', 'Mixed media'];
+  const genres = ['All','Digital Art', 'Clothing', 'Accessories', 'Crafts', 'Jewelry','Art', 'Furniture', 'Mixed media'];
 
   useEffect(() => {
     const fetchArtists = async () => {

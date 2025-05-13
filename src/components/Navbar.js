@@ -37,18 +37,18 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
 
   return (
     <section
-      className="navbar"
+      className="navbar-container"
       style={{
         backgroundColor: bgColor,
         color: textColor,
         boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)'
       }}
     >
-      <section className="nav-left">
-        <Link to="/" className="site-title" style={{ textDecoration: 'none' }}>
+      <section className="navbar-nav-left">
+        <Link to="/" className="navbar-site-title" style={{ textDecoration: 'none' }}>
           <section style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <img
-              className="logo-img"
+              className="navbar-logo-img"
               src="/bloobase.png"
               alt="BlooBase logo"
             />
@@ -57,31 +57,31 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
         </Link>
       </section>
 
-      <section className="nav-center">
-        <h3 className="page-title" style={{ color: textColor }}>{pageTitle}</h3>
+      <section className="navbar-nav-center">
+        <h3 className="navbar-page-title" style={{ color: textColor }}>{pageTitle}</h3>
       </section>
 
-      <section className="nav-right">
+      <section className="navbar-nav-right">
         {user && (
-          <section className="user-info">
+          <section className="navbar-user-info">
             <section
-              className={`options-button ${optionsOpen ? 'selected' : ''}`}
+              className={`navbar-options-button ${optionsOpen ? 'navbar-selected' : ''}`}
               onClick={() => setOptionsOpen(prev => !prev)}
             >
               <img
-                className="options"
+                className="navbar-options"
                 src="/options-lines.png"
                 alt="Options Button"
               />
             </section>
 
             {optionsOpen && (
-              <section className="dropdown-card">
+              <section className="navbar-dropdown-card">
                 {auth.currentUser && (
                   (userRole === "Buyer" && currentPath !== '/BuyerHomepage') ? (
                     <Link
                       to="/BuyerHomepage"
-                      className="dropdown-item"
+                      className="navbar-dropdown-item"
                       style={{ textDecoration: 'none', color: '#000000' }}
                     >
                       Account
@@ -89,7 +89,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                   ) : (userRole === "Seller" && currentPath !== '/SellerHomepage') ? (
                     <Link
                       to="/SellerHomepage"
-                      className="dropdown-item"
+                      className="navbar-dropdown-item"
                       style={{ textDecoration: 'none', color: '#000000' }}
                     >
                       Account
@@ -101,7 +101,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                 {auth.currentUser && userRole === "Buyer" && currentPath !== '/Cart' && (
                   <Link
                     to="/Cart"
-                    className="dropdown-item"
+                    className="navbar-dropdown-item"
                     style={{ textDecoration: 'none', color: '#000000' }}
                   >
                     Cart
@@ -110,7 +110,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                 {currentPath !== '/Artists' && (
                   <Link
                     to="/Artists"
-                    className="dropdown-item"
+                    className="navbar-dropdown-item"
                     style={{ textDecoration: 'none', color: '#000000' }}
                   >
                     Artists
@@ -119,7 +119,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                 {userRole === "Seller" && auth.currentUser && currentPath !== '/CardCreator' && (
                   <Link
                     to="/CardCreator"
-                    className="dropdown-item"
+                    className="navbar-dropdown-item"
                     style={{ textDecoration: 'none', color: '#000000' }}
                   >
                     Card Creator
@@ -129,7 +129,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                   
                   <Link
                     to="/Orders"
-                    className="dropdown-item"
+                    className="navbar-dropdown-item"
                     style={{ textDecoration: 'none', color: '#000000' }}
                   >
                     Orders
@@ -141,14 +141,14 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                   <>
                     <Link
                     to="/LogIn"
-                    className="dropdown-item"
+                    className="navbar-dropdown-item"
                     style={{ textDecoration: 'none', color: '#000000' }}
                   >
                     Log In
                   </Link>
                     <Link
                     to="/SignUp"
-                    className="dropdown-item"
+                    className="navbar-dropdown-item"
                     style={{ textDecoration: 'none', color: '#000000' }}
                   >
                     Sign Up
@@ -158,7 +158,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                   <Link
                     to="/HomePage"
                     onClick={handleLogout}
-                    className="dropdown-item"
+                    className="navbar-dropdown-item"
                     style={{ textDecoration: 'none', color: '#000000' }}
                   >
                     Log Out
@@ -185,9 +185,9 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
 
           {auth.currentUser && (
             <>
-              <p className="username" style={{ color: textColor }}>{user.name}</p>
+              <p className="navbar-username" style={{ color: textColor }}>{user.name}</p>
               <img
-                className="user-avatar"
+                className="navbar-user-avatar"
                 src={'/user_profile.png'}
                 alt={`${user.name}'s avatar`}
               />

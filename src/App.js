@@ -17,6 +17,8 @@ import CardCreator from './components/CardCreator';
 import SellerHomePage from './components/SellerHomepage';
 import SellerSettings from './components/SellerSettings';
 import Cart from './components/Cart'; // Import the Cart component
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   const { currentUser } = useAuth();
@@ -26,6 +28,7 @@ const App = () => {
   };
 
   return (
+    <>
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/Homepage" element={<HomePage />} />
@@ -45,6 +48,8 @@ const App = () => {
       <Route path="/TermsAndConditions" element={<TermsAndConditions />} />
       <Route path="/CardCreator" element={<CardCreator />} />
     </Routes>
+          <ToastContainer />
+    </>
   );
 };
 

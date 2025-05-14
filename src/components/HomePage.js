@@ -3,8 +3,12 @@ import '../Home.css';
 import { retrieveProducts } from '../firebase/retrieveProducts';
 import { getUserRole } from '../firebase/firebase';
 import { auth } from '../firebase/firebase'; // Import Firebase auth
+import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../components/Navbar';
 import { Link } from 'react-router-dom';
+import FloatingCart from '../components/FloatingCart';
+import { addToCart } from '../firebase/addToCart';
+import { toast } from 'react-toastify';
 
 // Hardcoded fallback products (Artist Cards)
 const hardcodedProducts = [
@@ -268,12 +272,18 @@ useEffect(() => {
               <p className="store-name-1">{product.Seller}</p>
               {auth.currentUser && userRole === 'Buyer' && (
                 <button
-                  className="add-to-cart-button-1"
-                  onClick={() => console.log(`Added ${product.name} to cart`)}
-                >
-                  
-                  Add to Cart
-                </button>
+                className="add-to-cart-button-1"
+                onClick={async () => {
+                   try {
+                   await addToCart(product);
+                   toast.success(`Added ${product.name} to cart`);
+                   } catch (error) {
+                   toast.error("Failed to add to cart: " + error.message);
+                   }
+                }}
+             >
+                Add to Cart
+             </button>
               )}
             </section>
           </section>
@@ -282,6 +292,9 @@ useEffect(() => {
 
       <section className="opacity-fade-2" />
     </section>
+
+     {/* Conditionally render FloatingCart */}
+     {auth.currentUser && userRole === 'Buyer' && <FloatingCart />}
 
     <footer className="page-footer-1">© 2025 BlooBase. All rights reserved.</footer>
   </section>

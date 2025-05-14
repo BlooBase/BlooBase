@@ -7,7 +7,9 @@ import { retrieveSellersCached } from '../firebase/retrieveSellersCached';
 import { retrieveSellerProducts } from '../firebase/retrieveSellerProducts';
 import { auth } from '../firebase/firebase'; // Import Firebase auth
 import { getUserRole } from '../firebase/firebase'; // Import the function to get the user's role
-
+import 'react-toastify/dist/ReactToastify.css';
+import { addToCart } from '../firebase/addToCart';
+import { toast } from 'react-toastify';
 
 //mock data
 const user = {
@@ -124,13 +126,20 @@ const Store = () => {
                   <h3 className="product-name">{product.name}</h3>
                   <p className="product-price">{product.price}</p>
                   {auth.currentUser && userRole === 'Buyer' && (
-                      <button
-                        className="add-to-cart-button"
-                        onClick={() => console.log(`Added ${product.name} to cart`)}
-                      >
-                        Add to Cart
-                      </button>
-                    )}
+                    <button
+                      className="add-to-cart-button"
+                      onClick={async () => {
+                        try {
+                          await addToCart(product);
+                          toast.success(`Added ${product.name} to cart`);
+                        } catch (error) {
+                          toast.error("Failed to add to cart: " + error.message);
+                        }
+                      }}
+                    >
+                      Add to Cart
+                    </button>
+                  )}
                 </section>
               </section>
             ))}
@@ -143,7 +152,7 @@ const Store = () => {
 
       {/* Conditionally render FloatingCart */}
       {auth.currentUser && userRole === 'Buyer' && <FloatingCart />}
-
+      
     </section>
   );
 };

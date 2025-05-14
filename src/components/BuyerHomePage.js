@@ -1,100 +1,73 @@
+// BuyerHomePage.js
 import React, { useEffect, useState } from 'react';
-import '../Home.css'; // Reuse existing styles
 import { Link } from 'react-router-dom';
 import { getUserName } from '../firebase/firebase';
+import '../BuyerHome.css';
 
 const BuyerHomePage = () => {
   const [user, setUser] = useState({ name: '' });
-  const [purchases, setPurchases] = useState([]);
-  
-  const [imagesLoaded, setImagesLoaded] = useState({ purchases: {}, logo: false });
+  const [orders, setOrders] = useState([]);
+  const [imageStatus, setImageStatus] = useState({});
 
-  // Async function to load user data
   useEffect(() => {
-    const fetchUserData = async () => {
-      const userName = await getUserName(); // Fetch the user's name asynchronously
-      setUser({ name: userName });
+    const fetchUser = async () => {
+      const name = await getUserName();
+      setUser({ name });
     };
-    fetchUserData();
-  }, []);
+    fetchUser();
 
-  useEffect(() => {
-    const logoImg = new Image();
-    logoImg.src = "/bloobase.png";
-    logoImg.onload = () => setImagesLoaded(prev => ({ ...prev, logo: true }));
-    setPurchases([
+    const dummyOrders = [
       { id: 1, name: 'Gold Ring', image: '/jewelry.jpg', status: 'Delivered' },
       { id: 2, name: 'Art Print', image: '/art.jpg', status: 'In Transit' },
-    ])
-    purchases.forEach(item => {
+    ];
+    setOrders(dummyOrders);
+
+    dummyOrders.forEach((order) => {
       const img = new Image();
-      img.src = item.image;
-      img.onload = () =>
-        setImagesLoaded(prev => ({
-          ...prev,
-          purchases: { ...prev.purchases, [item.id]: true },
-        }));
+      img.src = order.image;
+      img.onload = () => {
+        setImageStatus((prev) => ({ ...prev, [order.id]: true }));
+      };
     });
-  }, [purchases]);
+  }, []);
 
   return (
-    <main className="homepage">
-      <section className="header-section">
-        <section className="homepage-container">
-          <header className="logo-header">
-            {!imagesLoaded.logo && <div className="logo-placeholder">BlooBase</div>}
-            <img
-              src="/bloobase.png"
-              alt="BlooBase Logo"
-              className={`ghost-logo ${imagesLoaded.logo ? 'fade-in' : 'hidden'}`}
-              loading="eager"
-            />
-          </header>
+    <div className="buyer-home">
+      <header className="buyer-header">
+        <img src="/bloobase.png" alt="Bloobase" className="buyer-logo" />
+        <h1 className="buyer-title">Welcome, {user.name}</h1>
+        <nav className="buyer-nav">
+          <Link to="/" className="buyer-nav-link">Home</Link>
+          <Link to="/BuyerSettings" className="buyer-nav-link">Settings</Link>
+        </nav>
+      </header>
 
-          <header className="header">
-            <h1 className="brand-title">Welcome, {user.name}</h1>
-          </header>
-
-          <nav className="nav-buttons">
-            <Link to="/BuyerSettings" className="nav-button">Settings</Link>
-            <Link to="/" className="nav-button">Home</Link>
-          </nav>
-
-          <h2 className="hero-title">Your Orders</h2>
-        </section>
-      </section>
-
-      <section className="products-section">
-        <h2 className="products-heading">Order History</h2>
-        <section className="products-grid">
-          {purchases.map((item) => (
-            <section key={item.id} className="product-item">
-              <section className="product-image-container">
-                {!imagesLoaded.purchases[item.id] && (
-                  <section className="product-image-placeholder">
-                    <section className="loading-spinner"></section>
-                  </section>
-                )}
+      <section className="buyer-orders-section">
+        <h2 className="section-title">Your Order History</h2>
+        <div className="orders-grid">
+          {orders.map(order => (
+            <div key={order.id} className="order-card">
+              <div className="order-image-wrapper">
+                {!imageStatus[order.id] && <div className="image-placeholder" />}
                 <img
-                  src={item.image}
-                  alt={item.name}
-                  className={`product-image ${imagesLoaded.purchases[item.id] ? 'fade-in' : 'hidden'}`}
-                  loading="lazy"
+                  src={order.image}
+                  alt={order.name}
+                  className={`order-image ${imageStatus[order.id] ? 'visible' : 'hidden'}`}
                 />
-              </section>
-              <section className="product-info">
-                <h3 className="product-name">{item.name}</h3>
-                <p className="product-price">Status: {item.status}</p>
-              </section>
-            </section>
+              </div>
+              <div className="order-info">
+                <h3>{order.name}</h3>
+                <p>Status: {order.status}</p>
+              </div>
+            </div>
           ))}
-        </section>
+        </div>
       </section>
 
-      <footer className="footer-text">
+      <footer className="buyer-footer">
         © 2025 BlooBase. All rights reserved.
       </footer>
-    </main>
+    </div>
   );
 };
 

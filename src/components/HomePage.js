@@ -24,7 +24,7 @@ const hardcodedProducts = [
       description: "Author and artist of 'Goodnight Punpun', 'Solanin' and 'A Girl On the Shore'.",
       color: '#ffffff',
       textColor: '#598EA0',
-      genre: 'Drawing',
+      genre: 'Digital Art',
     },
     {
       id: 'h3',
@@ -33,7 +33,7 @@ const hardcodedProducts = [
       description: 'Korean photographer, director and artisan, @chogiseok',
       color: '#e7e4d7',
       textColor: '#141118',
-      genre: 'Photography',
+      genre: 'Mixed media',
     },
     {
       id: 'h4',
@@ -42,7 +42,7 @@ const hardcodedProducts = [
       description: "Artist of 'One Punch Man' and 'Eyeshield 21'.",
       color: '#1e1e1e',
       textColor: '#ffffff',
-      genre: 'Drawing',
+      genre: 'Digital Art',
     },
     {
       id: 'h5',
@@ -51,7 +51,7 @@ const hardcodedProducts = [
       description: 'Digital Media editor, artist and director, @CultureStudios',
       color: '#8C2C54',
       textColor: '#FFDFE2',
-      genre: 'Digital Art',
+      genre: 'Mixed media',
     },
     {
       id: 'h6',
@@ -69,7 +69,7 @@ const hardcodedProducts = [
       description: 'Physical inking artist and illustrator',
       color: '#ffffff',
       textColor: '#181818',
-      genre: 'Photography',
+      genre: 'Art',
     },
   ];
 
@@ -97,16 +97,21 @@ const HomePage = () => {
    }, [currentArtistIndex]);
 
    // Fetch the user's role on component mount
-   useEffect(() => {
-      const fetchUserRole = async () => {
-         if (auth.currentUser) {
-            const role = await getUserRole();
-            setUserRole(role);
-         }
-      };
-
-      fetchUserRole();
-   }, []);
+   // filepath: c:\University\SD\BlooBase\Coding_New\BlooBase\src\components\HomePage.js
+useEffect(() => {
+   const unsubscribe = auth.onAuthStateChanged(async (user) => {
+     if (user) {
+       const role = await getUserRole();
+       setUserRole(role);
+       console.log('User is logged in:', user);
+       console.log('User role:', role);
+     } else {
+       setUserRole(null);
+       console.log('User is logged out');
+     }
+   });
+   return () => unsubscribe();
+ }, []);
 
    // Categories similar to the genres in Artists page
    const categories = ['All','Digital Art', 'Clothing', 'Accessories', 'Crafts', 'Jewelry','Art', 'Furniture', 'Mixed media'];
@@ -185,106 +190,101 @@ const HomePage = () => {
 
    
    return (
-      <section className="page-wrapper-home">
-        <section id="bg-preload"></section>
-        <Navbar pageTitle="Explore" bgColor="#fff6fb" textColor="#165a9c" />
-    
-        <section className="products-container">
-          {/* New container for Artist button and search bar */}
-          <section className="artist-search-container">
-            {/* Artist Button with Image Carousel */}
-            <Link to="/Artists" className="artist-button-link">
-            <section className="artist-button">
-               <img
-                  src={artistImage}
-                  alt="Artist Preview"
-                  className="artist-button-image"
-               />
-               <p className="artist-button-text">Artists</p> {/* ✅ Added span */}
-               </section>
+    <section className="page-wrapper-home-1">
+    <section id="bg-preload-1"></section>
+    <Navbar pageTitle="Explore" bgColor="#fff6fb" textColor="#165a9c" />
 
-            </Link>
-    
-            {/* Search bar with internal icon */}
-            <section className="search-bar-wrapper">
-              <section className="search-input-container">
-                <input
-                  type="text"
-                  className="search-bar"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </section>
+    <section className="products-container-1">
+      <section className="artist-search-container-1">
+        <Link to="/Artists" className="artist-button-link">
+          <section className="artist-button-1">
+            <img
+              src={artistImage}
+              alt="Artist Preview"
+              className="artist-button-image-1"
+            />
+            <p className="artist-button-text-1">Artists</p>
+          </section>
+        </Link>
+
+        <section className="search-bar-wrapper-1">
+          <input
+            type="text"
+            className="search-bar-1"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </section>
+      </section>
+
+      <section className="genre-filter-wrapper-1">
+        {categories.map((category) => (
+          <button
+            key={category}
+            className={`genre-button-1 ${
+              selectedCategory === category ? 'active' : ''
+            }`}
+            onClick={() => setSelectedCategory(category)}
+          >
+            {category}
+          </button>
+        ))}
+      </section>
+
+      <section className="products-grid-home-1">
+        {filteredProducts.map((product) => (
+          <section
+            key={product.id}
+            className="product-card-1"
+            role="button"
+            tabIndex="0"
+            aria-label={`View details of ${product.name}`}
+          >
+            <section className="product-image-container-1">
+              {!imagesLoaded.products[product.id] && (
+                <section className="product-image-placeholder-1">
+                  <section className="loading-spinner-1"></section>
+                </section>
+              )}
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                className={`product-image-1 ${
+                  imagesLoaded.products[product.id] ? 'fade-in' : 'hidden'
+                }`}
+                onLoad={() =>
+                  setImagesLoaded((prev) => ({
+                    ...prev,
+                    products: { ...prev.products, [product.id]: true },
+                  }))
+                }
+                loading="lazy"
+              />
+            </section>
+            <section className="product-info-1">
+              <h3 className="product-title-1">{product.name}</h3>
+              <p className="product-price-1">{product.price}</p>
+              <p className="store-name-1">{product.Seller}</p>
+              {auth.currentUser && userRole === 'Buyer' && (
+                <button
+                  className="add-to-cart-button-1"
+                  onClick={() => console.log(`Added ${product.name} to cart`)}
+                >
+                  
+                  Add to Cart
+                </button>
+              )}
             </section>
           </section>
-    
-          {/* Category filter buttons similar to Artists page */}
-          <section className="genre-filter-wrapper">
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={`genre-button ${
-                  selectedCategory === category ? 'active' : ''
-                }`}
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </section>
-    
-          <section className="products-grid-home">
-            {filteredProducts.map((product) => (
-              <section
-                key={product.id}
-                className="product-card"
-                role="button"
-                tabIndex="0"
-                aria-label={`View details of ${product.name}`}
-              >
-                <section className="product-image-container">
-                  {!imagesLoaded.products[product.id] && (
-                    <section className="product-image-placeholder">
-                      <section className="loading-spinner"></section>
-                    </section>
-                  )}
-                  <img
-                    src={product.imageUrl}
-                    alt={product.name}
-                    className={`product-image ${
-                      imagesLoaded.products[product.id] ? 'fade-in' : 'hidden'
-                    }`}
-                    onLoad={() =>
-                      setImagesLoaded((prev) => ({
-                        ...prev,
-                        products: { ...prev.products, [product.id]: true },
-                      }))
-                    }
-                    loading="lazy"
-                  />
-                </section>
-                <section className="product-info">
-                  <h3 className="product-title">{product.name}</h3>
-                  <p className="product-price">{product.price}</p>
-                  <p className="store-name">{product.Seller}</p>
-                  {auth.currentUser && userRole === 'Buyer' && (
-                    <button
-                      className="add-to-cart-button"
-                      onClick={() => console.log(`Added ${product.name} to cart`)}
-                    >
-                      Add to Cart
-                    </button>
-                  )}
-                </section>
-              </section>
-            ))}
-          </section>
-          <section className="opacity-fade-2" />
-        </section>
-    
-        <footer className="page-footer">© 2025 BlooBase. All rights reserved.</footer>
+        ))}
       </section>
+
+      <section className="opacity-fade-2" />
+    </section>
+
+    <footer className="page-footer-1">© 2025 BlooBase. All rights reserved.</footer>
+  </section>
     );
 };
 

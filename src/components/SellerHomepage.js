@@ -1,104 +1,93 @@
+// SellerHomePage.js
 import React, { useEffect, useState } from 'react';
-import '../Home.css'; 
 import { Link } from 'react-router-dom';
 import { getUserName } from '../firebase/firebase';
+import '../SellerHome.css';
 
 const SellerHomePage = () => {
   const [user, setUser] = useState({ name: '' });
   const [stores, setStores] = useState([]);
- 
-  const [imagesLoaded, setImagesLoaded] = useState({ stores: {}, logo: false });
+  const [imageStatus, setImageStatus] = useState({ logo: false, stores: {} });
 
- 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const userName = await getUserName();
-      setUser({ name: userName });
+    const fetchUser = async () => {
+      const name = await getUserName();
+      setUser({ name });
     };
-    fetchUserData();
+    fetchUser();
+
+    setStores([
+      {
+        id: 1,
+        name: 'Detour Potters',
+        location: 'Fish Market',
+        inventoryCount: 87,
+        image: '/detourPotters.png',
+      },
+    ]);
   }, []);
 
   useEffect(() => {
-    const logoImg = new Image();
-    logoImg.src = "/bloobase.png";
-    logoImg.onload = () => setImagesLoaded(prev => ({ ...prev, logo: true }));
+    const logo = new Image();
+    logo.src = '/bloobase.png';
+    logo.onload = () => setImageStatus(prev => ({ ...prev, logo: true }));
 
     stores.forEach(store => {
       const img = new Image();
       img.src = store.image;
       img.onload = () =>
-        setImagesLoaded(prev => ({
+        setImageStatus(prev => ({
           ...prev,
           stores: { ...prev.stores, [store.id]: true },
         }));
     });
   }, [stores]);
-    //mock data for testing
-  useEffect(() => {
-    setStores([
-      { id: 1, name: 'Detour Potters', location: 'Fish' , image: '../detourPotters.png' },
-      
-    ]);
-  }, []);
+
   return (
-    <main className="homepage">
-      <section className="header-section">
-        <section className="homepage-container">
-          <header className="logo-header">
-            {!imagesLoaded.logo && <div className="logo-placeholder">BlooBase</div>}
-            <img
-              src="/bloobase.png"
-              alt="BlooBase Logo"
-              className={`ghost-logo ${imagesLoaded.logo ? 'fade-in' : 'hidden'}`}
-              loading="eager"
-            />
-          </header>
+    <div className="seller-home">
+      <header className="seller-header">
+        <div className="seller-logo-wrapper">
+          {!imageStatus.logo && <div className="logo-placeholder">BlooBase</div>}
+          <img
+            src="/bloobase.png"
+            alt="Bloobase"
+            className={`seller-logo ${imageStatus.logo ? 'visible' : 'hidden'}`}
+          />
+        </div>
+        <h1 className="seller-welcome">Welcome, {user.name}</h1>
+        <nav className="seller-nav">
+          <Link to="/" className="seller-nav-link">Home</Link>
+          <Link to="/SellerSettings" className="seller-nav-link">Settings</Link>
+        </nav>
+      </header>
 
-          <header className="header">
-            <h1 className="brand-title">Welcome, {user.name}</h1>
-          </header>
-
-          <nav className="nav-buttons">
-            <Link to="/SellerSettings" className="nav-button">Settings</Link>
-            <Link to="/" className="nav-button">Home</Link>
-          </nav>
-
-          <h2 className="hero-title">Your Stores</h2>
-        </section>
-      </section>
-
-      <section className="products-section">
-        <h2 className="products-heading">Manage Your Stores</h2>
-        <section className="products-grid">
-          {stores.map((store) => (
-            <section key={store.id} className="product-item">
-              <section className="product-image-container">
-                {!imagesLoaded.stores[store.id] && (
-                  <section className="product-image-placeholder">
-                    <section className="loading-spinner"></section>
-                  </section>
-                )}
+      <section className="seller-section">
+        <h2 className="section-title">Manage Your Stores</h2>
+        <div className="store-grid">
+          {stores.map(store => (
+            <div className="store-card" key={store.id}>
+              <div className="store-image-wrapper">
+                {!imageStatus.stores[store.id] && <div className="image-placeholder" />}
                 <img
                   src={store.image}
                   alt={store.name}
-                  className={`product-image ${imagesLoaded.stores[store.id] ? 'fade-in' : 'hidden'}`}
-                  loading="lazy"
+                  className={`store-image ${imageStatus.stores[store.id] ? 'visible' : 'hidden'}`}
                 />
-              </section>
-              <section className="product-info">
-                <h3 className="product-name">{store.name}</h3>
-                <p className="product-stock">Inventory: {store.inventoryCount} items</p>
-                <Link to={`/edit-store/${store.id}`} className="nav-button">Edit</Link>
-              </section>
-            </section>
+              </div>
+              <div className="store-info">
+                <h3>{store.name}</h3>
+                <p>Inventory: {store.inventoryCount} items</p>
+                <Link to={`/edit-store/${store.id}`} className="edit-button">Edit Store</Link>
+              </div>
+            </div>
           ))}
-        </section>
+        </div>
       </section>
 
-      <footer className="footer-text">
+      <footer className="seller-footer">
         © 2025 BlooBase. All rights reserved.
       </footer>
-    </main>
+    </div>
   );
 };
 

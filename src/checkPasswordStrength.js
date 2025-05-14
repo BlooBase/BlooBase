@@ -1,4 +1,4 @@
-const isPasswordStrong = (password) => {
+    const isPasswordStrong = (password) => {
     const minLength = /.{8,}/;
     const hasNumber = /[0-9]/;
     const hasUpperCase = /[A-Z]/;

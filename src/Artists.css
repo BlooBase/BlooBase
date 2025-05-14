@@ -213,7 +213,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 10px; /* for spacing below navbar */
+    margin-top: 0px; /* for spacing below navbar */
     margin-bottom: 5px; /* spacing before the grid */
   }
 

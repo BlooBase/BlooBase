@@ -116,9 +116,12 @@ const Products = () => {
 
   const filteredProducts = products.filter(
     (p) =>
-      (selectedGenre === 'All' || p.genre === selectedGenre) &&
+      (selectedGenre === 'All' || 
+        p.genre?.trim().toLowerCase() === selectedGenre.trim().toLowerCase()
+      ) &&
       p.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  
 
   useEffect(() => {
     const grid = gridRef.current;

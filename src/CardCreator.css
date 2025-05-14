@@ -3,22 +3,27 @@
 
 .card-creator-wrapper {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-  background-color: #ffeaf7; /* Page background remains the same */
+  background-color: #ffeaf7;
   font-family: 'DM Sans', sans-serif;
-  padding: 40px;
-  padding-top: 80px;
+  padding: 40px 20px;
+  padding-top: 120px;
+  gap: 20px;
+  overflow-y: auto;
+  min-height: 100vh;
 }
+
 
 .card-creator {
   display: flex;
+  margin-bottom: 30px;
   gap: 40px;
   background-color: #fff; /* White background for the card creator */
   border-radius: 20px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
   padding: 30px;
+  padding-bottom: 40px;
   flex-wrap: wrap;
   align-items: center;
   color: #333; /* Dark grey text color */
@@ -258,6 +263,10 @@
     align-items: center;
   }
 
+  .card-creator-wrapper {
+    padding-top: 60px;
+  }
+
   .card-preview,
   .card-controls {
     width: 100%;
@@ -320,3 +329,80 @@
   font-size: 0.9rem;
   color: #333; /* Dark grey text for input */
 }
+
+.product-creator-bar {
+  margin: 20px auto;
+  width: 90%;
+  max-width: 900px;
+  border-radius: 30px;
+  background-color: #f2f2f2;
+  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.product-image-uploader {
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  min-height: 100px;
+  min-width: 100px;
+  object-fit: cover;
+  background-color: #e0e0e0;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #666;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.product-preview-img {
+  width: 100%;
+  height: 100%;
+  min-height: 100px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.product-title-input {
+  flex: 2;
+  min-width: 200px;
+  font-size: 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.product-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.product-action-button {
+  background-color: #165a9c;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  height: 50px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.product-action-button:hover {
+  background-color: #10477c;
+}
+
+.add-product-bar:hover {
+  color: #165a9c;
+  transition: color 0.3s ease;
+}
+

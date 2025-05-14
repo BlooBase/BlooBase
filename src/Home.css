@@ -185,7 +185,9 @@ body {
     width: 100%;
     justify-content: center;
     align-items: center;
-    padding-top: 10px;
+    padding-top: 30px;
+    padding-left: 0px;
+    min-width: 300px;
   }
 
   .search-bar-1 {
@@ -241,12 +243,12 @@ body {
   background: linear-gradient(to right,  #fff5e1, #eafcff, #fce8f5);
   justify-content: space-between;
   gap: 30px;
-  width: 100%;
-  max-width: 2500px;
+  width: 95%;
+  max-width: 2200px;
   border-radius: 40px;
   margin: 0 auto;
+  padding-left: 20px;
   padding-top: 30px;
-  padding-left: 30px;
 }
 
 .product-card-1 {
@@ -370,6 +372,10 @@ body {
   .product-card-1 {
     max-width: 400px;
     margin-bottom: 30px;
+  }
+
+  .page-wrapper-home-1 {
+    padding-top: 40px;
   }
 
   .page-footer-1 {

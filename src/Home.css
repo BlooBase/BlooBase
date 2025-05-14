@@ -159,7 +159,7 @@ body {
   background-color: #165a9c;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 16px;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -255,13 +255,14 @@ body {
   margin-bottom: 40px;
   box-sizing: border-box;
   background: rgba(255, 255, 255, 0.4);
-  border-radius: 20px;
+  border-radius: 40px;
   padding: 20px;
   text-align: center;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   break-inside: avoid;
   display: flex;
+  gap: 20px;
   flex-direction: column;
   justify-content: space-between;
 }
@@ -275,13 +276,16 @@ body {
   height: 250px; /* Set the fixed height you want */
   width: 100%;
   overflow: hidden;
-  object-fit: cover;
-  padding-bottom: 20px;
-  border-radius: 8px; /* Optional: keeps image corners rounded */
+  padding-bottom: 30px;
+  border-radius: 30px; /* Optional: keeps image corners rounded */
+}
+
+.product-info {
+  padding-top: 10px;
 }
 
 .product-image-1 {
-  height: 100%;
+  height: 250px;
   width: 100%;
   object-fit: cover; /* Ensures the image fills and crops to container */
   display: block;

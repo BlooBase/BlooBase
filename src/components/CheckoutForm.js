@@ -3,6 +3,7 @@ import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import 'react-toastify/dist/ReactToastify.css'; // Import the toast styles
+import '../CheckoutForm.css'; // Import your CSS file
 
 const CheckoutForm = () => {
   const stripe = useStripe();

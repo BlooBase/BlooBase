@@ -3,9 +3,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import '../FloatingCart.css';
 import { Link } from 'react-router-dom';
 
-
-//this page is responsible for making the card float around based on the movement of the mouse
-
 const clampPosition = (top, left, cartWidth = 100, cartHeight = 100) => {
   const maxLeft = window.innerWidth - cartWidth;
   const maxTop = window.innerHeight - cartHeight;
@@ -26,6 +23,8 @@ const FloatingCart = () => {
 
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  const cartHasItems = JSON.parse(localStorage.getItem('cartHasItems') || 'false');
 
   useEffect(() => {
     const handleMove = (clientX, clientY) => {
@@ -86,7 +85,7 @@ const FloatingCart = () => {
     setDragging(true);
   };
 
-  return (
+  return cartHasItems ? (
     <section
       ref={cartRef}
       className="floating-cart"
@@ -98,7 +97,7 @@ const FloatingCart = () => {
         <img src="/cart1.png" alt="Cart" style={{ pointerEvents: 'none' }} />
       </Link>
     </section>
-  );
+  ) : null;
 };
 
 export default FloatingCart;

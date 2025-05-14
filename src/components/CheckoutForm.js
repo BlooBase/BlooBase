@@ -31,9 +31,9 @@ const CheckoutForm = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="checkout-form">
-        <CardElement className="card-element" />
-        <button type="submit" className="checkout-button" disabled={!stripe}>
+      <form onSubmit={handleSubmit} className="checkout-form-3">
+        <CardElement className="card-element-3" />
+        <button type="submit" className="checkout-button-3" disabled={!stripe}>
           Pay Now
         </button>
       </form>

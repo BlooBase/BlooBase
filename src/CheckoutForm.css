@@ -1,6 +1,6 @@
 /* CheckoutForm.css */
 
-.checkout-form {
+.checkout-form-3 {
     width: 100%;
     max-width: 400px;
     padding: 30px;
@@ -15,7 +15,7 @@
     box-shadow: 0 6px 30px rgba(30, 0, 0, 0.2);
   }
   
-  .card-element {
+  .card-element-3 {
     padding: 12px;
     border: 1px solid #e0e0e0;
     border-radius: 16px;
@@ -29,7 +29,7 @@
     border-color: #007aff;
   }
   
-  .checkout-button {
+  .checkout-button-3 {
     width: 100%;
     padding: 14px;
     background-color: #165a9c;

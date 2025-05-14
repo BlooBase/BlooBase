@@ -80,54 +80,55 @@ const Store = () => {
   if (!artist) return <p>Artist not found.</p>;
 
   return (
-    <section className="store-page" style={{ backgroundColor: artist.color }}>
+    <section className="store-page-2" style={{ backgroundColor: artist.color }}>
       <Navbar pageTitle="Artist" user={user} bgColor="transparent" textColor="#165a9c" />
 
-      <section className="store-header">
-        <img src={artist.image} alt={artist.title} className="store-image" />
-        <h1 className="store-title" style={{ color: artist.textColor }}>
+      <section className="store-header-2">
+        <img src={artist.image} alt={artist.title} className="store-image-2" />
+        <h1 className="store-title-2" style={{ color: artist.textColor }}>
           {artist.title}
         </h1>
       </section>
 
-      <section className="store-main">
+      <section className="store-main-2">
         <section
-          className="store-column info"
+          className="store-column-info-2"
           style={{ backgroundColor: artist.textColor, color: artist.color }}
         >
-          <h2 className="section-title">Information</h2>
-          <p className="store-description">{artist.description}</p>
-          <p className="store-genre">Genre: {artist.genre}</p>
+          <h2 className="section-title-2">Information</h2>
+          <p className="store-description-2">{artist.description}</p>
+          <p className="store-genre-2">Genre: {artist.genre}</p>
         </section>
 
         <section
-          className="store-column products"
+          className="store-column-products-2"
           style={{ backgroundColor: artist.textColor, color: artist.color }}
         >
-          <h2 className="section-title">Products</h2>
+          <h2 className="section-title-2">Products</h2>
           {productsLoading ? (
             <p>Loading products...</p>
           ) : (
-            <section className="products-grid">
+            <section className="products-grid-2">
             {products.map((product) => (
               <section
                 key={product.id}
-                className="product-item"
+                className="product-item-2"
               >
-                <section className="product-image-container">
+                <section className="product-image-container-2">
                   <img
                     src={product.imageUrl}
                     alt={product.name}
-                    className="product-image"
+                    className="product-image-2"
                     loading="lazy"
                   />
                 </section>
-                <section className="product-info">
-                  <h3 className="product-name">{product.name}</h3>
-                  <p className="product-price">{product.price}</p>
+                <section className="product-info-2">
+                  <h3 className="product-name-2">{product.name}</h3>
+                  <p className="product-price-2">{product.price}</p>
                   {auth.currentUser && userRole === 'Buyer' && (
                     <button
-                      className="add-to-cart-button"
+                      className="add-to-cart-button-2"
+                      style={{ backgroundColor: "#165a9c", color: "#ffffff" }}
                       onClick={async () => {
                         try {
                           await addToCart(product);
@@ -148,7 +149,7 @@ const Store = () => {
         </section>
       </section>
 
-      <section className="opacity-fade1" />
+      <section className="opacity-fade1-2" />
 
       {/* Conditionally render FloatingCart */}
       {auth.currentUser && userRole === 'Buyer' && <FloatingCart />}

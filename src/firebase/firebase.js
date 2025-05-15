@@ -1,8 +1,10 @@
 
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification ,signInWithEmailAndPassword,GoogleAuthProvider,signInWithPopup, updatePassword, updateEmail,deleteUser,EmailAuthProvider,reauthenticateWithCredential} from "firebase/auth";
-import { getFirestore,updateDoc, doc, setDoc, serverTimestamp, getDoc, getCountFromServer,where,query, collection,deleteDoc } from "firebase/firestore";
+import { getFirestore,updateDoc, doc, setDoc, addDoc, getDocs, serverTimestamp, getDoc, getCountFromServer,where,query, collection,deleteDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { uploadImage } from "./uploadImage"; // Adjust path if needed
+import { getDownloadURL, ref as storageRef } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBLRZEHtvWJex2S_6wUgU9-0PyUZ6XvYdc",
@@ -254,6 +256,197 @@ const GoogleLogin = async () => {
     alert(`Google Login failed: ${error.message}`);
   }
 };
+
+ /**
+ * Creates or updates the seller card for the current user in the Sellers collection.
+ * @param {Object} cardData - { image, color, description, genre, textColor, title }
+ * @returns {Promise<void>}
+ */
+export const upsertSellerCard = async (cardData) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
+
+  let imagePath = cardData.image;
+  // If image is a File object, upload it and get the storage path
+  if (cardData.image instanceof File) {
+    imagePath = await uploadImage(cardData.image, "shop_images");
+  }
+
+  const sellerDocRef = doc(db, "Sellers", user.uid);
+  await setDoc(
+    sellerDocRef,
+    {
+      image: imagePath, // Store the storage path, not the URL
+      color: cardData.color,
+      description: cardData.description,
+      genre: cardData.genre,
+      textColor: cardData.textColor,
+      title: cardData.title,
+      userId: user.uid,
+      updatedAt: new Date(),
+    },
+    { merge: true }
+  );
+};
+
+/**
+ * Fetches the seller card for the current user from the Sellers collection.
+ * @returns {Promise<Object|null>} The seller card data or null if not found.
+ */
+export const getSellerCard = async () => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
+
+  const sellerDocRef = doc(db, "Sellers", user.uid);
+  const sellerSnap = await getDoc(sellerDocRef);
+  if (sellerSnap.exists()) {
+    const data = sellerSnap.data();
+    // If there is an image path, convert it to a download URL
+    if (data.image) {
+      try {
+        data.image = await getDownloadURL(storageRef(storage, data.image));
+      } catch (e) {
+        console.error("Failed to get image download URL:", e);
+        data.image = null;
+      }
+    }
+    return data;
+  } else {
+    return null;
+  }
+};
+
+  /**
+   * Deletes the seller card for the current user from the Sellers collection.
+   * @returns {Promise<void>}
+   */
+  export const deleteSellerCard = async () => {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+
+    // 1. Find all products for this seller
+    const productsRef = collection(db, "Products");
+    const q = query(productsRef, where("SellerID", "==", user.uid));
+    const snapshot = await getDocs(q);
+
+    // 2. Delete each product
+    const batchDeletes = [];
+    snapshot.forEach((docSnap) => {
+      batchDeletes.push(deleteDoc(doc(db, "Products", docSnap.id)));
+    });
+    await Promise.all(batchDeletes);
+
+    // 3. Delete the seller card
+    const sellerDocRef = doc(db, "Sellers", user.uid);
+    await deleteDoc(sellerDocRef);
+  };
+
+  export const addProduct = async ({ image, name, price }) => {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+
+    let imageUrl = image;
+    if (image instanceof File) {
+      imageUrl = await uploadImage(image, "product_images");
+    }
+
+    // Always store as "R" + number
+    let formattedPrice = price;
+    if (typeof formattedPrice === "number") {
+      formattedPrice = `R${formattedPrice}`;
+    } else if (typeof formattedPrice === "string") {
+      formattedPrice = formattedPrice.trim();
+      if (!formattedPrice.startsWith("R")) {
+        formattedPrice = `R${formattedPrice}`;
+      }
+    }
+
+    // Fetch the seller card to get the store name
+    const sellerDocRef = doc(db, "Sellers", user.uid);
+    const sellerSnap = await getDoc(sellerDocRef);
+    let storeName = "Unknown Store";
+    if (sellerSnap.exists()) {
+      const sellerData = sellerSnap.data();
+      storeName = sellerData.title || "Unknown Store";
+    }
+
+    const productsRef = collection(db, "Products");
+    await addDoc(productsRef, {
+      Seller: storeName,
+      SellerID: user.uid,
+      image: imageUrl,
+      name,
+      price: formattedPrice,
+      createdAt: new Date(),
+    });
+  };
+
+  // Get all products for the current seller
+  export const getSellerProducts = async () => {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+
+    const productsRef = collection(db, "Products");
+    const q = query(productsRef, where("SellerID", "==", user.uid));
+    const snapshot = await getDocs(q);
+    const products = [];
+    for (const docSnap of snapshot.docs) {
+      const data = docSnap.data();
+      // Convert image path to download URL if needed
+      if (data.image && typeof data.image === "string" && !data.image.startsWith("http")) {
+        try {
+          data.image = await getDownloadURL(storageRef(storage, data.image));
+        } catch {
+          data.image = null;
+        }
+      }
+      // Convert price from "R123" to 123 (number)
+      let price = data.price;
+      if (typeof price === "string" && price.startsWith("R")) {
+        price = Number(price.slice(1));
+      }
+      products.push({ id: docSnap.id, ...data, price });
+    }
+    return products;
+  };
+
+  // Update a product
+  export const updateProduct = async ({ id, image, name, price }) => {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+
+    let imageUrl = image;
+    if (image instanceof File) {
+      imageUrl = await uploadImage(image, "product_images");
+    }
+
+    // Format price as "R123"
+    let formattedPrice = price;
+    if (typeof formattedPrice === "number") {
+      formattedPrice = `R${formattedPrice}`;
+    } else if (typeof formattedPrice === "string") {
+      formattedPrice = formattedPrice.trim();
+      if (!formattedPrice.startsWith("R")) {
+        formattedPrice = `R${formattedPrice}`;
+      }
+    }
+
+    const productRef = doc(db, "Products", id);
+    await updateDoc(productRef, {
+      image: imageUrl,
+      name,
+      price: formattedPrice,
+      updatedAt: new Date(),
+    });
+  };
+
+  // Delete a product
+  export const deleteProduct = async (id) => {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    const productRef = doc(db, "Products", id);
+    await deleteDoc(productRef);
+  };
 
 export {
   auth,

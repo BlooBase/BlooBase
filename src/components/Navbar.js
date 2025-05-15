@@ -94,6 +94,14 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                     >
                       Account
                     </Link>
+                  ) : (userRole === "Admin" && currentPath !== '/Dashboard') ? (
+                    <Link
+                      to="/Dashboard"
+                      className="navbar-dropdown-item"
+                      style={{ textDecoration: 'none', color: '#000000' }}
+                    >
+                      Account
+                    </Link>
                   ) : null
                 )}
 
@@ -184,15 +192,19 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
 
 
           {auth.currentUser && (
-            <>
-              <p className="navbar-username" style={{ color: textColor }}>{user.name}</p>
+            <Link
+              to={userRole === "Buyer" ? "/BuyerHomepage" : "/SellerHomepage"}
+              style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: textColor, gap: '0.5rem' }}
+            >
+              <p className="navbar-username" style={{ margin: 0 }}>{user.name}</p>
               <img
                 className="navbar-user-avatar"
                 src={'/user_profile.png'}
                 alt={`${user.name}'s avatar`}
               />
-            </>
+            </Link>
           )}
+
           </section>
         )}
       </section>

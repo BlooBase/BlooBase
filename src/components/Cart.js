@@ -16,6 +16,7 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [imagesLoaded, setImagesLoaded] = useState({ products: {} });
   const [orderType, setOrderType] = useState('Delivery'); // State for order type
+  
 
   useEffect(() => {
     const fetchCart = async () => {

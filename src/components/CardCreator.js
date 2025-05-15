@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import '../CardCreator.css';
 import Navbar from '../components/Navbar';
-import { addSeller } from '../firebase/addSeller'; // Import the addSeller function
+import { addSeller } from '../firebase/addSeller';
 
 const CardCreator = () => {
   const fileInputRef = useRef();
@@ -11,26 +11,38 @@ const CardCreator = () => {
   const storedData = JSON.parse(localStorage.getItem('cardData')) || {};
 
   const [statusMessage, setStatusMessage] = useState('');
-  const [image, setImage] = useState(null); // Store the File object for upload
-  const [imagePreview, setImagePreview] = useState(storedData.image || null); // Store the Base64 string for preview
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(storedData.image || null);
   const [backgroundColor, setBackgroundColor] = useState(storedData.backgroundColor || '#fff0e6');
   const [textColor, setTextColor] = useState(storedData.textColor || '#93aed9');
   const [name, setName] = useState(storedData.name || 'Name');
   const [description, setDescription] = useState(storedData.description || 'Bio');
-  const [genre, setGenre] = useState(storedData.genre || 'Genre'); // New state for genre
+  const [genre, setGenre] = useState(storedData.genre || 'Genre');
 
-  const genres = ['Digital Art', 'Drawing', 'Painting', 'Photography', 'Sculptures', 'Mixed Media']; // Predefined genres
+  const genres = ['Digital Art', 'Drawing', 'Painting', 'Photography', 'Sculptures', 'Mixed Media'];
+
+  const savedProductCreators = JSON.parse(localStorage.getItem('productCreators')) || [
+  { image: null, imagePreview: null, title: '' }
+];
+
+const [productCreators, setProductCreators] = useState(savedProductCreators);
+
 
   useEffect(() => {
     localStorage.setItem('cardData', JSON.stringify({
-      image: imagePreview, // Save base64 string for preview
+      image: imagePreview,
       backgroundColor,
       textColor,
       name,
       description
     }));
   }, [imagePreview, backgroundColor, textColor, name, description]);
-  
+
+  useEffect(() => {
+  localStorage.setItem('productCreators', JSON.stringify(productCreators));
+}, [productCreators]);
+
+
   const handleCardTilt = (e) => {
     const card = cardRef.current;
     if (!card) return;
@@ -52,29 +64,32 @@ const CardCreator = () => {
   };
 
   const triggerAnimation = (message) => {
-    setStatusMessage(''); // Clear first to re-trigger visibility
+    setStatusMessage('');
     setAnimateCard(false);
-  
-    // Small timeout to allow state to reset
+
     setTimeout(() => {
       setStatusMessage(message);
       setAnimateCard(true);
-  
       setTimeout(() => setAnimateCard(false), 1000);
     }, 50);
   };
-  
+
+  const triggerAnimationFail = (message) => {
+    setStatusMessage('');
+    setTimeout(() => {
+      setStatusMessage(message);
+    }, 50);
+  };
 
   const handlePublish = async () => {
     if (!image || !name || !description) {
-      triggerAnimation('Please fill in all fields.');
+      triggerAnimationFail('Please fill in all fields.');
       return;
     }
 
     try {
-      // Call addSeller to add the seller to the database
       await addSeller({
-        image, // Pass the File object
+        image,
         color: backgroundColor,
         description,
         genre,
@@ -97,9 +112,9 @@ const CardCreator = () => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result); // Set Base64 string for preview
+      reader.onloadend = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
-      setImage(file); // Set the File object for upload
+      setImage(file);
     }
   };
 
@@ -108,20 +123,59 @@ const CardCreator = () => {
     const file = e.dataTransfer.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result); // Set Base64 string for preview
+      reader.onloadend = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
-      setImage(file); // Set the File object for upload
+      setImage(file);
     }
+  };
+
+  const handleProductImageChange = (index, file) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const updated = [...productCreators];
+      updated[index].image = file;
+      updated[index].imagePreview = reader.result;
+      setProductCreators(updated);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleProductTitleChange = (index, value) => {
+    const updated = [...productCreators];
+    updated[index].title = value;
+    setProductCreators(updated);
+  };
+
+  const addProductCreator = () => {
+    setProductCreators([...productCreators, { image: null, imagePreview: null, title: '' }]);
+  };
+
+  const removeProductCreator = (index) => {
+    const updated = productCreators.filter((_, i) => i !== index);
+    setProductCreators(updated);
+    triggerAnimation('Product Removed');
+  };
+
+  const handleProductPublish = (index) => {
+    const { image, title } = productCreators[index];
+    if (!image || !title) {
+      triggerAnimationFail('Please provide product image and title.');
+      return;
+    }
+    triggerAnimation(`Product ${index + 1} Published`);
+  };
+
+  const handleProductRemove = (index) => {
+    triggerAnimation(`Product ${index + 1} Removed`);
   };
 
   return (
     <section className="card-creator-wrapper" style={{ backgroundColor }}>
-      <Navbar pageTitle="Card Creator"  bgColor="#fff6fb" textColor="#165a9c" />
+      <Navbar pageTitle="Card Creator" bgColor="#fff6fb" textColor="#165a9c" />
 
-        {/* Notification bubble */}
       {statusMessage && (
         <section className="status-notification">{statusMessage}</section>
-     )}
+      )}
 
       <section className="card-creator">
         <section
@@ -219,9 +273,62 @@ const CardCreator = () => {
             <button className="action-button" onClick={handlePublish}>Publish</button>
             <button className="action-button" onClick={handleRemove}>Remove</button>
           </section>
-
         </section>
       </section>
+
+      {/* Product Creator Section */}
+      {productCreators.map((creator, index) => (
+        <section
+          className="product-creator-bar"
+          key={index}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file) handleProductImageChange(index, file);
+          }}
+        >
+          <section className="product-image-uploader" onClick={() => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+              const file = e.target.files[0];
+              if (file) handleProductImageChange(index, file);
+            };
+            input.click();
+          }}>
+            {creator.imagePreview ? (
+              <img src={creator.imagePreview} alt="Product Preview" className="product-preview-img" />
+            ) : (
+              <p>Click to Upload Product Image</p>
+            )}
+          </section>
+
+          <input
+            type="text"
+            className="product-title-input"
+            placeholder="Enter product title"
+            value={creator.title}
+            onChange={(e) => handleProductTitleChange(index, e.target.value)}
+          />
+
+          <section className="product-buttons">
+            <button className="product-action-button" onClick={() => handleProductPublish(index)}>Publish</button>
+            <button className="product-action-button" onClick={() => handleProductRemove(index)}>Remove</button>
+            <button className="product-action-button" onClick={() => removeProductCreator(index)}>
+              <p style={{ color: 'red', fontSize: '20px' }}>🗑</p>
+            </button>
+          </section>
+        </section>
+      ))}
+
+      <section className="add-product-bar" onClick={addProductCreator} style={{ cursor: 'pointer', textAlign: 'center', marginTop: '1rem' }}>
+        <p style={{ fontSize: '2rem', color: '#4a4a4a' }}>
+          <img src="/plus.png" alt="add-product-plus" style={{ width: '40px', height: '40px',  }} />
+        </p>
+      </section>
+
       <section className="opacity-fade2" />
     </section>
   );

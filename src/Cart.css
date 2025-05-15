@@ -30,7 +30,7 @@
   align-items: center;
   text-align: center;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 35px;
   padding: 1rem;
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -40,7 +40,7 @@
   width: 100%;
   height: 150px;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 25px;
   margin-bottom: 1rem;
 }
 
@@ -87,7 +87,7 @@
   align-items: center;
   padding: 2rem;
   border: 1px solid #ddd;
-  border-radius: 12px;
+  border-radius: 35px;
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   max-width: 500px;
@@ -117,7 +117,7 @@
 .card-element {
   padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 20px;
   font-size: 1rem;
 }
 
@@ -147,7 +147,7 @@
   background-color: #f8d7da; /* Light red background */
   color: #721c24; /* Dark red text */
   border: 1px solid #f5c6cb; /* Light red border */
-  border-radius: 8px;
+  border-radius: 16px;
   font-size: 0.9rem;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
@@ -214,14 +214,9 @@
     padding: 0 1rem; /* Add padding around the grid */
   }
 
-  .cart-product-item {
-    flex-direction: column; /* Ensure items stack vertically */
-    padding: 0.5rem; /* Reduce padding for smaller screens */
-    border-radius: 6px; /* Slightly smaller border radius */
-  }
-
   .cart-product-image-container {
     height: 120px; /* Reduce the height of the image container */
+    min-height: 160px;
   }
 
   .cart-product-name {
@@ -242,10 +237,11 @@
 @media (max-width: 480px) {
   .cart-products-grid {
     grid-template-columns: 1fr; /* Single column for very small screens */
+    gap: 2rem; /* Further reduce the gap between items */
   }
 
   .cart-product-item {
-    padding: 0.5rem; /* Further reduce padding */
+    padding: 1rem; /* Further reduce padding */
   }
 
   .cart-product-image-container {

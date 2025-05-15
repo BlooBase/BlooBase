@@ -13,30 +13,44 @@ body {
   flex-direction: column;
 }
 
-.artist-search-container {
+.artist-search-container-1 {
   display: flex;
-  align-items: center; /* Align items vertically */
-  width: 100%; /* Take full width of the container */
-  max-width: 2500px; /* Match max width of products grid */
-  margin: 0 auto; /* Center the container */
-  padding: 0 20px; /* Match padding of products grid */
-  box-sizing: border-box; /* Include padding in width calculation */
+  align-items: center;
+  width: 100%;
+  max-width: 2500px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
-.search-bar-wrapper {
-  flex: 1; /* Allow search bar to take remaining space */
+.search-bar-wrapper-1 {
+  flex: 1;
+  display: flex;
+  padding-left: 50px;
+  align-items: center;
 }
 
-.placeholder-card {
+.search-bar-1 {
+  width: 100%;
+  max-width: 930px;
+  padding: 14px 20px;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.placeholder-card-1 {
   width: 100%;
   height: 400px; 
   background-color: #f0f0f0;
   border-radius: 20px;
-  animation: loadingShimmer 1.2s infinite ease-in-out;
+  animation: loadingShimmer-1 1.2s infinite ease-in-out;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-@keyframes loadingShimmer {
+@keyframes loadingShimmer-1 {
   0% {
     background-position: -200px 0;
   }
@@ -45,19 +59,36 @@ body {
   }
 }
 
-.product-card.loading {
+.product-card-1.loading-1 {
   filter: blur(2px);
   pointer-events: none;
 }
 
-/* Artist Button Styles */
-.artist-button-link {
+.artist-button-link-1 {
   text-decoration: none;
   display: inline-block;
-  margin-right: 20px; /* Spacing between button and search bar */
+  text-decoration: none;
+  margin-right: 20px;
 }
 
-.artist-button {
+.artist-button-link {
+  text-decoration: none;
+}
+
+.artist-button-link:hover,
+.artist-button-link:visited,
+.artist-button-link:focus,
+.artist-button-link:active {
+  text-decoration: none;
+}
+
+.artist-button-text-1 {
+  text-decoration: none;
+  color: inherit; /* Prevents any browser default link color */
+}
+
+
+.artist-button-1 {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,9 +99,9 @@ body {
   border-radius: 999px;
   border: 1px solid #ddd;
   background-color: #fff;
-  color: white; /* ✅ Make text white */
-  font-weight: bold; /* ✅ Make text bold */
-  font-size: 1.2rem; /* ✅ Increase font size */
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
@@ -78,99 +109,109 @@ body {
   position: relative;
 }
 
-.opacity-fade-2 {
+.opacity-fade-2-1 {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-   height: 120px;
+  height: 120px;
   pointer-events: none;
-  z-index: 0; /* Lower than footer */
+  z-index: 0;
 }
 
-.opacity-fade-2::before {
+.opacity-fade-2-1::before {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(to top, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
 }
 
-.artist-button-text {
+.artist-button-text-1 {
   position: relative;
-  z-index: 1; /* Ensure it’s above the image */
+  text-decoration: none !important;
+  z-index: 1;
   color: white;
   font-weight: bold;
   font-size: 1.4rem;
   text-shadow:
-  -1px -1px 0 rgb(255, 255, 255),
-   1px -1px 0 black,
-  -1px  1px 0 black,
-   1px  1px 0 black; /* Creates a 1px black outline */
+    -1px -1px 0 rgb(255, 255, 255),
+     1px -1px 0 black,
+    -1px  1px 0 black,
+     1px  1px 0 black;
 }
 
-
-.artist-button:hover {
+.artist-button-1:hover {
   background-color: #f0f0f0;
 }
 
-.artist-button-image {
-  width: 100%; /* Make the image take up the full width of the container */
-  height: 100%; /* Make the image take up the full height of the container */
+.artist-button-image-1 {
+  width: 100%;
+  height: 100%;
   border-radius: 999px;
-  object-fit: cover; /* Ensure the image covers the entire area, cropping if necessary */
-  position: absolute; /* Position image inside the button */
-  opacity: 0.7; /* Reduce the opacity of the image */
-  transition: opacity 1s ease-in-out; /* Fade effect */
+  object-fit: cover;
+  position: absolute;
+  opacity: 0.7;
+  transition: opacity 1s ease-in-out;
 }
 
-/* Adjustments for smaller screens */
+.add-to-cart-button-1 {
+  padding: 10px 16px;
+  background-color: #165a9c;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.add-to-cart-button-1:hover {
+  background-color: #124c80;
+}
+
 @media (max-width: 768px) {
-  .artist-button-link {
-    margin-right: 10px;
-    margin-bottom: 10px;
+  .artist-search-container-1 {
+    flex-direction: column;
+    align-items: center;
   }
 
-  .artist-button {
-    width: 140px; /* Smaller width */
-    height: 60px; /* Smaller height */
-    padding: 6px 10px;
-    font-size: 0.9rem;
+  .artist-button-link-1 {
+    margin-right: 0;
+    margin-bottom: 15px;
   }
 
-  .artist-button-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;  /* Fill the button */
-    height: 100%; /* Fill the button */
-    object-fit: cover; /* Maintain aspect ratio and fill */
-    border-radius: 999px;
-    opacity: 0.7;
+  .search-bar-wrapper-1 {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    padding-top: 30px;
+    padding-left: 0px;
+    min-width: 300px;
   }
 
-  .artist-button-text {
-    font-size: 1rem;
+  .search-bar-1 {
+    max-width: 100%;
   }
 }
 
-.page-wrapper-home {
-  min-height: 170vh;
-  flex: 1; /* Ensures wrapper takes up remaining height */
+.page-wrapper-home-1 {
+  min-height: 200vh;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  padding-top: 50px;
-  flex-direction: column;
+  padding-top: 80px;
   background-image: url('./assets/BG0.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
-  position: relative;  /* Added this to allow absolute positioning of the blur */
+  position: relative;
 }
 
-.products-container {
+.products-container-1 {
   flex: 1;
-  padding: 10px 20px; /* was 60px before */
+  padding: 10px 20px;
   font-family: 'DM Sans', sans-serif;
   background-position: center;
   display: flex;
@@ -178,88 +219,82 @@ body {
   align-items: center;
 }
 
-.page-footer {
-  position: relative; /* Creates a stacking context */
-  z-index: 1; /* Ensure it's above the blur */
+.page-footer-1 {
+  position: relative;
+  z-index: 1;
   padding: 40px 0;
   text-align: center;
   font-size: 0.9rem;
   color: #165a9c;
   background-color: #fff3f3;
   width: 100%;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); /* subtle top shadow */
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.product-link {
+.product-link-1 {
   text-decoration: none;
   color: inherit;
 }
 
-.products-grid-home {
+.products-grid-home-1 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   grid-auto-rows: auto;
   background: linear-gradient(to right,  #fff5e1, #eafcff, #fce8f5);
-  justify-content: space-between; /* makes the row fill the width */
-  gap: 30px; /* controls spacing between cards */
-  width: 100%;
-  max-width: 2500px;
+  justify-content: space-between;
+  gap: 30px;
+  width: 95%;
+  max-width: 2200px;
   border-radius: 40px;
   margin: 0 auto;
+  padding-left: 20px;
   padding-top: 30px;
-  padding-left: 30px;
-
 }
 
-.product-card {
+.product-card-1 {
   width: 100%;
   max-width: 300px;
   margin-bottom: 40px;
-  margin: 0 1% 40px;
   box-sizing: border-box;
   background: rgba(255, 255, 255, 0.4);
-  border-radius: 20px;
+  border-radius: 40px;
   padding: 20px;
   text-align: center;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   break-inside: avoid;
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-
-.product-card:hover {
+.product-card-1:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.55);
 }
 
-.product-image {
+.product-image-container-1 {
+  height: 250px; /* Set the fixed height you want */
   width: 100%;
-  height: auto;
-  border-radius: 12px;
-  margin-bottom: 20px;
+  overflow: hidden;
+  padding-bottom: 30px;
+  border-radius: 30px; /* Optional: keeps image corners rounded */
 }
 
-.search-bar-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 40px; /* for spacing below navbar */
-  margin-bottom: 5px; /* spacing before the grid */
+.product-info {
+  padding-top: 10px;
 }
 
-.search-bar {
+.product-image-1 {
+  height: 250px;
   width: 100%;
-  max-width: 400px; 
-  padding: 14px 20px;
-  border-radius: 999px;
-  border: 1px solid #ddd;
-  font-size: 1rem;
-  background-color: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  object-fit: cover; /* Ensures the image fills and crops to container */
+  display: block;
 }
 
-.genre-button {
+
+.genre-button-1 {
   padding: 14px 20px;
   font-size: 1rem;
   border-radius: 999px;
@@ -271,41 +306,40 @@ body {
   transition: all 0.3s ease;
 }
 
-.genre-button:hover {
+.genre-button-1:hover {
   background-color: #f0f0f0;
 }
 
-.genre-button.active {
+.genre-button-1.active {
   background-color: #e0e0e0;
   color: #000;
 }
 
-
-.products-grid-wrapper {
+.products-grid-wrapper-1 {
   width: 100%;
   margin-top: 15px;
-  padding-bottom: 80px; /* Ensures space for the blur effect */
+  padding-bottom: 80px;
   padding-left: 60px;
 }
 
-.opacity-fade {
+.opacity-fade-2 {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-   height: 120px;
+  height: 120px;
   pointer-events: none;
-  z-index: 0; /* Lower than footer */
+  z-index: 0;
 }
 
-.opacity-fade::before {
+.opacity-fade-2::before {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(to top, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
 }
 
-.genre-filter-wrapper {
+.genre-filter-wrapper-1 {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -313,67 +347,38 @@ body {
   margin: 30px 0;
 }
 
-
-
-.product-title {
+.product-title-1 {
   font-size: 1.5rem;
   color: #165a9c;
   margin-bottom: 10px;
+  margin-top: 0;
 }
 
-.product-description {
+.product-description-1 {
   color: #165a9c;
   font-size: 1rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
-  .search-bar-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px; /* for spacing below navbar */
-    margin-bottom: 5px; /* spacing before the grid */
+  .products-container-1 {
+    padding: 20px;
   }
 
-  .products-grid-home {
-    padding-left: 20px; /* ✅ Remove left padding on mobile */
-    padding-right: 20px; /* Just in case */
+  .products-grid-home-1 {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
-  .products-container {
-    flex: 1; /* this fills the remaining space and pushes the footer down */
-    padding: 20px 20px 20px; 
-    font-family: 'DM Sans', sans-serif;
-    background-position: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .product-card-1 {
+    max-width: 400px;
+    margin-bottom: 30px;
   }
 
-  .products-grid {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* ✅ This centers the column */
-    width: 100%;
-    padding: 0 16px; /* ✅ Small side padding */
-    box-sizing: border-box;
+  .page-wrapper-home-1 {
+    padding-top: 40px;
   }
 
-  .product-card {
-    width: 100%;
-    max-width: 400px; /* ✅ Prevents card from stretching too far */
-    margin: 0 0 30px 0; /* ✅ Remove horizontal margins */
-  }
-
-  .artists-heading {
-    font-size: 1.5rem;
-    margin-bottom: 40px;
-    padding: 15px 30px;
-  }
-
-  .page-footer {
+  .page-footer-1 {
     font-size: 0.8rem;
     padding: 30px 0;
   }

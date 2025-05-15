@@ -22,6 +22,7 @@ const BuyerHomePage = () => {
     const logoImg = new Image();
     logoImg.src = "/bloobase.png";
     logoImg.onload = () => setImagesLoaded(prev => ({ ...prev, logo: true }));
+    //mock data
     setPurchases([
       { id: 1, name: 'Gold Ring', image: '/jewelry.jpg', status: 'Delivered' },
       { id: 2, name: 'Art Print', image: '/art.jpg', status: 'In Transit' },

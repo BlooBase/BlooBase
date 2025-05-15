@@ -177,9 +177,10 @@ useEffect(() => {
 
       // Filter by category
       if (selectedCategory !== 'All') {
-         result = result.filter(product =>
-            product.category?.toLowerCase() === selectedCategory.toLowerCase()
-         );
+        result = result.filter(product =>
+            (product.genre?.toLowerCase() === selectedCategory.toLowerCase()) ||
+            (product.category?.toLowerCase() === selectedCategory.toLowerCase())
+        );
       }
 
       // Search by product name

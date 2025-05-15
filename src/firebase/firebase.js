@@ -361,13 +361,15 @@ export const getSellerCard = async () => {
       }
     }
 
-    // Fetch the seller card to get the store name
+    // Fetch the seller card to get the store name and genre
     const sellerDocRef = doc(db, "Sellers", user.uid);
     const sellerSnap = await getDoc(sellerDocRef);
     let storeName = "Unknown Store";
+    let storeGenre = "Unknown";
     if (sellerSnap.exists()) {
       const sellerData = sellerSnap.data();
       storeName = sellerData.title || "Unknown Store";
+      storeGenre = sellerData.genre || "Unknown";
     }
 
     const productsRef = collection(db, "Products");
@@ -377,6 +379,7 @@ export const getSellerCard = async () => {
       image: imageUrl,
       name,
       price: formattedPrice,
+      genre: storeGenre, // <-- Add the genre field here
       createdAt: new Date(),
     });
   };

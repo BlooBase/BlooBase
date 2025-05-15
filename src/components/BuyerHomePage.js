@@ -1,4 +1,3 @@
-// BuyerHomePage.js
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getUserName } from '../firebase/firebase';
@@ -16,7 +15,7 @@ const BuyerHomePage = () => {
     };
     fetchUser();
 
-    const dummyOrders = [
+    const dummyOrders=[
       { id: 1, name: 'Gold Ring', image: '/jewelry.jpg', status: 'Delivered' },
       { id: 2, name: 'Art Print', image: '/art.jpg', status: 'In Transit' },
     ];

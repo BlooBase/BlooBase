@@ -16,7 +16,7 @@ import Store from './components/Store';
 import CardCreator from './components/CardCreator';
 import SellerHomePage from './components/SellerHomepage';
 import SellerSettings from './components/SellerSettings';
-import Cart from './components/Cart'; // Import the Cart component
+import Cart from './components/Cart'; 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

@@ -4,7 +4,7 @@ import { db, storage } from './firebase';
 
 export let cachedSellers = null; // Cache for sellers data
 // Hardcoded fallback products
-const hardcodedProducts = [
+export const hardcodedProducts = [
     {
       id: 'h1',
       title: 'poiandkeely',
@@ -72,20 +72,19 @@ const hardcodedProducts = [
   
 export async function retrieveSellers() {
   try {
-
     const snapshot = await getDocs(collection(db, 'Sellers'));
-    const fetchedSellers = [];
-
-    for (const doc of snapshot.docs) {
+    const fetchedSellers = await Promise.all(snapshot.docs.map(async (doc) => {
       const data = doc.data();
-
       let imageUrl = '';
       if (data.image) {
-        const imgRef = ref(storage, data.image);
-        imageUrl = await getDownloadURL(imgRef);
+        try {
+          const imgRef = ref(storage, data.image);
+          imageUrl = await getDownloadURL(imgRef);
+        } catch (e) {
+          imageUrl = '';
+        }
       }
-
-      fetchedSellers.push({
+      return {
         id: doc.id,
         title: data.title || 'Untitled',
         description: data.description || '',
@@ -93,11 +92,10 @@ export async function retrieveSellers() {
         color: data.color || '#ffffff',
         textColor: data.textColor || '#000000',
         genre: data.genre || 'Unknown',
-      });
-    }
-
+      };
+    }));
     const combinedSellers = [...hardcodedProducts, ...fetchedSellers];
-    cachedSellers = combinedSellers; // Cache the fetched data
+    cachedSellers = combinedSellers;
     return combinedSellers;
   } catch (error) {
     console.error('Error fetching sellers:', error);

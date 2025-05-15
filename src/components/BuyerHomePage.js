@@ -1,4 +1,3 @@
-// BuyerHomePage.js
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getUserName } from '../firebase/firebase';
@@ -16,16 +15,7 @@ const BuyerHomePage = () => {
     };
     fetchUser();
 
-<<<<<<< HEAD
-  useEffect(() => {
-    const logoImg = new Image();
-    logoImg.src = "/bloobase.png";
-    logoImg.onload = () => setImagesLoaded(prev => ({ ...prev, logo: true }));
-    //mock data
-    setPurchases([
-=======
-    const dummyOrders = [
->>>>>>> b02bea073372c8f639afd0f53192c9c6d3026acf
+    const dummyOrders=[
       { id: 1, name: 'Gold Ring', image: '/jewelry.jpg', status: 'Delivered' },
       { id: 2, name: 'Art Print', image: '/art.jpg', status: 'In Transit' },
     ];

@@ -23,24 +23,38 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app); 
 //API requests fucntion
-const apiRequest = async (url, /*default method****/method = 'GET', body = null) => {
-  const headers = {
-    'Content-Type': 'application/json',
-    // You might need to add authorization headers if your API requires it
-  };
-  const config = {
-    method,
-    headers,
-  };
-  if (body) {
-    config.body = JSON.stringify(body);
-  }
-  const response = await fetch(`${apiURL}${url}`, config); 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-  }
-  return await response.json();
+const apiRequest = async (url, method = 'GET', body = null) => {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    const token = await currentUser.getIdToken();
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const config = {
+    method,
+    headers,
+  };
+
+  if (body) {
+    config.body = JSON.stringify(body);
+  }
+
+  const response = await fetch(`${apiURL}${url}`, config); 
+
+  if (!response.ok) {
+    let errorMessage = `HTTP error! status: ${response.status}`;
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.error || errorMessage;
+    } catch (_) {}
+    throw new Error(errorMessage);
+  }
+
+  return await response.json();
 };
 
 async function addUserToFirestore(userId, email, name, role,autheProvider) {

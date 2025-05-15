@@ -335,12 +335,12 @@
   width: 90%;
   max-width: 900px;
   border-radius: 30px;
-  background-color: #f2f2f2;
+  background-color: #fff;
   padding: 20px 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
   flex-wrap: wrap;
   gap: 20px;
 }

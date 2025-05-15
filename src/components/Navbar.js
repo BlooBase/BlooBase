@@ -94,6 +94,14 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                     >
                       Account
                     </Link>
+                  ) : (userRole === "Admin" && currentPath !== '/Dashboard') ? (
+                    <Link
+                      to="/Dashboard"
+                      className="navbar-dropdown-item"
+                      style={{ textDecoration: 'none', color: '#000000' }}
+                    >
+                      Account
+                    </Link>
                   ) : null
                 )}
 

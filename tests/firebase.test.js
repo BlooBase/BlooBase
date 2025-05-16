@@ -1,4 +1,3 @@
-//this page tests the firebase functions from firebase.js
 import {
   auth,
   db,
@@ -18,6 +17,15 @@ import {
   updateCredentials,
   deleteAccount,
   getCollectionSize,
+  apiRequest,
+  uploadFile,
+  upsertSellerCard,
+  getSellerCard,
+  deleteSellerCard,
+  addProduct,
+  getSellerProducts,
+  updateProduct,
+  deleteProduct,
 } from '../src/firebase/firebase';
 import { initializeApp } from 'firebase/app';
 import {
@@ -54,7 +62,7 @@ jest.mock('firebase/app', () => ({
 
 jest.mock('firebase/auth', () => {
   const authMock = {
-    currentUser: null, // Initialize with null, can be set in tests
+    currentUser: null,
   };
   return {
     getAuth: jest.fn().mockReturnValue(authMock),
@@ -90,6 +98,9 @@ jest.mock('firebase/storage', () => ({
   getStorage: jest.fn(),
 }));
 
+// Mock global fetch
+global.fetch = jest.fn();
+
 // Mock global alert and console
 global.alert = jest.fn();
 global.console = {
@@ -103,6 +114,7 @@ describe('Firebase Functions', () => {
     email: 'test@example.com',
     displayName: 'Test User',
     emailVerified: true,
+    getIdToken: jest.fn().mockResolvedValue('mockToken'),
   };
   const mockDocRef = { id: 'user123' };
   const mockUserData = {
@@ -118,7 +130,7 @@ describe('Firebase Functions', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    auth.currentUser = mockUser; // Set mock user
+    auth.currentUser = mockUser;
     doc.mockReturnValue(mockDocRef);
     collection.mockReturnValue(mockCollectionRef);
     query.mockReturnValue(mockQuery);
@@ -126,368 +138,853 @@ describe('Firebase Functions', () => {
     getFirestore.mockReturnValue(db);
     getStorage.mockReturnValue(storage);
     serverTimestamp.mockReturnValue('timestamp');
+    global.fetch.mockReset();
     global.console.log.mockClear();
     global.console.error.mockClear();
     global.alert.mockClear();
   });
 
-  test('addUserToFirestore adds user data to Firestore', async () => {
-    setDoc.mockResolvedValue();
-    await addUserToFirestore(mockUser.uid, mockUser.email, mockUser.displayName, 'user', 'Firebase Auth');
-    expect(doc).toHaveBeenCalledWith(db, 'Users', mockUser.uid);
-    expect(setDoc).toHaveBeenCalledWith(mockDocRef, {
-      Email: mockUser.email,
-      Name: mockUser.displayName,
-      joinedAt: 'timestamp',
-      authProvider: 'Firebase Auth',
-      Role: 'user',
+  describe('apiRequest', () => {
+    test('makes GET request without auth', async () => {
+      auth.currentUser = null;
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ data: 'test' }),
+      });
+      const result = await apiRequest('/test');
+      expect(fetch).toHaveBeenCalledWith('https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/test', {
+        method: 'GET',
+        headers: {},
+      });
+      expect(result).toEqual({ data: 'test' });
     });
-    expect(console.log).toHaveBeenCalledWith('User added to Firestore!');
-  });
 
-  test('addUserToFirestore handles errors', async () => {
-    setDoc.mockRejectedValue(new Error('Firestore error'));
-    await addUserToFirestore(mockUser.uid, mockUser.email, mockUser.displayName, 'user', 'Firebase Auth');
-    expect(console.error).toHaveBeenCalledWith('Error adding user to Firestore:', expect.any(Error));
-  });
-
-  test('getUserData retrieves user data', async () => {
-    getDoc.mockResolvedValue({ exists: () => true, data: () => mockUserData });
-    const result = await getUserData();
-    expect(doc).toHaveBeenCalledWith(db, 'Users', mockUser.uid);
-    expect(getDoc).toHaveBeenCalledWith(mockDocRef);
-    expect(result).toEqual(mockUserData);
-  });
-
-  test('getUserData throws error if user not authenticated', async () => {
-    auth.currentUser = null;
-    await expect(getUserData()).rejects.toThrow('User is not authenticated');
-  });
-
-  test('getUserData throws error if document does not exist', async () => {
-    getDoc.mockResolvedValue({ exists: () => false });
-    await expect(getUserData()).rejects.toThrow('User document does not exist in Firestore');
-  });
-
-  test('getUserName retrieves user name', async () => {
-    getDoc.mockResolvedValue({ exists: () => true, data: () => mockUserData });
-    const result = await getUserName();
-    expect(result).toBe(mockUserData.Name);
-  });
-
-  test('getUserName returns null on error', async () => {
-    getDoc.mockRejectedValue(new Error('Firestore error'));
-    const result = await getUserName();
-    expect(console.error).toHaveBeenCalledWith('Error fetching user name:', expect.any(Error));
-    expect(result).toBeNull();
-  });
-
-  test('getUserRole retrieves user role', async () => {
-    getDoc.mockResolvedValue({ exists: () => true, data: () => mockUserData });
-    const result = await getUserRole();
-    expect(result).toBe(mockUserData.Role);
-  });
-
-  test('getUserRole returns null on error', async () => {
-    getDoc.mockRejectedValue(new Error('Firestore error'));
-    const result = await getUserRole();
-    expect(console.error).toHaveBeenCalledWith('Error fetching user name:', expect.any(Error));
-    expect(result).toBeNull();
-  });
-
-  test('getUserAuthProvider retrieves auth provider', async () => {
-    getDoc.mockResolvedValue({ exists: () => true, data: () => mockUserData });
-    const result = await getUserAuthProvider();
-    expect(result).toBe(mockUserData.authProvider);
-  });
-
-  test('getUserAuthProvider returns null on error', async () => {
-    getDoc.mockRejectedValue(new Error('Firestore error'));
-    const result = await getUserAuthProvider();
-    expect(console.error).toHaveBeenCalledWith('Error fetching user auth provider:', expect.any(Error));
-    expect(result).toBeNull();
-  });
-
-  test('logout signs out user', async () => {
-    signOut.mockResolvedValue();
-    await logout();
-    expect(signOut).toHaveBeenCalledWith(auth);
-    expect(console.log).toHaveBeenCalledWith('User signed out');
-  });
-
-  test('logout handles errors', async () => {
-    signOut.mockRejectedValue(new Error('Sign out error'));
-    await logout();
-    expect(console.error).toHaveBeenCalledWith('Sign-out error:', expect.any(Error));
-  });
-
-  test('getRoleSize retrieves count of users with role', async () => {
-    where.mockReturnValue({ role: 'admin' });
-    getCountFromServer.mockResolvedValue(mockSnapshot);
-    const result = await getRoleSize('admin');
-    expect(collection).toHaveBeenCalledWith(db, 'Users');
-    expect(where).toHaveBeenCalledWith('Role', '==', 'admin');
-    expect(query).toHaveBeenCalledWith(mockCollectionRef, { role: 'admin' });
-    expect(getCountFromServer).toHaveBeenCalledWith(mockQuery);
-    expect(result).toBe(5);
-  });
-
-  test('getCollectionSize retrieves collection count', async () => {
-    getCountFromServer.mockResolvedValue(mockSnapshot);
-    const result = await getCollectionSize('Products');
-    expect(collection).toHaveBeenCalledWith(db, 'Products');
-    expect(query).toHaveBeenCalledWith(mockCollectionRef);
-    expect(getCountFromServer).toHaveBeenCalledWith(mockQuery);
-    expect(result).toBe(5);
-  });
-
-  test('signupNormUser creates user and adds to Firestore', async () => {
-    createUserWithEmailAndPassword.mockResolvedValue({ user: mockUser });
-    sendEmailVerification.mockResolvedValue();
-    setDoc.mockResolvedValue();
-    signupNormUser({
-      name: 'Test User',
-      email: 'test@example.com',
-      password: 'password',
-      confirmPassword: 'password',
-      role: 'user',
+    test('makes POST request with auth and JSON body', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ data: 'test' }),
+      });
+      const result = await apiRequest('/test', 'POST', { key: 'value' });
+      expect(fetch).toHaveBeenCalledWith('https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/test', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer mockToken',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ key: 'value' }),
+      });
+      expect(result).toEqual({ data: 'test' });
     });
-    expect(createUserWithEmailAndPassword).toHaveBeenCalledWith(auth, 'test@example.com', 'password');
-    expect(sendEmailVerification).toHaveBeenCalledWith(mockUser);
-    expect(setDoc).toHaveBeenCalledWith(mockDocRef, {
-      Email: 'test@example.com',
-      Name: 'Test User',
-      joinedAt: 'timestamp',
-      authProvider: 'Firebase Auth',
-      Role: 'user',
+
+    test('makes POST request with FormData', async () => {
+      const formData = new FormData();
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ data: 'test' }),
+      });
+      const result = await apiRequest('/test', 'POST', formData, true);
+      expect(fetch).toHaveBeenCalledWith('https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/test', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mockToken' },
+        body: formData,
+      });
+      expect(result).toEqual({ data: 'test' });
     });
-    expect(alert).toHaveBeenCalledWith('Account created! Please check your email for verification.');
-  });
 
-  test('signupNormUser returns error for mismatched passwords', async () => {
-    const result = signupNormUser({
-      name: 'Test User',
-      email: 'test@example.com',
-      password: 'password',
-      confirmPassword: 'different',
-      role: 'user',
+    test('throws error on non-OK response with JSON error', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 400,
+        json: jest.fn().mockResolvedValue({ error: 'Bad request' }),
+      });
+      await expect(apiRequest('/test')).rejects.toThrow('Bad request');
     });
-    expect(result).toEqual({ success: false, message: 'Passwords do not match' });
-    expect(createUserWithEmailAndPassword).not.toHaveBeenCalled();
-  });
 
-  test('signupNormUser handles signup errors', async () => {
-    createUserWithEmailAndPassword.mockRejectedValue(new Error('Signup error'));
-    signupNormUser({
-      name: 'Test User',
-      email: 'test@example.com',
-      password: 'password',
-      confirmPassword: 'password',
-      role: 'user',
+    test('throws error on non-OK response without JSON', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+        json: jest.fn().mockRejectedValue(new Error('Invalid JSON')),
+      });
+      await expect(apiRequest('/test')).rejects.toThrow('HTTP error! status: 500');
     });
-    expect(alert).toHaveBeenCalledWith('Signup failed: Signup error');
   });
 
-  test('signupNormUser handles verification email errors', async () => {
-    createUserWithEmailAndPassword.mockResolvedValue({ user: mockUser });
-    sendEmailVerification.mockRejectedValue(new Error('Verification error'));
-    signupNormUser({
-      name: 'Test User',
-      email: 'test@example.com',
-      password: 'password',
-      confirmPassword: 'password',
-      role: 'user',
+  describe('uploadFile', () => {
+    test('uploads file and returns path', async () => {
+      const file = new File(['content'], 'test.jpg');
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('folder', 'test_folder');
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ path: '/uploads/test.jpg' }),
+      });
+      const result = await uploadFile(file, 'test_folder');
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/upload',
+        expect.objectContaining({
+          method: 'POST',
+          body: expect.any(FormData),
+        })
+      );
+      expect(result).toBe('/uploads/test.jpg');
     });
-    expect(console.error).toHaveBeenCalledWith('Error sending verification email:', expect.any(Error));
-    expect(alert).toHaveBeenCalledWith('Error sending verification email.');
-  });
 
-  test('GoogleSignup signs in and adds new user to Firestore', async () => {
-    GoogleAuthProvider.mockReturnValue({ provider: 'google' });
-    signInWithPopup.mockResolvedValue({
-      user: mockUser,
-      _tokenResponse: { isNewUser: true },
+    test('throws error if user not authenticated', async () => {
+      auth.currentUser = null;
+      await expect(uploadFile(new File(['content'], 'test.jpg'), 'test_folder')).rejects.toThrow('User not authenticated');
     });
-    setDoc.mockResolvedValue();
-    await GoogleSignup('user');
-    expect(signInWithPopup).toHaveBeenCalledWith(auth, { provider: 'google' });
-    expect(setDoc).toHaveBeenCalledWith(mockDocRef, {
-      Email: mockUser.email,
-      Name: mockUser.displayName,
-      joinedAt: 'timestamp',
-      authProvider: 'Google',
-      Role: 'user',
+
+    test('throws error on upload failure', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 400,
+        json: jest.fn().mockResolvedValue({ error: 'Upload failed' }),
+      });
+      await expect(uploadFile(new File(['content'], 'test.jpg'), 'test_folder')).rejects.toThrow('Upload failed');
     });
-    expect(alert).toHaveBeenCalledWith('Signed in with Google!');
   });
 
-  test('GoogleSignup skips Firestore for existing user', async () => {
-    GoogleAuthProvider.mockReturnValue({ provider: 'google' });
-    signInWithPopup.mockResolvedValue({
-      user: mockUser,
-      _tokenResponse: { isNewUser: false },
+  describe('addUserToFirestore', () => {
+    test('adds user data via API', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ success: true }),
+      });
+      await addUserToFirestore(mockUser.uid, mockUser.email, mockUser.displayName, 'user', 'Firebase Auth');
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/users',
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.objectContaining({
+            Authorization: 'Bearer mockToken',
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify({
+            userId: mockUser.uid,
+            email: mockUser.email,
+            name: mockUser.displayName,
+            role: 'user',
+            autheProvider: 'Firebase Auth',
+          }),
+        })
+      );
+      expect(console.log).toHaveBeenCalledWith('User added via API!');
     });
-    await GoogleSignup('user');
-    expect(signInWithPopup).toHaveBeenCalledWith(auth, { provider: 'google' });
-    expect(setDoc).not.toHaveBeenCalled();
-    expect(alert).toHaveBeenCalledWith('Signed in with Google!');
-  });
 
-  test('GoogleSignup handles errors', async () => {
-    GoogleAuthProvider.mockReturnValue({ provider: 'google' });
-    signInWithPopup.mockRejectedValue(new Error('Google error'));
-    await GoogleSignup('user');
-    expect(console.error).toHaveBeenCalledWith('Google Sign-in Error:', expect.any(Error));
-    expect(alert).toHaveBeenCalledWith('Google Sign-in failed: Google error');
-  });
-
-  test('loginNormUser logs in verified user', async () => {
-    signInWithEmailAndPassword.mockResolvedValue({ user: mockUser });
-    const result = await loginNormUser({ email: 'test@example.com', password: 'password' });
-    expect(signInWithEmailAndPassword).toHaveBeenCalledWith(auth, 'test@example.com', 'password');
-    expect(alert).toHaveBeenCalledWith('Login successful!');
-    expect(result).toBe(mockUser);
-  });
-
-  test('loginNormUser rejects unverified user', async () => {
-    signInWithEmailAndPassword.mockResolvedValue({ user: { ...mockUser, emailVerified: false } });
-    signOut.mockResolvedValue();
-    await expect(loginNormUser({ email: 'test@example.com', password: 'password' })).rejects.toThrow('Email not verified');
-    expect(signOut).toHaveBeenCalledWith(auth);
-    expect(alert).toHaveBeenCalledWith('Please verify your email before logging in.');
-  });
-
-  test('loginNormUser handles login errors', async () => {
-    signInWithEmailAndPassword.mockRejectedValue(new Error('Login error'));
-    await expect(loginNormUser({ email: 'test@example.com', password: 'password' })).rejects.toThrow('Login error');
-    expect(console.error).toHaveBeenCalledWith('Login failed:', expect.any(Error));
-  });
-
-  test('updateCredentials updates name only', async () => {
-    updateDoc.mockResolvedValue();
-    await updateCredentials({ name: 'New Name' });
-    expect(updateDoc).toHaveBeenCalledWith(mockDocRef, { Name: 'New Name' });
-    expect(EmailAuthProvider.credential).not.toHaveBeenCalled();
-    expect(reauthenticateWithCredential).not.toHaveBeenCalled();
-    expect(updateEmail).not.toHaveBeenCalled();
-    expect(updatePassword).not.toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith('Name updated in Firestore.');
-  });
-
-  test('updateCredentials updates email only', async () => {
-    updateDoc.mockResolvedValue();
-    EmailAuthProvider.credential.mockReturnValue({ credential: 'cred' });
-    reauthenticateWithCredential.mockResolvedValue();
-    updateEmail.mockResolvedValue();
-    await updateCredentials({
-      email: 'new@example.com',
-      password: 'password',
+    test('handles API errors', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 400,
+        json: jest.fn().mockResolvedValue({ error: 'API error' }),
+      });
+      await expect(addUserToFirestore(mockUser.uid, mockUser.email, mockUser.displayName, 'user', 'Firebase Auth')).rejects.toThrow('API error');
+      expect(console.error).toHaveBeenCalledWith('Error adding user via API:', expect.any(Error));
     });
-    expect(EmailAuthProvider.credential).toHaveBeenCalledWith(mockUser.email, 'password');
-    expect(reauthenticateWithCredential).toHaveBeenCalledWith(mockUser, { credential: 'cred' });
-    expect(updateEmail).toHaveBeenCalledWith(mockUser, 'new@example.com');
-    expect(updateDoc).toHaveBeenCalledWith(mockDocRef, { Email: 'new@example.com' });
-    expect(updatePassword).not.toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith('Email updated.');
   });
 
-  test('updateCredentials updates password only', async () => {
-    updateDoc.mockResolvedValue();
-    EmailAuthProvider.credential.mockReturnValue({ credential: 'cred' });
-    reauthenticateWithCredential.mockResolvedValue();
-    updatePassword.mockResolvedValue();
-    await updateCredentials({
-      password: 'password',
-      newpassword: 'newpassword',
+  describe('getUserData', () => {
+    test('retrieves user data via API', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockUserData),
+      });
+      const result = await getUserData();
+      expect(fetch).toHaveBeenCalledWith(
+        `https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/users/${mockUser.uid}`,
+        expect.any(Object)
+      );
+      expect(result).toEqual(mockUserData);
     });
-    expect(EmailAuthProvider.credential).toHaveBeenCalledWith(mockUser.email, 'password');
-    expect(reauthenticateWithCredential).toHaveBeenCalledWith(mockUser, { credential: 'cred' });
-    expect(updatePassword).toHaveBeenCalledWith(mockUser, 'newpassword');
-    expect(updateEmail).not.toHaveBeenCalled();
-    expect(updateDoc).not.toHaveBeenCalledWith(mockDocRef, expect.any(Object));
-    expect(console.log).toHaveBeenCalledWith('Password updated.');
-  });
 
-  test('updateCredentials skips email update if same as current', async () => {
-    updateDoc.mockResolvedValue();
-    await updateCredentials({
-      email: mockUser.email,
-      password: 'password',
+    test('throws error if user not authenticated', async () => {
+      auth.currentUser = null;
+      await expect(getUserData()).rejects.toThrow('User is not authenticated');
     });
-    expect(EmailAuthProvider.credential).not.toHaveBeenCalled();
-    expect(reauthenticateWithCredential).not.toHaveBeenCalled();
-    expect(updateEmail).not.toHaveBeenCalled();
-    expect(updateDoc).not.toHaveBeenCalled();
+
+    test('throws error on API failure', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 404,
+        json: jest.fn().mockResolvedValue({ error: 'User not found' }),
+      });
+      await expect(getUserData()).rejects.toThrow('User not found');
+      expect(console.error).toHaveBeenCalledWith('Error fetching user data via API:', expect.any(Error));
+    });
   });
 
-  test('updateCredentials handles errors', async () => {
-    updateDoc.mockRejectedValue(new Error('Update error'));
-    await expect(updateCredentials({ name: 'New Name' })).rejects.toThrow('Update error');
-    expect(console.error).toHaveBeenCalledWith('Error updating credentials:', expect.any(Error));
+  describe('getUserName', () => {
+    test('retrieves user name', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockUserData),
+      });
+      const result = await getUserName();
+      expect(result).toBe(mockUserData.Name);
+    });
+
+    test('returns null on error', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+        json: jest.fn().mockResolvedValue({ error: 'Server error' }),
+      });
+      const result = await getUserName();
+      expect(console.error).toHaveBeenCalledWith('Error fetching user name via API:', expect.any(Error));
+      expect(result).toBeNull();
+    });
   });
 
-  test('updateCredentials handles reauthentication errors', async () => {
-    EmailAuthProvider.credential.mockReturnValue({ credential: 'cred' });
-    reauthenticateWithCredential.mockRejectedValue(new Error('Reauth error'));
-    await expect(
-      updateCredentials({
+  describe('getUserRole', () => {
+    test('retrieves user role', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockUserData),
+      });
+      const result = await getUserRole();
+      expect(result).toBe(mockUserData.Role);
+    });
+
+    test('returns null on error', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+        json: jest.fn().mockResolvedValue({ error: 'Server error' }),
+      });
+      const result = await getUserRole();
+      expect(console.error).toHaveBeenCalledWith('Error fetching user role via API:', expect.any(Error));
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('getUserAuthProvider', () => {
+    test('retrieves auth provider', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockUserData),
+      });
+      const result = await getUserAuthProvider();
+      expect(result).toBe(mockUserData.authProvider);
+    });
+
+    test('returns null on error', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+        json: jest.fn().mockResolvedValue({ error: 'Server error' }),
+      });
+      const result = await getUserAuthProvider();
+      expect(console.error).toHaveBeenCalledWith('Error fetching user auth provider via API:', expect.any(Error));
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('logout', () => {
+    test('signs out user', async () => {
+      signOut.mockResolvedValue();
+      await logout();
+      expect(signOut).toHaveBeenCalledWith(auth);
+      expect(console.log).toHaveBeenCalledWith('User signed out');
+    });
+
+    test('handles errors', async () => {
+      signOut.mockRejectedValue(new Error('Sign out error'));
+      await logout();
+      expect(console.error).toHaveBeenCalledWith('Sign-out error:', expect.any(Error));
+    });
+  });
+
+  describe('getRoleSize', () => {
+    test('retrieves count of users with role', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ count: 5 }),
+      });
+      const result = await getRoleSize('admin');
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/roles/admin/size',
+        expect.any(Object)
+      );
+      expect(result).toBe(5);
+    });
+
+    test('returns 0 on error', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+        json: jest.fn().mockResolvedValue({ error: 'Server error' }),
+      });
+      const result = await getRoleSize('admin');
+      expect(console.error).toHaveBeenCalledWith('Error fetching size of role admin via API:', expect.any(Error));
+      expect(result).toBe(0);
+    });
+  });
+
+  describe('getCollectionSize', () => {
+    test('retrieves collection count', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ count: 5 }),
+      });
+      const result = await getCollectionSize('Products');
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/collections/Products/size',
+        expect.any(Object)
+      );
+      expect(result).toBe(5);
+    });
+
+    test('returns 0 on error', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+        json: jest.fn().mockResolvedValue({ error: 'Server error' }),
+      });
+      const result = await getCollectionSize('Products');
+      expect(console.error).toHaveBeenCalledWith('Error fetching size of collection Products via API:', expect.any(Error));
+      expect(result).toBe(0);
+    });
+  });
+
+  describe('signupNormUser', () => {
+    test('creates user and adds to API', async () => {
+      createUserWithEmailAndPassword.mockResolvedValue({ user: mockUser });
+      sendEmailVerification.mockResolvedValue();
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ success: true }),
+      });
+      await signupNormUser({
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'password',
+        confirmPassword: 'password',
+        role: 'user',
+      });
+      expect(createUserWithEmailAndPassword).toHaveBeenCalledWith(auth, 'test@example.com', 'password');
+      expect(sendEmailVerification).toHaveBeenCalledWith(mockUser);
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/users',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({
+            userId: mockUser.uid,
+            email: 'test@example.com',
+            name: 'Test User',
+            role: 'user',
+            autheProvider: 'Firebase Auth',
+          }),
+        })
+      );
+      expect(alert).toHaveBeenCalledWith('Account created! Please check your email for verification.');
+    });
+
+    test('alerts for mismatched passwords', async () => {
+      await signupNormUser({
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'password',
+        confirmPassword: 'different',
+        role: 'user',
+      });
+      expect(alert).toHaveBeenCalledWith('Passwords do not match');
+      expect(createUserWithEmailAndPassword).not.toHaveBeenCalled();
+    });
+
+    test('handles signup errors', async () => {
+      createUserWithEmailAndPassword.mockRejectedValue(new Error('Signup error'));
+      await signupNormUser({
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'password',
+        confirmPassword: 'password',
+        role: 'user',
+      });
+      expect(alert).toHaveBeenCalledWith('Signup failed: Signup error');
+    });
+
+    test('handles API errors after user creation', async () => {
+      createUserWithEmailAndPassword.mockResolvedValue({ user: mockUser });
+      sendEmailVerification.mockResolvedValue();
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 400,
+        json: jest.fn().mockResolvedValue({ error: 'API error' }),
+      });
+      await signupNormUser({
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'password',
+        confirmPassword: 'password',
+        role: 'user',
+      });
+      expect(alert).toHaveBeenCalledWith('Signup failed: API error');
+    });
+  });
+
+  describe('GoogleSignup', () => {
+    test('signs in and adds new user via API', async () => {
+      GoogleAuthProvider.mockReturnValue({ provider: 'google' });
+      signInWithPopup.mockResolvedValue({ user: mockUser });
+      fetch
+        .mockResolvedValueOnce({ ok: false, status: 404, json: jest.fn().mockResolvedValue({ error: 'Not found' }) }) // User does not exist
+        .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValue({ success: true }) }); // Add user
+      await GoogleSignup('user');
+      expect(signInWithPopup).toHaveBeenCalledWith(auth, { provider: 'google' });
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/users',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({
+            userId: mockUser.uid,
+            email: mockUser.email,
+            name: mockUser.displayName,
+            role: 'user',
+            authProvider: 'Google',
+          }),
+        })
+      );
+      expect(alert).toHaveBeenCalledWith('Signed in with Google!');
+    });
+
+    test('skips API add for existing user', async () => {
+      GoogleAuthProvider.mockReturnValue({ provider: 'google' });
+      signInWithPopup.mockResolvedValue({ user: mockUser });
+      fetch.mockResolvedValue({ ok: true, json: jest.fn().mockResolvedValue(mockUserData) });
+      await GoogleSignup('user');
+      expect(signInWithPopup).toHaveBeenCalledWith(auth, { provider: 'google' });
+      expect(fetch).not.toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/users',
+        expect.any(Object)
+      );
+      expect(alert).toHaveBeenCalledWith('Signed in with Google!');
+    });
+
+    test('handles errors', async () => {
+      GoogleAuthProvider.mockReturnValue({ provider: 'google' });
+      signInWithPopup.mockRejectedValue(new Error('Google error'));
+      await GoogleSignup('user');
+      expect(console.error).toHaveBeenCalledWith('Google Sign-in Error:', expect.any(Error));
+      expect(alert).toHaveBeenCalledWith('Google Sign-in failed: Google error');
+    });
+  });
+
+  describe('loginNormUser', () => {
+    test('logs in verified user', async () => {
+      signInWithEmailAndPassword.mockResolvedValue({ user: mockUser });
+      const result = await loginNormUser({ email: 'test@example.com', password: 'password' });
+      expect(signInWithEmailAndPassword).toHaveBeenCalledWith(auth, 'test@example.com', 'password');
+      expect(alert).toHaveBeenCalledWith('Login successful!');
+      expect(result).toBe(mockUser);
+    });
+
+    test('rejects unverified user', async () => {
+      signInWithEmailAndPassword.mockResolvedValue({ user: { ...mockUser, emailVerified: false } });
+      signOut.mockResolvedValue();
+      await expect(loginNormUser({ email: 'test@example.com', password: 'password' })).rejects.toThrow('Email not verified');
+      expect(signOut).toHaveBeenCalledWith(auth);
+      expect(alert).toHaveBeenCalledWith('Please verify your email before logging in.');
+    });
+
+    test('handles login errors', async () => {
+      signInWithEmailAndPassword.mockRejectedValue(new Error('Login error'));
+      await expect(loginNormUser({ email: 'test@example.com', password: 'password' })).rejects.toThrow('Login error');
+      expect(console.error).toHaveBeenCalledWith('Login failed:', expect.any(Error));
+    });
+  });
+
+  describe('updateCredentials', () => {
+    test('updates name', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ success: true }),
+      });
+      await updateCredentials({ name: 'New Name' });
+      expect(fetch).toHaveBeenCalledWith(
+        `https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/users/${mockUser.uid}`,
+        expect.objectContaining({
+          method: 'PATCH',
+          body: JSON.stringify({ name: 'New Name' }),
+        })
+      );
+      expect(alert).toHaveBeenCalledWith('Credentials updated successfully!');
+    });
+
+    test('updates email with password', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ success: true }),
+      });
+      await updateCredentials({
         email: 'new@example.com',
         password: 'password',
-      })
-    ).rejects.toThrow('Reauth error');
-    expect(console.error).toHaveBeenCalledWith('Error updating credentials:', expect.any(Error));
+      });
+      expect(fetch).toHaveBeenCalledWith(
+        `https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/users/${mockUser.uid}`,
+        expect.objectContaining({
+          method: 'PATCH',
+          body: JSON.stringify({ email: 'new@example.com', password: 'password' }),
+        })
+      );
+      expect(alert).toHaveBeenCalledWith('Credentials updated successfully!');
+    });
+
+    test('updates password', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ success: true }),
+      });
+      await updateCredentials({
+        password: 'password',
+        newpassword: 'newpassword',
+      });
+      expect(fetch).toHaveBeenCalledWith(
+        `https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/users/${mockUser.uid}`,
+        expect.objectContaining({
+          method: 'PATCH',
+          body: JSON.stringify({ password: 'password', newpassword: 'newpassword' }),
+        })
+      );
+      expect(alert).toHaveBeenCalledWith('Credentials updated successfully!');
+    });
+
+    test('throws error if user not authenticated', async () => {
+      auth.currentUser = null;
+      await expect(updateCredentials({ name: 'New Name' })).rejects.toThrow('User not authenticated');
+    });
+
+    test('handles API errors', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 400,
+        json: jest.fn().mockResolvedValue({ error: 'Update error' }),
+      });
+      await expect(updateCredentials({ name: 'New Name' })).rejects.toThrow('Update error');
+      expect(alert).toHaveBeenCalledWith('Error updating credentials: Update error');
+    });
   });
 
-  test('deleteAccount deletes user and Firestore document', async () => {
-    EmailAuthProvider.credential.mockReturnValue({ credential: 'cred' });
-    reauthenticateWithCredential.mockResolvedValue();
-    deleteDoc.mockResolvedValue();
-    deleteUser.mockResolvedValue();
-    await deleteAccount('password');
-    expect(EmailAuthProvider.credential).toHaveBeenCalledWith(mockUser.email, 'password');
-    expect(reauthenticateWithCredential).toHaveBeenCalledWith(mockUser, { credential: 'cred' });
-    expect(deleteDoc).toHaveBeenCalledWith(mockDocRef);
-    expect(deleteUser).toHaveBeenCalledWith(mockUser);
+  describe('deleteAccount', () => {
+    test('deletes user via API and Firebase', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ success: true }),
+      });
+      deleteUser.mockResolvedValue();
+      await deleteAccount('password');
+      expect(fetch).toHaveBeenCalledWith(
+        `https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/users/${mockUser.uid}`,
+        expect.objectContaining({
+          method: 'DELETE',
+          body: JSON.stringify({ currentPassword: 'password' }),
+        })
+      );
+      expect(deleteUser).toHaveBeenCalledWith(mockUser);
+      expect(alert).toHaveBeenCalledWith('Account deleted successfully!');
+    });
+
+    test('throws error if user not authenticated', async () => {
+      auth.currentUser = null;
+      await expect(deleteAccount('password')).rejects.toThrow('User not authenticated');
+    });
+
+    test('handles API errors', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 400,
+        json: jest.fn().mockResolvedValue({ error: 'Delete error' }),
+      });
+      await expect(deleteAccount('password')).rejects.toThrow('Delete error');
+      expect(alert).toHaveBeenCalledWith('Error deleting account: Delete error');
+    });
   });
 
-  test('deleteAccount throws error if user not authenticated', async () => {
-    auth.currentUser = null;
-    await expect(deleteAccount('password')).rejects.toThrow('User not authenticated');
-    expect(EmailAuthProvider.credential).not.toHaveBeenCalled();
+  describe('GoogleLogin', () => {
+    test('logs in existing user', async () => {
+      GoogleAuthProvider.mockReturnValue({ provider: 'google' });
+      signInWithPopup.mockResolvedValue({ user: mockUser });
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockUserData),
+      });
+      await GoogleLogin();
+      expect(signInWithPopup).toHaveBeenCalledWith(auth, { provider: 'google' });
+      expect(fetch).toHaveBeenCalledWith(
+        `https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/users/${mockUser.uid}`,
+        expect.any(Object)
+      );
+      expect(alert).toHaveBeenCalledWith('Logged in with Google!');
+    });
+
+    test('rejects non-existing user', async () => {
+      GoogleAuthProvider.mockReturnValue({ provider: 'google' });
+      signInWithPopup.mockResolvedValue({ user: mockUser });
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 404,
+        json: jest.fn().mockResolvedValue({ error: 'User not found' }),
+      });
+      await GoogleLogin();
+      expect(alert).toHaveBeenCalledWith('User does not exist (likely a signup issue).');
+    });
+
+    test('handles errors', async () => {
+      GoogleAuthProvider.mockReturnValue({ provider: 'google' });
+      signInWithPopup.mockRejectedValue(new Error('Google error'));
+      await GoogleLogin();
+      expect(console.error).toHaveBeenCalledWith('Google Login Error:', expect.any(Error));
+      expect(alert).toHaveBeenCalledWith('Google Login failed: Google error');
+    });
   });
 
-  test('deleteAccount handles reauthentication errors', async () => {
-    EmailAuthProvider.credential.mockReturnValue({ credential: 'cred' });
-    reauthenticateWithCredential.mockRejectedValue(new Error('Reauth error'));
-    await expect(deleteAccount('password')).rejects.toThrow('Reauth error');
-    expect(deleteDoc).not.toHaveBeenCalled();
-    expect(deleteUser).not.toHaveBeenCalled();
+  describe('upsertSellerCard', () => {
+    test('upserts seller card with image path', async () => {
+      const cardData = {
+        image: '/images/test.jpg',
+        color: 'blue',
+        description: 'Test card',
+        genre: 'test',
+        textColor: 'white',
+        title: 'Test Card',
+      };
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ success: true }),
+      });
+      await upsertSellerCard(cardData);
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/sellers/card',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({
+            ...cardData,
+            userId: mockUser.uid,
+          }),
+        })
+      );
+    });
+
+    test('upserts seller card with file upload', async () => {
+      const file = new File(['content'], 'test.jpg');
+      const cardData = {
+        image: file,
+        color: 'blue',
+        description: 'Test card',
+        genre: 'test',
+        textColor: 'white',
+        title: 'Test Card',
+      };
+      fetch
+        .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValue({ path: '/uploads/test.jpg' }) }) // uploadFile
+        .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValue({ success: true }) }); // upsert
+      await upsertSellerCard(cardData);
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/sellers/card',
+        expect.objectContaining({
+          body: JSON.stringify({
+            ...cardData,
+            image: '/uploads/test.jpg',
+            userId: mockUser.uid,
+          }),
+        })
+      );
+    });
+
+    test('throws error if user not authenticated', async () => {
+      auth.currentUser = null;
+      await expect(upsertSellerCard({})).rejects.toThrow('User not authenticated');
+    });
   });
 
-  test('GoogleLogin logs in existing user', async () => {
-    GoogleAuthProvider.mockReturnValue({ provider: 'google' });
-    signInWithPopup.mockResolvedValue({ user: mockUser });
-    getDoc.mockResolvedValue({ exists: () => true, data: () => mockUserData });
-    await GoogleLogin();
-    expect(signInWithPopup).toHaveBeenCalledWith(auth, { provider: 'google' });
-    expect(getDoc).toHaveBeenCalledWith(mockDocRef);
-    expect(alert).toHaveBeenCalledWith('Logged in with Google!');
+  describe('getSellerCard', () => {
+    test('fetches seller card', async () => {
+      const cardData = { title: 'Test Card' };
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue(cardData),
+      });
+      const result = await getSellerCard();
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/sellers/card',
+        expect.any(Object)
+      );
+      expect(result).toEqual(cardData);
+    });
+
+    test('handles API errors', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 404,
+        json: jest.fn().mockResolvedValue({ error: 'Not found' }),
+      });
+      await expect(getSellerCard()).rejects.toThrow('Not found');
+    });
   });
 
-  test('GoogleLogin rejects non-existing user', async () => {
-    GoogleAuthProvider.mockReturnValue({ provider: 'google' });
-    signInWithPopup.mockResolvedValue({ user: mockUser });
-    getDoc.mockResolvedValue({ exists: () => false });
-    await GoogleLogin();
-    expect(getDoc).toHaveBeenCalledWith(mockDocRef);
-    expect(alert).toHaveBeenCalledWith('User does not exist');
+  describe('deleteSellerCard', () => {
+    test('deletes seller card', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ success: true }),
+      });
+      await deleteSellerCard();
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/sellers/card',
+        expect.objectContaining({ method: 'DELETE' })
+      );
+    });
+
+    test('handles API errors', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 400,
+        json: jest.fn().mockResolvedValue({ error: 'Delete error' }),
+      });
+      await expect(deleteSellerCard()).rejects.toThrow('Delete error');
+    });
   });
 
-  test('GoogleLogin handles errors', async () => {
-    GoogleAuthProvider.mockReturnValue({ provider: 'google' });
-    signInWithPopup.mockRejectedValue(new Error('Google error'));
-    await GoogleLogin();
-    expect(console.error).toHaveBeenCalledWith('Google Login Error:', expect.any(Error));
-    expect(alert).toHaveBeenCalledWith('Google Login failed: Google error');
+  describe('addProduct', () => {
+    test('adds product with image file', async () => {
+      const productData = {
+        image: new File(['content'], 'product.jpg'),
+        name: 'Test Product',
+        price: 100,
+      };
+      fetch
+        .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValue({ path: '/uploads/product.jpg' }) }) // uploadFile
+        .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValue({ id: 'product123' }) }); // addProduct
+      const result = await addProduct(productData);
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/products',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({
+            name: 'Test Product',
+            price: 100,
+            image: '/uploads/product.jpg',
+          }),
+        })
+      );
+      expect(result).toEqual({ id: 'product123' });
+    });
+
+    test('adds product without image', async () => {
+      const productData = {
+        name: 'Test Product',
+        price: 100,
+      };
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ id: 'product123' }),
+      });
+      const result = await addProduct(productData);
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/products',
+        expect.objectContaining({
+          body: JSON.stringify({
+            name: 'Test Product',
+            price: 100,
+            image: null,
+          }),
+        })
+      );
+      expect(result).toEqual({ id: 'product123' });
+    });
+  });
+
+  describe('getSellerProducts', () => {
+    test('fetches seller products', async () => {
+      const products = [{ id: 'product123', name: 'Test Product' }];
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue(products),
+      });
+      const result = await getSellerProducts();
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/sellers/products',
+        expect.any(Object)
+      );
+      expect(result).toEqual(products);
+    });
+
+    test('handles API errors', async () => {
+      fetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+        json: jest.fn().mockResolvedValue({ error: 'Server error' }),
+      });
+      await expect(getSellerProducts()).rejects.toThrow('Server error');
+    });
+  });
+
+  describe('updateProduct', () => {
+    test('updates product with image file', async () => {
+      const productData = {
+        id: 'product123',
+        image: new File(['content'], 'product.jpg'),
+        name: 'Updated Product',
+        price: 150,
+      };
+      fetch
+        .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValue({ path: '/uploads/product.jpg' }) }) // uploadFile
+        .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValue({ success: true }) }); // updateProduct
+      await updateProduct(productData);
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/products/product123',
+        expect.objectContaining({
+          method: 'PATCH',
+          body: JSON.stringify({
+            image: '/uploads/product.jpg',
+            name: 'Updated Product',
+            price: 150,
+          }),
+        })
+      );
+    });
+
+    test('updates product with image URL', async () => {
+      const productData = {
+        id: 'product123',
+        image: '/images/product.jpg',
+        name: 'Updated Product',
+        price: 150,
+      };
+      fetch.mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ success: true }),
+      });
+      await updateProduct(productData);
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net/api/products/product123',
+        expect.objectContaining({
+          body: JSON.stringify({
+            image: '/images/product.jpg',
+            name: 'Updated Product',
+            price: 150,
+          }),
+        })
+      );
+    });
+  });
+
+  describe('deleteProduct', () => {
+    test('deletes product', async () => {
+      deleteDoc.mockResolvedValue();
+      await deleteProduct('product123');
+      expect(doc).toHaveBeenCalledWith(db, 'Products', 'product123');
+      expect(deleteDoc).toHaveBeenCalledWith(mockDocRef);
+    });
+
+    test('throws error if user not authenticated', async () => {
+      auth.currentUser = null;
+      await expect(deleteProduct('product123')).rejects.toThrow('User not authenticated');
+    });
+
+    test('handles Firestore errors', async () => {
+      deleteDoc.mockRejectedValue(new Error('Delete error'));
+      await expect(deleteProduct('product123')).rejects.toThrow('Delete error');
+    });
   });
 });

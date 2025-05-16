@@ -2,7 +2,7 @@ import React, { useEffect, useState} from 'react';
 import '../Home.css';
 import { retrieveProducts } from '../firebase/retrieveProducts';
 import { getUserRole } from '../firebase/firebase';
-import { auth } from '../firebase/firebase'; // Import Firebase auth
+import { auth } from '../firebase/firebase';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../components/Navbar';
 import { Link } from 'react-router-dom';
@@ -107,11 +107,9 @@ useEffect(() => {
      if (user) {
        const role = await getUserRole();
        setUserRole(role);
-       console.log('User is logged in:', user);
-       console.log('User role:', role);
+       
      } else {
        setUserRole(null);
-       console.log('User is logged out');
      }
    });
    return () => unsubscribe();
@@ -177,9 +175,10 @@ useEffect(() => {
 
       // Filter by category
       if (selectedCategory !== 'All') {
-         result = result.filter(product =>
-            product.category?.toLowerCase() === selectedCategory.toLowerCase()
-         );
+        result = result.filter(product =>
+            (product.genre?.toLowerCase() === selectedCategory.toLowerCase()) ||
+            (product.category?.toLowerCase() === selectedCategory.toLowerCase())
+        );
       }
 
       // Search by product name

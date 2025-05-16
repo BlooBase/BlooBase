@@ -1,8 +1,7 @@
-
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification ,signInWithEmailAndPassword,GoogleAuthProvider,signInWithPopup, updatePassword, updateEmail,deleteUser,EmailAuthProvider,reauthenticateWithCredential} from "firebase/auth";
-import { getFirestore,updateDoc, doc, setDoc, serverTimestamp, getDoc, getCountFromServer,where,query, collection,deleteDoc } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, deleteUser} from "firebase/auth";
+import { getFirestore, doc, setDoc, getDocs,  collection, deleteDoc } from "firebase/firestore";
+import { getStorage, ref } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBLRZEHtvWJex2S_6wUgU9-0PyUZ6XvYdc",
@@ -19,135 +18,179 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
 
-async function addUserToFirestore(userId, email, name, role,autheProvider) {
+const apiURL = 'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net'
+//const apiURL = 'http://localhost:5000'
+//API requests fucntion
+export const apiRequest = async (url, method = 'GET', body = null, isFormData = false) => {
+  const headers = {};
+
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    const token = await currentUser.getIdToken();
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const config = {
+    method,
+    headers,
+  };
+
+  if (body) {
+    if (isFormData) {
+      config.body = body; // leave FormData as is
+      // Do not set Content-Type for FormData, browser will set it with boundary
+    } else {
+      headers['Content-Type'] = 'application/json';
+      config.body = JSON.stringify(body);
+    }
+  }
+
+  const response = await fetch(`${apiURL}${url}`, config);
+
+  if (!response.ok) {
+    let errorMessage = `HTTP error! status: ${response.status}`;
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.error || errorMessage;
+    } catch (_) {}
+    throw new Error(errorMessage);
+  }
+
+  return await response.json();
+};
+
+export const uploadFile = async (file, folder) => {
+  if (!auth.currentUser) throw new Error("User not authenticated");
+
+  const formData = new FormData();
+  formData.append('image', file);
+  formData.append('folder', folder);
+
+  const response = await apiRequest('/api/upload', 'POST', formData, true);
+  return response.path; // assuming backend returns { path: '...' }
+};
+
+
+export async function addUserToFirestore(userId, email, name, role, autheProvider) {
   try {
-    const userDocRef = doc(db, "Users", userId);
-    const userData = {
-      Email: email,
-      Name: name,
-      joinedAt: serverTimestamp(),
-      authProvider: autheProvider,
-      Role: role,
-    };
-    await setDoc(userDocRef, userData);
-    console.log("User added to Firestore!");
+    await apiRequest('/api/users', 'POST', { userId, email, name, role, autheProvider });
+    console.log("User added via API!");
   } catch (error) {
-    console.error("Error adding user to Firestore:", error);
+    console.error("Error adding user via API:", error);
+    throw error; // Re-throw the error for the calling component to handle
   }
 }
-// Function to get user data from Firestore
-async function getUserData() {
-  const user = auth.currentUser; // Accessing the authenticated user
+
+export async function getUserData() {
+  const user = auth.currentUser;
   if (!user) {
     throw new Error("User is not authenticated");
   }
-
-  const userDocRef = doc(db, "Users", user.uid);
-  const userDoc = await getDoc(userDocRef);
-
-  if (!userDoc.exists()) {
-    throw new Error("User document does not exist in Firestore");
-  }
-  console.log("Here")
-  console.log(userDoc.data().Role)
-  console.log("Current user:", auth.currentUser);
-
-  return userDoc.data(); // Returns the user data from Firestore
-}
-
-// Function to get the user's name
-async function getUserName() {
   try {
-    const userData = await getUserData(); // Await the user data
-    return userData.Name; // Return the name from the user data
+    const userData = await apiRequest(`/api/users/${user.uid}`);
+    
+    return userData;
   } catch (error) {
-    console.error("Error fetching user name:", error);
-    return null; // In case of error, return null
+    console.error("Error fetching user data via API:", error);
+    throw error;
   }
 }
-async function getUserRole() {
+
+export async function getUserName() {
   try {
     const userData = await getUserData();
-    return userData.Role; 
+    return userData.Name;
   } catch (error) {
-    console.error("Error fetching user name:", error);
-    return null; 
+    console.error("Error fetching user name via API:", error);
+    return null;
   }
 }
-async function getUserAuthProvider() {
+
+export async function getUserRole() {
   try {
-    const userData = await getUserData(); 
+    const userData = await getUserData();
+    return userData.Role;
+  } catch (error) {
+    console.error("Error fetching user role via API:", error);
+    return null;
+  }
+}
+
+export async function getUserAuthProvider() {
+  try {
+    const userData = await getUserData();
     return userData.authProvider;
   } catch (error) {
-    console.error("Error fetching user auth provider:", error);
-    return null; 
+    console.error("Error fetching user auth provider via API:", error);
+    return null;
   }
-  
 }
-const logout = async () => {
+
+export const logout = async () => {
   try {
     await auth.signOut();
     console.log("User signed out");
-    // Optionally redirect or update UI state here
+    // Optionally call an API endpoint on your server for logout-related tasks
   } catch (error) {
     console.error("Sign-out error:", error);
   }
 };
-const getRoleSize = async(name)=> {
-  const usersRef = collection(db, "Users"); 
-  const adminQuery = query(usersRef, where("Role", "==", name));
-  const snapshot = await getCountFromServer(adminQuery);
-  console.log("Number of ",name,": ", snapshot.data().count);
-  return snapshot.data().count;
 
-}
+export const getRoleSize = async (name) => {
+  try {
+    const result = await apiRequest(`/api/roles/${name}/size`); // Define this API endpoint
+    
+    return result.count;
+  } catch (error) {
+    console.error(`Error fetching size of role ${name} via API:`, error);
+    return 0;
+  }
+};
 
-const getCollectionSize= async(name)=>{
-  const collectionRef = collection(db,name);
-  const collectionQuery = query(collectionRef);
-  const snapshot = await getCountFromServer(collectionQuery);
-  return snapshot.data().count;
-}
+export const getCollectionSize = async (name) => {
+  try {
+    const result = await apiRequest(`/api/collections/${name}/size`); // Define this API endpoint
+    return result.count;
+  } catch (error) {
+    console.error(`Error fetching size of collection ${name} via API:`, error);
+    return 0;
+  }
+};
 
-const signupNormUser = ({ name, email, password, confirmPassword, role }) => {
+export const signupNormUser = async ({ name, email, password, confirmPassword, role }) => {
   if (password !== confirmPassword) {
-    return { success: false, message: "Passwords do not match" };
+    alert("Passwords do not match");
+    return;
   }
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      console.log(user.emailVerified);
-      // Send email verification
-      sendEmailVerification(user)
-        .then(() => {
-          // Add the user to Firestore after verification email is sent
-          addUserToFirestore(user.uid, email, name, role, 'Firebase Auth');
-          alert("Account created! Please check your email for verification.");
-        })
-        .catch((error) => {
-          console.error("Error sending verification email:", error);
-          alert("Error sending verification email.");
-        });
-    })
-    .catch((error) => {
-      alert(`Signup failed: ${error.message}`);
-    });
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    await sendEmailVerification(user);
+    await apiRequest('/api/users', 'POST', { userId: user.uid, email, name, role, autheProvider: 'Firebase Auth' });
+    alert("Account created! Please check your email for verification.");
+  } catch (error) {
+    alert(`Signup failed: ${error.message}`);
+  }
 };
-const GoogleSignup = async (role) => {
+
+export const GoogleSignup = async (role) => {
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    if (result._tokenResponse.isNewUser) {
-      await addUserToFirestore(
-        user.uid,
-        user.email,
-        user.displayName || "Google User",
-        role,
-        "Google"
-      );
+    const existingUser = await apiRequest(`/api/users/${user.uid}`).catch(() => null);
+
+    if (!existingUser) {
+      await apiRequest('/api/users', 'POST', {
+        userId: user.uid,
+        email: user.email,
+        name: user.displayName || "Google User",
+        role: role,
+        authProvider: "Google",
+      });
     }
 
     alert("Signed in with Google!");
@@ -156,98 +199,76 @@ const GoogleSignup = async (role) => {
     alert(`Google Sign-in failed: ${error.message}`);
   }
 };
-const loginNormUser = async ({ email, password }) => {
-  try {
 
-    // Perform the email/password sign-in
+export const loginNormUser = async ({ email, password }) => {
+  try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    // Check email verification
+
     if (!user.emailVerified) {
       alert("Please verify your email before logging in.");
-      // Sign out the user who just signed in but isn't verified
       await auth.signOut();
-      // Throw an error to be caught by the caller (Login.js)
       throw new Error("Email not verified");
     }
 
     alert('Login successful!');
-    // Return the authenticated user object
     return user;
-
   } catch (error) {
     console.error("Login failed:", error);
-    // Re-throw the error so it can be caught in the component
     throw error;
   }
 };
 
-
-const updateCredentials = async ({ name, email, password, newpassword }) => {
+export const updateCredentials = async ({ name, email, password, newpassword }) => {
   const user = auth.currentUser;
-  const path = "Users/" + user.uid;
-  const docRef = doc(db, ...path.split("/"));
+  if (!user) throw new Error("User not authenticated");
 
   try {
-    if (name) {
-      await updateDoc(docRef, { Name: name });
-      console.log("Name updated in Firestore.");
-    }
+    const updates = {};
+    if (name) updates.name = name;
+    if (email) updates.email = email;
+    if (newpassword) updates.newpassword = newpassword;
+    if (password && (email || newpassword)) updates.password = password; // Need current password for email/password update
 
-    if (email && email !== user.email) {
-      await reauthenticateUser(password);
-      await updateEmail(user, email);
-      await updateDoc(docRef, { Email: email });
-      console.log("Email updated.");
-    }
-
-    if (newpassword && password) {
-      await reauthenticateUser(password);
-      await updatePassword(user, newpassword);
-      console.log("Password updated.");
-    }
+    await apiRequest(`/api/users/${user.uid}`, 'PATCH', updates);
+    alert("Credentials updated successfully!");
   } catch (error) {
-    console.error("Error updating credentials:", error);
+    console.error("Error updating credentials via API:", error);
+    alert(`Error updating credentials: ${error.message}`);
     throw error;
   }
 };
 
-const reauthenticateUser = async (currentPassword) => {
-  const user = auth.currentUser;
-  if (!user || !user.email) throw new Error("User not authenticated");
-  const credential = EmailAuthProvider.credential(user.email, currentPassword);
-  await reauthenticateWithCredential(user, credential);
-};
-
-const deleteAccount = async (currentPassword) => {
+export const deleteAccount = async (currentPassword) => {
   const user = auth.currentUser;
   if (!user || !user.email) throw new Error("User not authenticated");
 
-  const credential = EmailAuthProvider.credential(user.email, currentPassword);
-  await reauthenticateWithCredential(user, credential);
-
-  await deleteDoc(doc(db, "Users", user.uid));
-  await deleteUser(user);
+  try {
+    await apiRequest(`/api/users/${user.uid}`, 'DELETE', { currentPassword });
+    await deleteUser(user);
+    alert("Account deleted successfully!");
+  } catch (error) {
+    console.error("Error deleting account via API:", error);
+    alert(`Error deleting account: ${error.message}`);
+    throw error;
+  }
 };
 
-
-const GoogleLogin = async () => {
+export const GoogleLogin = async () => {
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
 
   try {
-
-    // Perform Google login
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    const userDocRef = doc(db, "Users", user.uid);
-    const userDoc = await getDoc(userDocRef);
 
-    if (!userDoc.exists()) {
-      alert("User does not exist");
+    const existingUser = await apiRequest(`/api/users/${user.uid}`).catch(() => null);
+
+    if (!existingUser) {
+      alert("User does not exist (likely a signup issue).");
       return;
     }
-   
+
     alert("Logged in with Google!");
   } catch (error) {
     console.error("Google Login Error:", error);
@@ -255,23 +276,93 @@ const GoogleLogin = async () => {
   }
 };
 
+// new functions:
+
+/**
+ * Creates or updates the seller card for the current user in the Sellers collection.
+ * @param {Object} cardData - { image, color, description, genre, textColor, title }
+ * @returns {Promise<void>}
+ */
+export const upsertSellerCard = async (cardData) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
+
+  let imagePath = cardData.image;
+  if (cardData.image instanceof File) {
+    imagePath = await uploadFile(cardData.image, "shop_images");
+  }
+
+  return apiRequest('/api/sellers/card', 'POST', {
+    image: imagePath,
+    color: cardData.color,
+    description: cardData.description,
+    genre: cardData.genre,
+    textColor: cardData.textColor,
+    title: cardData.title,
+    userId: user.uid, // Backend can also get this from the token
+  });
+};
+
+/**
+ * Fetches the seller card for the current user from the Sellers collection.
+ * @returns {Promise<Object|null>} The seller card data or null if not found.
+ */
+export const getSellerCard = async () => {
+  return apiRequest('/api/sellers/card');
+};
+
+/**
+  * Deletes the seller card for the current user from the Sellers collection.
+  * @returns {Promise<void>}
+  */
+export const deleteSellerCard = async () => {
+  return apiRequest('/api/sellers/card', 'DELETE');
+};
+export const addProduct = async (productData) => {
+  const { image, ...rest } = productData;
+  let imagePath = null;
+  if (image instanceof File) {
+    imagePath = await uploadFile(image, "product_images");
+  }
+  return apiRequest('/api/products', 'POST', { ...rest, image: imagePath });
+};
+
+
+// Get all products for the current seller
+export const getSellerProducts = async () => {
+  return apiRequest('/api/sellers/products');
+};
+// Update a product
+export const updateProduct = async ({ id, image, name, price }) => {
+  let imageUrl = image;
+  if (image instanceof File) {
+    imageUrl = await uploadFile(image, "product_images");
+  }
+
+  return apiRequest(`/api/products/${id}`, 'PATCH', {
+    image: imageUrl,
+    name,
+    price,
+  });
+};
+
+// Delete a product
+export const deleteProduct = async (id) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
+  const productRef = doc(db, "Products", id);
+  await deleteDoc(productRef);
+};
+
+
+
 export {
   auth,
   db,
   storage,
   doc,
   setDoc,
-  signupNormUser,
-  addUserToFirestore,
-  loginNormUser,
-  GoogleSignup,
-  GoogleLogin,
-  getUserName,
-  getUserRole,
-  logout,
-  getRoleSize,
-  getUserAuthProvider,
-  updateCredentials,
-  deleteAccount,
-  getCollectionSize
+  collection,
+  ref,
+  getDocs
 };

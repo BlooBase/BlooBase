@@ -1,51 +1,71 @@
-// tests/uploadImage.test.js
-
-import { uploadImage } from '../src/firebase/uploadImage';
-import { ref, uploadBytes } from 'firebase/storage';
-
+// Mock Firebase Storage
 jest.mock('firebase/storage', () => ({
   ref: jest.fn(),
   uploadBytes: jest.fn(),
 }));
 
-describe('uploadImage', () => {
-  const mockFile = { name: 'test.png', type: 'image/png' };
+jest.mock('../src/firebase/firebase', () => ({
+  storage: { __test: true }, // Mock storage object
+}));
 
-  beforeAll(() => {
-    Object.defineProperty(global, 'crypto', {
-      value: {
-        randomUUID: jest.fn(() => 'mocked-uuid'),
-      },
-    });
-  });
+
+import { uploadImage } from '../src/firebase/uploadImage';
+import { ref, uploadBytes } from 'firebase/storage';
+import { storage } from '../src/firebase/firebase';
+
+
+// Mock crypto.randomUUID
+const mockRandomUUID = 'abc123';
+global.crypto = {
+  randomUUID: jest.fn(() => mockRandomUUID),
+};
+
+describe('uploadImage', () => {
+  const mockFile = { name: 'test.png' };
+  const mockFolder = 'shop_images';
+  const mockStoragePath = `${mockFolder}/${mockRandomUUID}_${mockFile.name}`;
+  const mockFileRef = { path: mockStoragePath };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    console.error = jest.fn(); // Mock console.error
   });
 
-  it('uploads a file and returns the correct storage path', async () => {
-    uploadBytes.mockResolvedValueOnce();
+  it('uploads file to Firebase Storage and returns storage path', async () => {
+    ref.mockReturnValue(mockFileRef);
+    uploadBytes.mockResolvedValue();
 
-    const result = await uploadImage(mockFile, 'test_folder');
+    const result = await uploadImage(mockFile, mockFolder);
 
-    expect(result).toBe('test_folder/mocked-uuid_test.png');
-    expect(ref).toHaveBeenCalledWith(expect.anything(), 'test_folder/mocked-uuid_test.png');
-    expect(uploadBytes).toHaveBeenCalledWith(expect.anything(), mockFile);
+    expect(crypto.randomUUID).toHaveBeenCalled();
+    expect(ref).toHaveBeenCalledWith(storage, mockStoragePath);
+    expect(uploadBytes).toHaveBeenCalledWith(mockFileRef, mockFile);
+    expect(result).toBe(mockStoragePath);
+    expect(console.error).not.toHaveBeenCalled();
   });
 
-  it('defaults to "shop_images" folder if none is provided', async () => {
-    uploadBytes.mockResolvedValueOnce();
+  it('uses default folder "shop_images" when folder is not provided', async () => {
+    ref.mockReturnValue(mockFileRef);
+    uploadBytes.mockResolvedValue();
 
     const result = await uploadImage(mockFile);
 
-    expect(result).toBe('shop_images/mocked-uuid_test.png');
-    expect(ref).toHaveBeenCalledWith(expect.anything(), 'shop_images/mocked-uuid_test.png');
+    const expectedPath = `shop_images/${mockRandomUUID}_${mockFile.name}`;
+    expect(ref).toHaveBeenCalledWith(storage, expectedPath);
+    expect(uploadBytes).toHaveBeenCalledWith(mockFileRef, mockFile);
+    expect(result).toBe(expectedPath);
+    expect(console.error).not.toHaveBeenCalled();
   });
 
-  it('throws an error if uploadBytes fails', async () => {
-    const error = new Error('Simulated upload error');
-    uploadBytes.mockRejectedValueOnce(error);
+  it('throws error and logs when upload fails', async () => {
+    const mockError = new Error('Upload failed');
+    ref.mockReturnValue(mockFileRef);
+    uploadBytes.mockRejectedValue(mockError);
 
-    await expect(uploadImage(mockFile, 'fail_folder')).rejects.toThrow('Simulated upload error');
+    await expect(uploadImage(mockFile, mockFolder)).rejects.toThrow('Upload failed');
+    expect(crypto.randomUUID).toHaveBeenCalled();
+    expect(ref).toHaveBeenCalledWith(storage, mockStoragePath);
+    expect(uploadBytes).toHaveBeenCalledWith(mockFileRef, mockFile);
+    expect(console.error).toHaveBeenCalledWith('Image upload failed:', mockError);
   });
 });

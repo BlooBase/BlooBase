@@ -1,11 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../Dashboard.css";
-import { Link } from "react-router-dom";
-import { getRoleSize,getUserName,getCollectionSize } from "../firebase/firebase";
+import Navbar from '../components/Navbar';
+import { getRoleSize, getCollectionSize } from "../firebase/firebase";
 
 const Dashboard = () => {
-  const [optionsOpen, setOptionsOpen] = useState(false);
-  const optionsRef = useRef(null);
   async function getAllRoleSizes() {
     try {
       const [buyerCount, sellerCount, adminCount] = await Promise.all([
@@ -28,17 +26,15 @@ const Dashboard = () => {
       };
     }
   }
+
   const [roleCounts, setRoleCounts] = useState(null);
   const [Stores, setStoresCount] = useState(null);
   const [Orders, setOrdersCount] = useState(null);
+
   useEffect(() => {
     async function fetchData() {
       const roles = await getAllRoleSizes();
       setRoleCounts(roles);
-
-      // Get the user's name
-      const name = await getUserName();
-      setUserName(name || "User");
 
       // Get Stores and Orders collection sizes
       const stores = await getCollectionSize("Stores");
@@ -50,127 +46,17 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  
-
-  
-  // Effect to close options dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (optionsRef.current && !optionsRef.current.contains(event.target)) {
-        setOptionsOpen(false);
-      }
-    }
-    
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [optionsRef]);
-
-  
-  const [user, setUserName] = useState("User");
-
-  useEffect(() => {
-    async function fetchUserName() {
-      const name = await getUserName();
-      setUserName(name || "User");
-    }
-  
-    fetchUserName();
-  }, []);
-
   return (
     <section className="dashboard-container">
-      <header className="navbar">
-        <section className="nav-left">
-          <Link to="/" className="site-title" style={{ textDecoration: "none" }}>
-            <section style={{ display: "flex", alignItems: "center", gap: "0.9rem" }}>
-              <img
-                src="/BlooBase.png"
-                alt="BlooBase logo"
-                style={{ height: "32px", width: "30px", objectFit: "contain",marginLeft:"19px"}}
-              />
-              <h2 style={{ color: "#343a40", margin: 0 }}>BlooBase</h2>
-            </section>
-          </Link>
-        </section>
-
-        <section className="nav-center">
-          <h3 className="page-title" style={{ color: "#343a40", margin: 0 }}>
-            Dashboard
-          </h3>
-        </section>
-
-        <section className="nav-right" ref={optionsRef}>
-          <section className="user-info">
-            <section
-              className={`options-button ${optionsOpen ? "selected" : ""}`}
-              onClick={() => setOptionsOpen((prev) => !prev)}
-            >
-              <img
-                className="options"
-                src="/options-lines.png"
-                alt="Options Button"
-              />
-            </section>
-            
-            <p className="username" style={{ color: "#343a40" }}>
-              {user.name}
-            </p>
-            <img
-              className="user-avatar"
-              src={user.avatarLocal}
-              alt={`${user.name}'s avatar`}
-            />
-
-            {optionsOpen && (
-              <section className="dropdown-card">
-                <Link
-                  to="/HomePage"
-                  className="dropdown-item"
-                  style={{ textDecoration: "none", color: "#000000" }}
-                >
-                  Home
-                </Link>
-                <Link
-                  to="/Artists"
-                  className="dropdown-item"
-                  style={{ textDecoration: "none", color: "#000000" }}
-                >
-                  Artisans
-                </Link>
-                <Link
-                  to="/reviews"
-                  className="dropdown-item"
-                  style={{ textDecoration: "none", color: "#000000" }}
-                >
-                  Reviews
-                </Link>
-                <Link
-                  to="/settings"
-                  className="dropdown-item"
-                  style={{ textDecoration: "none", color: "#000000" }}
-                >
-                  Settings
-                </Link>
-                <button className="dropdown-item">Log Out</button>
-              </section>
-            )}
-          </section>
-        </section>
-
-        
-      </header>
-
+      <Navbar pageTitle="Dashboard" bgColor="#fff6fb" textColor="#165a9c" />
 
       <main className="dashboard-main">
-        
         <section className="stats-row">
           <article className="stat-card">
             <span>
               Artisans <img src="artisan.png" alt="artisan-img" className="icons" />
             </span>
-            <p className="stat-value">{roleCounts? roleCounts.Seller: "Loading.."}</p>
+            <p className="stat-value">{roleCounts ? roleCounts.Seller : "Loading.."}</p>
           </article>
           <article className="stat-card">
             <span>
@@ -182,16 +68,16 @@ const Dashboard = () => {
             <span>
               Stores <img src="shop.png" alt="store-img" className="icons" />
             </span>
-            <p className="stat-value">{Stores? Stores:"Loading.."}</p>
+            <p className="stat-value">{Stores ? Stores : "Loading.."}</p>
           </article>
           <article className="stat-card">
             <span>
               Orders <img src="product.png" alt="order-img" className="icons" />
             </span>
-            <p className="stat-value">{Orders? Orders:"Loading.."}</p>
+            <p className="stat-value">{Orders ? Orders : "Loading.."}</p>
           </article>
         </section>
-   {/*this is mock data for testing purposes*/}
+        {/* this is mock data for testing purposes */}
         <section className="overview-row">
           <aside className="user-card">
             <h3>New Stores</h3>

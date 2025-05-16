@@ -2,25 +2,33 @@ module.exports = {
   rootDir: './',
   collectCoverage: true,
   collectCoverageFrom: [
-     'src/checkPasswordStrength.js',
-    'src/firebase/uploadImage.js',
+    'src/checkPasswordStrength.js',
     'src/cart_test.js',
     'src/checkoutTotal.js',
     'src/clearCart.js',
+    'src/validateCardDetails.js',
+    'src/OrderStatus.js',
     'src/Api_GET.js',
-     'src/components/Login.js',
+    'src/firebase/addToCart.js',
+    'src/firebase/uploadImage.js',
+    'src/firebase/removeFromCart.js',
+    'src/firebase/firebase.js',
+    'src/firebase/addProduct.js',
+    'src/firebase/addSeller.js',
+    'src/firebase/retrieveSellersCached.js',
+     'src/firebase/retrieveProducts.js',
     '!**/node_modules/**',
-    '!src/**/*.test.js', // Exclude test files from coverage
-    '!src/reportWebVitals.js', // Exclude reportWebVitals
-    '!src/setupTests.js', // Exclude setupTests
+    '!src/reportWebVitals.js',
+    '!src/setupTests.js',
   ],
   coverageReporters: ['lcov', 'text'],
   transform: {
-    '^.+\\.[jt]sx?$': 'babel-jest', // Transform JS/JSX/TS/TSX files
+    '^.+\\.[jt]sx?$': 'babel-jest',
   },
-  testEnvironment: 'jsdom', // Required for React components
-  setupFilesAfterEnv: ['./src/setupTests.js'], // Include Jest DOM extensions
+  testEnvironment: 'node',
+  setupFilesAfterEnv: ['./src/setupTests.js'],
   moduleNameMapper: {
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy', // Mock CSS imports
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
+  testMatch: ['<rootDir>/tests/**/*.test.js'],
 };

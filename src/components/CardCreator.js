@@ -1,47 +1,65 @@
 import React, { useRef, useState, useEffect } from 'react';
 import '../CardCreator.css';
 import Navbar from '../components/Navbar';
-import { addSeller } from '../firebase/addSeller';
+import { getSellerCard, upsertSellerCard, deleteSellerCard, getSellerProducts, addProduct, updateProduct, deleteProduct } from '../firebase/firebase';
 
 const CardCreator = () => {
   const fileInputRef = useRef();
   const cardRef = useRef();
   const [animateCard, setAnimateCard] = useState(false);
 
-  const storedData = JSON.parse(localStorage.getItem('cardData')) || {};
-
   const [statusMessage, setStatusMessage] = useState('');
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(storedData.image || null);
-  const [backgroundColor, setBackgroundColor] = useState(storedData.backgroundColor || '#fff0e6');
-  const [textColor, setTextColor] = useState(storedData.textColor || '#93aed9');
-  const [name, setName] = useState(storedData.name || 'Name');
-  const [description, setDescription] = useState(storedData.description || 'Bio');
-  const [genre, setGenre] = useState(storedData.genre || 'Genre');
-
+  const [imagePreview, setImagePreview] = useState(null);
+  const [backgroundColor, setBackgroundColor] = useState('#fff0e6');
+  const [textColor, setTextColor] = useState('#93aed9');
+  const [name, setName] = useState('Name');
+  const [description, setDescription] = useState('Bio');
+  const [genre, setGenre] = useState('Mixed Media');
+  const [productCreators, setProductCreators] = useState([
+    { image: null, imagePreview: null, name: '', price: '' }
+  ]);
+  const [hasStore, setHasStore] = useState(false);
+  const [productAnimations, setProductAnimations] = useState([]);
   const genres = ['Digital Art', 'Drawing', 'Painting', 'Photography', 'Sculptures', 'Mixed Media'];
 
-  const savedProductCreators = JSON.parse(localStorage.getItem('productCreators')) || [
-  { image: null, imagePreview: null, title: '' }
-];
-
-const [productCreators, setProductCreators] = useState(savedProductCreators);
-
-
   useEffect(() => {
-    localStorage.setItem('cardData', JSON.stringify({
-      image: imagePreview,
-      backgroundColor,
-      textColor,
-      name,
-      description
-    }));
-  }, [imagePreview, backgroundColor, textColor, name, description]);
+    const fetchSellerCard = async () => {
+      try {
+        const data = await getSellerCard();
+        setHasStore(!!data); // true if store exists
+        setImagePreview(data?.image || null);
+        setBackgroundColor(data?.color || '#fff0e6');
+        setTextColor(data?.textColor || '#93aed9');
+        setName(data?.title || 'Name');
+        setDescription(data?.description || 'Bio');
+        setGenre(data?.genre || 'Genre');
+      } catch (error) {
+        console.error('Error fetching seller card:', error);
+      }
+    };
+    fetchSellerCard();
 
-  useEffect(() => {
-  localStorage.setItem('productCreators', JSON.stringify(productCreators));
-}, [productCreators]);
-
+      // Fetch and show existing products in tabs
+    const fetchProducts = async () => {
+      try {
+        const prods = await getSellerProducts();
+        // Map products to the productCreators format
+        setProductCreators(
+          prods.map(prod => ({
+            image: prod.image,
+            imagePreview: prod.image,
+            name: prod.name,
+            price: prod.price,
+            id: prod.id
+          }))
+        );
+      } catch (e) {
+        console.error("Failed to fetch products", e);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const handleCardTilt = (e) => {
     const card = cardRef.current;
@@ -74,6 +92,13 @@ const [productCreators, setProductCreators] = useState(savedProductCreators);
     }, 50);
   };
 
+  const triggerProductMessage = (message) => {
+    setStatusMessage('');
+    setTimeout(() => {
+      setStatusMessage(message);
+    }, 50);
+  };
+
   const triggerAnimationFail = (message) => {
     setStatusMessage('');
     setTimeout(() => {
@@ -81,31 +106,61 @@ const [productCreators, setProductCreators] = useState(savedProductCreators);
     }, 50);
   };
 
+  const triggerProductAnimation = (index) => {
+  setProductAnimations((prev) => {
+    const updated = [...prev];
+    updated[index] = true;
+    return updated;
+  });
+  setTimeout(() => {
+    setProductAnimations((prev) => {
+      const updated = [...prev];
+      updated[index] = false;
+      return updated;
+    });
+  }, 1000); // Duration matches your CSS animation
+};
+
   const handlePublish = async () => {
-    if (!image || !name || !description) {
+    if ((!image && !imagePreview) || !name || !description) {
       triggerAnimationFail('Please fill in all fields.');
       return;
     }
 
     try {
-      await addSeller({
-        image,
+      await upsertSellerCard({
+        image: image || imagePreview,
         color: backgroundColor,
         description,
         genre,
         textColor,
         title: name,
       });
-
-      triggerAnimation('Card Published');
+      triggerAnimation(hasStore ? 'Card Updated' : 'Card Published');
+      setHasStore(true); // Ensure hasStore is true after first publish
     } catch (error) {
-      console.error('Failed to publish card:', error);
-      triggerAnimation('Failed to Publish');
+      console.error('Failed to publish or update card:', error);
+      triggerAnimation(hasStore ? 'Failed to Update' : 'Failed to Publish');
     }
   };
 
-  const handleRemove = () => {
-    triggerAnimation('Card Removed');
+  const handleRemove = async () => {
+    try {
+      await deleteSellerCard();
+      setImage(null);
+      setImagePreview(null);
+      setName('Name');
+      setDescription('Bio');
+      setGenre('Genre');
+      setBackgroundColor('#fff0e6');
+      setTextColor('#93aed9');
+      setHasStore(false);
+      setProductCreators([{ image: null, imagePreview: null, name: '', price: '' }]); // <-- Clear products
+      triggerAnimation('Card Removed');
+    } catch (error) {
+      console.error('Failed to remove card:', error);
+      triggerAnimationFail('Failed to Remove');
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -140,14 +195,24 @@ const [productCreators, setProductCreators] = useState(savedProductCreators);
     reader.readAsDataURL(file);
   };
 
-  const handleProductTitleChange = (index, value) => {
+  // Update handlers to use 'name'
+  const handleProductNameChange = (index, value) => {
     const updated = [...productCreators];
-    updated[index].title = value;
+    updated[index].name = value;
+    setProductCreators(updated);
+  };
+
+  const handleProductPriceChange = (index, value) => {
+    const updated = [...productCreators];
+    updated[index].price = value;
     setProductCreators(updated);
   };
 
   const addProductCreator = () => {
-    setProductCreators([...productCreators, { image: null, imagePreview: null, title: '' }]);
+    setProductCreators([
+      ...productCreators,
+      { image: null, imagePreview: null, name: '', price: '' }
+    ]);
   };
 
   const removeProductCreator = (index) => {
@@ -156,17 +221,64 @@ const [productCreators, setProductCreators] = useState(savedProductCreators);
     triggerAnimation('Product Removed');
   };
 
-  const handleProductPublish = (index) => {
-    const { image, title } = productCreators[index];
-    if (!image || !title) {
-      triggerAnimationFail('Please provide product image and title.');
+  const handleProductPublish = async (index) => {
+    const { image, name, price, id } = productCreators[index];
+    if (!image || !name || !price) {
+      triggerAnimationFail('Please provide product image, name, and price.');
       return;
     }
-    triggerAnimation(`Product ${index + 1} Published`);
+    try {
+      if (id) {
+        await updateProduct({ id, image, name, price });
+        triggerProductAnimation(index);
+        triggerProductMessage(`Product ${productCreators[index].name} Updated`);
+      } else {
+        await addProduct({ image, name, price });
+        triggerProductAnimation(index);
+        triggerProductMessage(`Product ${productCreators[index].name} Published`);
+      }
+      // Refresh products list
+      const prods = await getSellerProducts();
+      setProductCreators(
+        prods.map(prod => ({
+          image: prod.image,
+          imagePreview: prod.image,
+          name: prod.name,
+          price: prod.price,
+          id: prod.id
+        }))
+      );
+    } catch (e) {
+      triggerAnimationFail('Failed to publish/update product.');
+    }
   };
 
-  const handleProductRemove = (index) => {
-    triggerAnimation(`Product ${index + 1} Removed`);
+  const handleProductRemove = async (index) => {
+    const { id } = productCreators[index];
+    if (id) {
+      try {
+        await deleteProduct(id);
+        triggerProductAnimation(index);
+        triggerProductMessage(`Product ${productCreators[index].name} Removed`);
+        // Refresh products list
+        const prods = await getSellerProducts();
+        setProductCreators(
+          prods.map(prod => ({
+            image: prod.image,
+            imagePreview: prod.image,
+            name: prod.name,
+            price: prod.price,
+            id: prod.id
+          }))
+        );
+      } catch (e) {
+        triggerAnimationFail('Failed to remove product.');
+      }
+    } else {
+      // Just remove from UI if not saved yet
+      triggerProductAnimation(index);
+      removeProductCreator(index);
+    }
   };
 
   return (
@@ -270,7 +382,9 @@ const [productCreators, setProductCreators] = useState(savedProductCreators);
           </section>
 
           <section className="button-row">
-            <button className="action-button" onClick={handlePublish}>Publish</button>
+            <button className="action-button" onClick={handlePublish}>
+              {hasStore ? "Update" : "Publish"}
+            </button>
             <button className="action-button" onClick={handleRemove}>Remove</button>
           </section>
         </section>
@@ -288,7 +402,9 @@ const [productCreators, setProductCreators] = useState(savedProductCreators);
             if (file) handleProductImageChange(index, file);
           }}
         >
-          <section className="product-image-uploader" onClick={() => {
+          <section 
+          className={`product-image-uploader${productAnimations[index] ? ' animate-card' : ''}`}
+          onClick={() => {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
@@ -308,26 +424,37 @@ const [productCreators, setProductCreators] = useState(savedProductCreators);
           <input
             type="text"
             className="product-title-input"
-            placeholder="Enter product title"
-            value={creator.title}
-            onChange={(e) => handleProductTitleChange(index, e.target.value)}
+            placeholder="Enter product name"
+            value={creator.name}
+            onChange={(e) => handleProductNameChange(index, e.target.value)}
+          />
+
+          <input
+            type="number"
+            className="product-price-input"
+            placeholder="Enter price"
+            value={creator.price}
+            onChange={(e) => handleProductPriceChange(index, e.target.value)}
+            min="0"
+            step="1"
           />
 
           <section className="product-buttons">
-            <button className="product-action-button" onClick={() => handleProductPublish(index)}>Publish</button>
-            <button className="product-action-button" onClick={() => handleProductRemove(index)}>Remove</button>
-            <button className="product-action-button" onClick={() => removeProductCreator(index)}>
-              <p style={{ color: 'red', fontSize: '20px' }}>🗑</p>
+            <button className="product-action-button" onClick={() => handleProductPublish(index)}>
+              {creator.id ? "Update" : "Publish"}
             </button>
+            <button className="product-action-button" onClick={() => handleProductRemove(index)}>Remove</button>
           </section>
         </section>
       ))}
 
+      {hasStore && (
       <section className="add-product-bar" onClick={addProductCreator} style={{ cursor: 'pointer', textAlign: 'center', marginTop: '1rem' }}>
         <p style={{ fontSize: '2rem', color: '#4a4a4a' }}>
-          <img src="/plus.png" alt="add-product-plus" style={{ width: '40px', height: '40px',  }} />
+          <img src="/plus.png" alt="add-product-plus" style={{ width: '40px', height: '40px' }} />
         </p>
       </section>
+      )}
 
       <section className="opacity-fade2" />
     </section>

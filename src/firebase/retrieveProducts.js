@@ -1,4 +1,14 @@
-// retrieveProducts.js
+/*import { apiRequest } from "./firebase";
+
+export const retrieveProducts = async () => {
+  try {
+    const response = await apiRequest('/api/products');
+    return response;
+  } catch (error) {
+    console.error("Error retrieving products with images via API:", error);
+    return [];
+  }
+};*/
 import { collection, getDocs } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
 import { db, storage } from "./firebase"; // your existing firebase setup

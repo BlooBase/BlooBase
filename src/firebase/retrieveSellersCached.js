@@ -1,7 +1,5 @@
-import { collection, getDocs } from 'firebase/firestore';
-import { ref, getDownloadURL } from 'firebase/storage';
-import { db, storage } from './firebase';
 import { cachedSellers } from './retrieveSellers';
+import { apiRequest } from "./firebase";
 
 // Hardcoded fallback products
 const hardcodedProducts = [
@@ -70,40 +68,11 @@ const hardcodedProducts = [
   },
 ];
 
-export async function retrieveSellersCached() {
-  try {
-    // Return cached data if available
-    if (cachedSellers) {
-      return cachedSellers;
-    }
-
-    const snapshot = await getDocs(collection(db, 'Sellers'));
-    const fetchedSellers = [];
-
-    for (const doc of snapshot.docs) {
-      const data = doc.data();
-
-      let imageUrl = '';
-      if (data.image) {
-        const imgRef = ref(storage, data.image);
-        imageUrl = await getDownloadURL(imgRef);
-      }
-
-      fetchedSellers.push({
-        id: doc.id,
-        title: data.title || 'Untitled',
-        description: data.description || '',
-        image: imageUrl,
-        color: data.color || '#ffffff',
-        textColor: data.textColor || '#000000',
-        genre: data.genre || 'Unknown',
-      });
-    }
-
-    let combinedSellers = [...hardcodedProducts, ...fetchedSellers];
-    return combinedSellers; // Return the combined sellers
-  } catch (error) {
-    console.error('Error fetching sellers:', error);
-    return [];
+export const retrieveSellersCached = async () => {
+  if (cachedSellers) {
+    return cachedSellers;
   }
-}
+  const fetchedSellers = await apiRequest('/api/sellers');
+  cachedSellers = [...hardcodedProducts, ...fetchedSellers];
+  return cachedSellers;
+};

@@ -1,3 +1,8 @@
+/*import { apiRequest } from "./firebase";
+
+export const retrieveSellerProducts = async (sellerId) => {
+  return apiRequest(`/api/sellers/${sellerId}/products`);
+};*/
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
 import { db, storage } from "./firebase"; // Import your Firebase setup

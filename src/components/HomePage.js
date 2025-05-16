@@ -107,11 +107,9 @@ useEffect(() => {
      if (user) {
        const role = await getUserRole();
        setUserRole(role);
-       console.log('User is logged in:', user);
-       console.log('User role:', role);
+       
      } else {
        setUserRole(null);
-       console.log('User is logged out');
      }
    });
    return () => unsubscribe();

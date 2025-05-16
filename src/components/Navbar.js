@@ -133,17 +133,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                     Card Creator
                   </Link>
                 )}
-                {userRole === "Buyer" && auth.currentUser && currentPath !== '/Orders' && (
-                  
-                  <Link
-                    to="/Orders"
-                    className="navbar-dropdown-item"
-                    style={{ textDecoration: 'none', color: '#000000' }}
-                  >
-                    Orders
-                  </Link>
-              
-                )}
+          
       {/*the dropdown options change based on the page you are currently on */}
                 {!auth.currentUser ? (
                   <>

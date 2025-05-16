@@ -5,97 +5,23 @@
 }
 
 .dashboard-container {
-  padding: 2vw;
-  margin-top: 60px;
-  background-color: #fff5e1;
-}
-
-.navbar {
-  display: flex;
-  justify-content: space-between; 
-  align-items: center;
-  padding: 0 1rem;
-  gap: 0rem;
-  flex-wrap: wrap;
-  right: -9px;
-  background-color: #f8f9fa;
-  color: #343a40;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.nav-left {
-  flex: 0 0 auto;
-}
-
-.nav-center {
+  min-height: 110vh;
   flex: 1;
-  text-align: left;
-}
-
-.nav-right {
-  flex: 0 0 auto;
-  position: relative; 
-}
-
-.user-info {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  padding-top: 80px;
+  background-image: url('./assets/BG0.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  position: relative;
+  padding-left: 1%;
+  padding-right: 1%;
+  max-width: 2000px
 }
 
-.options-button {
-  cursor: pointer;
-}
 
-.options-button.selected {
-  background: #e9ecef;
-  border-radius: 10px;
-}
-
-.options {
-  width: 24px;
-  height: 24px;
-}
-
-.dropdown-card {
-  position: absolute;
-  top: 100%;
-  left: -12px;
-  background: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  padding: 0.5rem;
-  z-index: 1000;
-  width: 150px; 
-  margin-top: 5px; 
-}
-
-.dropdown-item {
-  display: block;
-  width: 90%;
-  padding: 0.5rem 1rem;
-  background: none;
-  border: none;
-  text-align: left;
-  font-size: clamp(0.9rem, 3vw, 1rem);
-  cursor: pointer;
-}
-
-.dropdown-item:hover {
-  background: #f8f9fa;
-}
-
-.username {
-  font-size: clamp(0.9rem, 3vw, 1rem);
-  margin: 0; 
-}
-
-.user-avatar {
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-}
 
 .dashboard-header {
   display: flex;
@@ -132,7 +58,7 @@ h1 {
   text-align: center;
   flex: 1;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  min-width: 150px;
+  min-width: 100px;
 }
 
 .stat-value {
@@ -442,7 +368,7 @@ h1 {
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
   .dashboard-container {
-    padding: 1rem;
+    padding: 2.9rem;
   }
 
   .navbar {
@@ -476,7 +402,7 @@ h1 {
   .user-card,
   .transactions,
   .tasks-section {
-    max-width: 93%;
+    max-width: 100%;
   }
 
   .details-row {

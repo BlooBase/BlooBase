@@ -2,7 +2,7 @@ import React, { useEffect, useState} from 'react';
 import '../Home.css';
 import { retrieveProducts } from '../firebase/retrieveProducts';
 import { getUserRole } from '../firebase/firebase';
-import { auth } from '../firebase/firebase'; // Import Firebase auth
+import { auth } from '../firebase/firebase';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../components/Navbar';
 import { Link } from 'react-router-dom';

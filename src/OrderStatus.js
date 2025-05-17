@@ -1,6 +1,6 @@
 //this file contains functions that are implemented in the web app
 
-async function fetchOrderStatus(orderId) {
+async function fetchOrderStatus(orderId, userToken) {
   //replace this with the actual api
   const response = await fetch(`/api/orders/${orderId}`, {
     headers: { Authorization: `Bearer ${userToken}` },
@@ -13,5 +13,5 @@ async function fetchOrderStatus(orderId) {
   }
 }
 
-module.exports={fetchOrderStatus};
+module.exports = { fetchOrderStatus };
 

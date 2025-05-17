@@ -1,37 +1,43 @@
-import { collection, getDocs } from 'firebase/firestore';
-import { ref, getDownloadURL } from 'firebase/storage';
-import { db, storage } from './firebase';
+import { ref, getDownloadURL } from "firebase/storage";
+import { storage,apiRequest } from "./firebase";
+import { hardcodedSellers } from "./retrieveSellersCached"; // optional separate file
 
-export let cachedSellers = null; // Cache for sellers data
+export let cachedSellers = null;
 
 export async function retrieveSellers() {
   try {
-    const snapshot = await getDocs(collection(db, 'Sellers'));
-    const fetchedSellers = await Promise.all(snapshot.docs.map(async (doc) => {
-      const data = doc.data();
-      let imageUrl = '';
-      if (data.image) {
-        try {
-          const imgRef = ref(storage, data.image);
-          imageUrl = await getDownloadURL(imgRef);
-        } catch (e) {
-          imageUrl = '';
+    const sellers = await apiRequest("/api/sellers", "GET");
+
+    const sellersWithUrls = await Promise.all(
+      sellers.map(async (seller) => {
+        let imageUrl = seller.image;
+
+        if (imageUrl && !imageUrl.startsWith("http")) {
+          try {
+            const imageRef = ref(storage, imageUrl);
+            imageUrl = await getDownloadURL(imageRef);
+          } catch (e) {
+            console.error(`Error fetching image for seller ${seller.id}:`, e);
+            imageUrl = ""; // fallback
+          }
         }
-      }
-      return {
-        id: doc.id,
-        title: data.title || 'Untitled',
-        description: data.description || '',
-        image: imageUrl,
-        color: data.color || '#ffffff',
-        textColor: data.textColor || '#000000',
-        genre: data.genre || 'Unknown',
-      };
-    }));
-    cachedSellers = fetchedSellers;
-    return fetchedSellers;
+
+        return {
+          ...seller,
+          image: imageUrl,
+          title: seller.title || "Untitled",
+          description: seller.description || "",
+          color: seller.color || "#ffffff",
+          textColor: seller.textColor || "#000000",
+          genre: seller.genre || "Unknown",
+        };
+      })
+    );
+
+    cachedSellers = [...hardcodedSellers, ...sellersWithUrls];
+    return cachedSellers;
   } catch (error) {
-    console.error('Error fetching sellers:', error);
-    return cachedSellers || [];
+    console.error("Error retrieving sellers:", error);
+    return cachedSellers || hardcodedSellers;
   }
 }

@@ -24,7 +24,7 @@ const Store = () => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
-  const [userRole, setUserRole] = useState(null); // State to store the user's role
+  const [userRole, setUserRole] = useState(null); 
 
   useEffect(() => {
     const fetchStores = async () => {
@@ -51,6 +51,8 @@ const Store = () => {
         try {
           const sellerProducts = await retrieveSellerProducts(id);
           setProducts(sellerProducts);
+          //console.log(id)
+          console.log(sellerProducts)
         } catch (err) {
           console.error('Error fetching seller products:', err);
         } finally {

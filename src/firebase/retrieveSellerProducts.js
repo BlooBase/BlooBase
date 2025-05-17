@@ -1,41 +1,33 @@
-/*import { apiRequest } from "./firebase";
-
-export const retrieveSellerProducts = async (sellerId) => {
-  return apiRequest(`/api/sellers/${sellerId}/products`);
-};*/
-import { collection, getDocs, query, where } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
-import { db, storage } from "./firebase"; // Import your Firebase setup
+import { apiRequest,storage } from "./firebase"; 
 
 export async function retrieveSellerProducts(sellerId) {
-  const productsRef = collection(db, "Products");
-
   try {
-    // Query products where SellerID matches the provided sellerId
-    const sellerQuery = query(productsRef, where("SellerID", "==", sellerId));
-    const snapshot = await getDocs(sellerQuery);
+    // Fetch product metadata from backend
+    //console.log(sellerId)
+    const products = await apiRequest(`/api/seller/products?sellerId=${sellerId}`, "GET");
 
-    const products = await Promise.all(
-      snapshot.docs.map(async (doc) => {
-        const data = doc.data();
-
+    // Convert image paths to URLs
+    const productsWithUrls = await Promise.all(
+      products.map(async (product) => {
         let imageUrl = null;
         try {
-          const imageRef = ref(storage, data.image);
-          imageUrl = await getDownloadURL(imageRef);
+          if (product.image && typeof product.image === "string") {
+            const imageRef = ref(storage, product.image);
+            imageUrl = await getDownloadURL(imageRef);
+          }
         } catch (error) {
-          console.error(`Error fetching image for product ${doc.id}:`, error);
+          console.error(`Error fetching image for product ${product.id}:`, error);
         }
 
         return {
-          id: doc.id,
-          ...data,
+          ...product,
           imageUrl,
         };
       })
     );
 
-    return products;
+    return productsWithUrls;
   } catch (error) {
     console.error("Error retrieving seller products:", error);
     return [];

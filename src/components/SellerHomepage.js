@@ -104,7 +104,7 @@ const SellerHomePage = () => {
     <section className="seller-home">
       <section className="seller-header">
         <img src="/bloobase.png" alt="Bloobase" className="seller-logo" />
-        <section className="welcome-bg">
+        <section className="welcome-bg-seller">
           <h1 className="seller-title">Welcome, {user.name}</h1>
         </section>
         <nav className="seller-nav">
@@ -133,20 +133,20 @@ const SellerHomePage = () => {
                         className="order-preview-img"
                       />
                       <figcaption className="order-preview-info">
-                        <div className="order-preview-name">
+                        <section className="order-preview-name">
                           <strong>Product:</strong> <small>{product.title || product.name}</small>
-                        </div>
-                        <div className="order-preview-price">
+                        </section>
+                        <section className="order-preview-price">
                           <strong>Sold:</strong> <data value={product.sales}>{product.sales} times</data>
-                        </div>
-                        <div className="order-preview-type">
+                        </section>
+                        <section className="order-preview-type">
                           <em>
                             Price: R
                             {typeof product.price === "string"
                               ? product.price.replace(/[^\d.]/g, "")
                               : product.price}
                           </em>
-                        </div>
+                        </section>
                       </figcaption>
                     </figure>
                   </article>
@@ -189,7 +189,7 @@ const SellerHomePage = () => {
 
       <section className="sparkle-overlay">
         {[...Array(30)].map((_, i) => (
-          <span
+          <p
             key={i}
             className="sparkle"
             style={{

@@ -14,7 +14,7 @@ body {
 .seller-home {
   display: flex;
   flex-direction: column;
-  min-height: 165vh;
+  min-height: 140vh;
   background: linear-gradient(to right, #fff5e1, hwb(321 93% 0%));
 }
 
@@ -27,27 +27,21 @@ body {
   border: #000000 2px solid;
   text-align: center;
   box-shadow: 0 9px 30px rgba(0, 0, 0, 0.2);
-  height: 300px;
+  height: 150px;
   display: flex;
   align-items: center;
 }
 
 .seller-logo {
-  height: 200px;
+  height: 120px;
   margin-right: 140px;
-}
-
-.seller-title {
-  font-size: 3.5rem;
-  font-weight: 700;
-  margin: 20px 0;
-  color: #165a9c;
+  margin-left: -40px;
 }
 
 .seller-nav {
-  margin-top: 20px;
+  margin-top: 0px;
   display: flex;
-  margin-left: 200px;
+  margin-left: 300px;
   justify-content: center;
   gap: 20px;
 }
@@ -78,7 +72,7 @@ body {
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
-.welcome-bg {
+.welcome-bg-seller {
   background-color: #f9f9f9;
   display: flex;
   flex-wrap: wrap;
@@ -89,11 +83,20 @@ body {
   border: #000000 2px solid;
   padding-left: 40px;
   padding-right: 40px;
+  height: 100px;
+  margin-left: 270px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
+  white-space: nowrap; /* Prevent text from wrapping */
 }
 
-.welcome-bg:hover {
+.seller-title {
+  font-size: 2.5rem; /* Reduced font size */
+  font-weight: 700;
+  margin: 20px 0;
+  color: #165a9c;
+}
+.welcome-bg-seller:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
@@ -102,7 +105,7 @@ body {
 .seller-orders-section {
   display: flex;
   justify-content: flex-start;
-  margin-top: 30px;
+  margin-top: 10px;
   flex: 1;
   min-height: 50vh;
   align-items: stretch;

@@ -123,18 +123,18 @@ const BuyerHomePage = () => {
                             className="order-preview-img"
                           />
                           <figcaption className="order-preview-info">
-                            <div className="order-preview-name">
+                            <section className="order-preview-name">
                               <strong>Order ID:</strong> <small>{order.id.slice(0, 6)}...</small>
-                            </div>
-                            <div className="order-preview-price">
+                            </section>
+                            <section className="order-preview-price">
                               <strong>Total:</strong> <data value={orderTotal}>R{orderTotal.toFixed(2)}</data>
-                            </div>
-                            <div
+                            </section>
+                            <section
                               className={`order-preview-type ${order.orderType?.toLowerCase()}`}
                               aria-label="Order Type"
                             >
                               <em>{order.orderType}</em>
-                            </div>
+                            </section>
                           </figcaption>
                         </figure>
                       )}
@@ -185,7 +185,7 @@ const BuyerHomePage = () => {
 
       <section className="sparkle-overlay">
         {[...Array(30)].map((_, i) => (
-          <span
+          <p
             key={i}
             className="sparkle"
             style={{

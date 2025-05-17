@@ -75,7 +75,7 @@ const BuyerSettings = () => {
         <section className="homepage-container">
           <header className="logo-header">
             {!imagesLoaded.logo && (
-              <div className="logo-placeholder">BlooBase</div>
+              <section className="logo-placeholder">BlooBase</section>
             )}
             <img
               src="/bloobase.png"
@@ -105,7 +105,7 @@ const BuyerSettings = () => {
 
         <form className="settings-form" onSubmit={(e) => e.preventDefault()}>
           <fieldset className="form-container">
-            <div className="form-field">
+            <section className="form-field">
               <label htmlFor="name" className="form-label">
                 Name:
               </label>
@@ -117,9 +117,9 @@ const BuyerSettings = () => {
                 onChange={handleChange}
                 className="form-input"
               />
-            </div>
+            </section>
 
-            <div className="form-field">
+            <section className="form-field">
               <label htmlFor="email" className="form-label">
                 Email:
               </label>
@@ -131,9 +131,9 @@ const BuyerSettings = () => {
                 onChange={handleChange}
                 className="form-input"
               />
-            </div>
+            </section>
 
-            <div className="form-field">
+            <section className="form-field">
               <label htmlFor="password" className="form-label">
                 Current Password:
               </label>
@@ -145,9 +145,9 @@ const BuyerSettings = () => {
                 onChange={handleChange}
                 className="form-input"
               />
-            </div>
+            </section>
 
-            <div className="form-field">
+            <section className="form-field">
               <label htmlFor="newpassword" className="form-label">
                 New Password:
               </label>
@@ -159,7 +159,7 @@ const BuyerSettings = () => {
                 onChange={handleChange}
                 className="form-input"
               />
-            </div>
+            </section>
 
             <section className="settings-buttons">
               <button

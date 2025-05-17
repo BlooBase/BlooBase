@@ -1,4 +1,4 @@
-import { apiRequest } from "./firebase";
+import { apiRequest,auth } from "./firebase";
 
 export async function removeFromCart(productId) {
   const user = auth.currentUser;

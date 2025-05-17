@@ -1,4 +1,4 @@
-import { apiRequest } from "./firebase";
+import { apiRequest,auth } from "./firebase";
 
 // Retrieves the current user's cart items from Firestore
 export async function retrieveCart() {

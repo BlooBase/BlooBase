@@ -1,4 +1,4 @@
-import { apiRequest } from "./firebase";
+import { apiRequest,auth  } from "./firebase";
 
 // Adds a product to the current user's cart in Firestore
 export async function addToCart(product) {

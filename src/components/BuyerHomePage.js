@@ -3,9 +3,11 @@ import { getUserName } from '../firebase/firebase';
 import { Link, useNavigate } from "react-router-dom";
 import { updateCredentials, deleteAccount, logout } from "../firebase/firebase";
 import '../BuyerHome.css';
+import { getUserOrders } from '../firebase/retireveOrders';
 
 const BuyerHomePage = () => {
   const [user, setUser] = useState({ name: '' });
+  const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -26,6 +28,18 @@ const BuyerHomePage = () => {
       alert("Failed to update settings: " + error.message);
     }
   };
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const userOrders = await getUserOrders();
+        setOrders(userOrders);
+      } catch (error) {
+        setOrders([]);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   const handleCancel = () => {
     setFormData({
@@ -85,11 +99,50 @@ const BuyerHomePage = () => {
         <section className="orders-grid">
           <section className="floating-orders-card">
             <h3 className="orders-card-title">ORDERS</h3>
-            <section className="orders-card-scroll">
-              {[...Array(8)].map((_, i) => (
-                <section key={i} className="order-blob" />
-              ))}
-            </section>
+              <section className="orders-card-scroll">
+                {orders.length === 0 ? (
+                  <p className="orders-empty">No orders yet.</p>
+                ) : (
+                orders.map(order => {
+                  const firstItem = order.items?.[0];
+                  // Calculate total price for the order
+                  const orderTotal = order.items?.reduce((sum, item) => {
+                    let price = item.price;
+                    if (typeof price === 'string') price = price.replace('R', '');
+                    price = parseFloat(price) || 0;
+                    return sum + price;
+                  }, 0) || 0;
+
+                  return (
+                    <article key={order.id} className="order-preview">
+                      {firstItem && (
+                        <figure className="order-preview-figure">
+                          <img
+                            src={firstItem.image || firstItem.imageUrl}
+                            alt={firstItem.name}
+                            className="order-preview-img"
+                          />
+                          <figcaption className="order-preview-info">
+                            <div className="order-preview-name">
+                              <strong>Order ID:</strong> <small>{order.id.slice(0, 6)}...</small>
+                            </div>
+                            <div className="order-preview-price">
+                              <strong>Total:</strong> <data value={orderTotal}>R{orderTotal.toFixed(2)}</data>
+                            </div>
+                            <div
+                              className={`order-preview-type ${order.orderType?.toLowerCase()}`}
+                              aria-label="Order Type"
+                            >
+                              <em>{order.orderType}</em>
+                            </div>
+                          </figcaption>
+                        </figure>
+                      )}
+                    </article>
+                  );
+                })
+                )}
+              </section>
           </section>
         </section>
 

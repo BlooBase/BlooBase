@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, deleteUser} from "firebase/auth";
-import { getFirestore, doc, setDoc, getDocs,  collection, deleteDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDocs, getDoc, collection, deleteDoc, query, where } from "firebase/firestore";
 import { getStorage, ref } from "firebase/storage";
 
 const firebaseConfig = {
@@ -364,5 +364,9 @@ export {
   setDoc,
   collection,
   ref,
-  getDocs
+  getDocs,
+  getDoc,
+  deleteDoc,
+  query,
+  where
 };

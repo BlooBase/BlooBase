@@ -109,7 +109,7 @@ const SellerHomePage = () => {
         </section>
         <nav className="seller-nav">
           <Link to="/" className="seller-nav-link">HOME</Link>
-          <Link to="/CardCreator" className="seller-nav-link">CardCreator</Link>
+          <Link to="/CardCreator" className="seller-nav-link">Your Store</Link>
         </nav>
       </section>
 

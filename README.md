@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# BlooBase
-We make an app
-=======
 <p align="center">
   <img src="media/Banner_compressed.gif" alt="BlooBase demo" height="300" />
 </p>
@@ -128,4 +124,3 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
->>>>>>> c1abe95245bd6d2f6d51f622a32b14f579757cb7

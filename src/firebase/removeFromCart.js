@@ -1,5 +1,9 @@
 import { apiRequest } from "./firebase";
 
-export const removeFromCart = async (productId) => {
-  return apiRequest('/api/cart/remove', 'POST', { productId });
-};
+export async function removeFromCart(productId) {
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
+
+  const result = await apiRequest("/api/cart/remove", "POST", { productId });
+  return result.updatedItems || [];
+}

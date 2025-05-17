@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, deleteUser} from "firebase/auth";
-import { getFirestore, doc, setDoc, getDocs,  collection, deleteDoc } from "firebase/firestore";
-import { getStorage, ref } from "firebase/storage";
+import { getFirestore, doc, setDoc, getDocs,  collection} from "firebase/firestore";
+import { getStorage, ref,uploadBytes,getDownloadURL } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBLRZEHtvWJex2S_6wUgU9-0PyUZ6XvYdc",
@@ -18,8 +18,8 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
 
-const apiURL = 'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net'
-//const apiURL = 'http://localhost:5000'
+//const apiURL = 'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net'
+const apiURL = 'http://localhost:5000'
 //API requests fucntion
 export const apiRequest = async (url, method = 'GET', body = null, isFormData = false) => {
   const headers = {};
@@ -276,83 +276,162 @@ export const GoogleLogin = async () => {
   }
 };
 
-// new functions:
+//New functions
+
 
 /**
- * Creates or updates the seller card for the current user in the Sellers collection.
- * @param {Object} cardData - { image, color, description, genre, textColor, title }
- * @returns {Promise<void>}
+ * Uploads a file to Firebase Storage and returns the storage path (not the URL).
+ * @param {File} file - The file object to upload.
+ * @param {string} folder - Folder path in Firebase Storage (e.g., "shop_images").
+ * @returns {Promise<string>} - The full storage path (e.g., "shop_images/abc123_file.png").
  */
+export async function uploadImage(file, folder = "shop_images") {
+  try {
+    const uniqueFileName = `${crypto.randomUUID()}_${file.name}`;
+    const storagePath = `${folder}/${uniqueFileName}`;
+    const fileRef = ref(storage, storagePath);
+
+    await uploadBytes(fileRef, file);
+
+    return storagePath; // This is what you'll store in Firestore
+  } catch (error) {
+    console.error("Image upload failed:", error);
+    throw error;
+  }
+}
 export const upsertSellerCard = async (cardData) => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
 
   let imagePath = cardData.image;
+
+  // Preserve image upload logic
   if (cardData.image instanceof File) {
-    imagePath = await uploadFile(cardData.image, "shop_images");
+    imagePath = await uploadImage(cardData.image, "shop_images");
   }
 
-  return apiRequest('/api/sellers/card', 'POST', {
+  // Use apiRequest to send the data to the backend
+  await apiRequest(`/api/seller/card`, "POST", {
     image: imagePath,
     color: cardData.color,
     description: cardData.description,
     genre: cardData.genre,
     textColor: cardData.textColor,
     title: cardData.title,
-    userId: user.uid, // Backend can also get this from the token
   });
 };
-
-/**
- * Fetches the seller card for the current user from the Sellers collection.
- * @returns {Promise<Object|null>} The seller card data or null if not found.
- */
-export const getSellerCard = async () => {
-  return apiRequest('/api/sellers/card');
-};
-
-/**
-  * Deletes the seller card for the current user from the Sellers collection.
-  * @returns {Promise<void>}
-  */
 export const deleteSellerCard = async () => {
-  return apiRequest('/api/sellers/card', 'DELETE');
-};
-export const addProduct = async (productData) => {
-  const { image, ...rest } = productData;
-  let imagePath = null;
-  if (image instanceof File) {
-    imagePath = await uploadFile(image, "product_images");
-  }
-  return apiRequest('/api/products', 'POST', { ...rest, image: imagePath });
-};
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
 
-
-// Get all products for the current seller
-export const getSellerProducts = async () => {
-  return apiRequest('/api/sellers/products');
+  await apiRequest(`/api/seller/card`, "DELETE");
 };
-// Update a product
-export const updateProduct = async ({ id, image, name, price }) => {
+export const addProduct = async ({ image, name, price }) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
+
   let imageUrl = image;
   if (image instanceof File) {
-    imageUrl = await uploadFile(image, "product_images");
+    imageUrl = await uploadImage(image, "product_images");
   }
 
-  return apiRequest(`/api/products/${id}`, 'PATCH', {
+  // Always store as "R" + number
+  let randPrice = price;
+  if (typeof randPrice === "number") {
+    randPrice = `R${randPrice}`;
+  } else if (typeof randPrice === "string") {
+    randPrice = randPrice.trim();
+    if (!randPrice.startsWith("R")) {
+      randPrice = `R${randPrice}`;
+    }
+  }
+
+  await apiRequest("/api/products", "POST", {
     image: imageUrl,
     name,
-    price,
+    price: randPrice,
   });
 };
+export const getSellerProducts = async () => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
+  
+  const rawProducts = await apiRequest("/api/products/seller");
 
-// Delete a product
+  const products = [];
+  for (const data of rawProducts) {
+    // Convert image path to download URL if needed
+    if (data.image && typeof data.image === "string" && !data.image.startsWith("http")) {
+      try {
+        data.image = await getDownloadURL(ref(storage, data.image));
+      } catch {
+        data.image = null;
+      }
+    }
+
+    // Convert price from "R123" to 123 (number)
+    let price = data.price;
+    if (typeof price === "string" && price.startsWith("R")) {
+      price = Number(price.slice(1));
+    }
+
+    products.push({ ...data, price });
+  }
+
+  return products;
+};
+export const updateProduct = async ({ id, image, name, price }) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
+
+  let imageUrl = image;
+  if (image instanceof File) {
+    imageUrl = await uploadImage(image, "product_images");
+  }
+
+  // Format price as "R123"
+  let formattedPrice = price;
+  if (typeof formattedPrice === "number") {
+    formattedPrice = `R${formattedPrice}`;
+  } else if (typeof formattedPrice === "string") {
+    formattedPrice = formattedPrice.trim();
+    if (!formattedPrice.startsWith("R")) {
+      formattedPrice = `R${formattedPrice}`;
+    }
+  }
+
+  await apiRequest(`/api/products/${id}`, "PUT", {
+    image: imageUrl,
+    name,
+    price: formattedPrice,
+  });
+};
 export const deleteProduct = async (id) => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
-  const productRef = doc(db, "Products", id);
-  await deleteDoc(productRef);
+
+  await apiRequest(`/api/products/${id}`, "DELETE");
 };
+export const getSellerCard = async () => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
+
+  const data = await apiRequest("/api/seller/card");
+
+  // Convert image path to download URL if necessary
+  if (data?.image) {
+    try {
+      data.image = await getDownloadURL(ref(storage, data.image));
+    } catch (e) {
+      console.error("Failed to get image download URL:", e);
+      data.image = null;
+    }
+  }
+
+  return data;
+};
+
+
 
 
 

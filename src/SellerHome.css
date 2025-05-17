@@ -1,0 +1,602 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  background: linear-gradient(to right, #fff5e1, #ffd1ee);
+  color: #1a1a1a;
+}
+
+.seller-home {
+  display: flex;
+  flex-direction: column;
+  min-height: 140vh;
+  background: linear-gradient(to right, #fff5e1, hwb(321 93% 0%));
+}
+
+/* Header */
+.seller-header {
+  background: linear-gradient(to right, #dff3ff, #f4faff);
+  padding: 60px 80px;
+  border-bottom-left-radius: 70px;
+  border-bottom-right-radius: 70px;
+  border: #000000 2px solid;
+  text-align: center;
+  box-shadow: 0 9px 30px rgba(0, 0, 0, 0.2);
+  height: 150px;
+  display: flex;
+  align-items: center;
+}
+
+.seller-logo {
+  height: 120px;
+  margin-right: 140px;
+  margin-left: -40px;
+}
+
+.seller-nav {
+  margin-top: 0px;
+  display: flex;
+  margin-left: 300px;
+  justify-content: center;
+  gap: 20px;
+}
+
+.seller-nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #000000;
+  font-weight: 900;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  border: #1a1a1a 2px solid;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.seller-nav-link:hover {
+  background-color: #eaf4ff;
+  color: #0d3c6d;
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-bg-seller {
+  background-color: #f9f9f9;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 80px;
+  border: #000000 2px solid;
+  padding-left: 40px;
+  padding-right: 40px;
+  height: 100px;
+  margin-left: 270px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.seller-title {
+  font-size: 2.5rem; /* Reduced font size */
+  font-weight: 700;
+  margin: 20px 0;
+  color: #165a9c;
+}
+.welcome-bg-seller:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Orders/Stores Section */
+.seller-orders-section {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 10px;
+  flex: 1;
+  min-height: 50vh;
+  align-items: stretch;
+}
+
+.orders-grid {
+  width: 75%;
+  display: flex;
+  height: 100%;
+  justify-content: left;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+.floating-orders-card {
+  width: 96%;
+  height: 730px;
+  background-color: white;
+  border-radius: 30px;
+  border: 2px solid black;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.orders-card-title {
+  position: absolute;
+  top: 12px;
+  left: 20px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: black;
+  z-index: 1;
+  background: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.orders-card-scroll {
+  height: 100%;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  grid-auto-rows: min-content;
+  align-items: start;
+  padding-right: 8px;
+  border-radius: 40px;
+  margin-top: 40px;
+}
+
+.orders-card-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.orders-card-scroll::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+.orders-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #888;
+  font-size: 1.2rem;
+  margin-top: 60px;
+}
+
+/* Store Preview Card (Semantic) */
+.order-preview {
+  background-color: #fff2e9;
+  border-radius: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 16px;
+  min-width: 0;
+  min-height: 0;
+  transition: box-shadow 0.2s;
+  border: 1.5px solid #e0c3b2;
+}
+
+.order-preview-figure {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0;
+  width: 100%;
+}
+
+.order-preview-img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-right: 18px;
+  border: 2px solid #e0c3b2;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.order-preview-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+}
+
+.order-preview-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.order-preview-price {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #165a9c;
+}
+
+.order-preview-type {
+  display: inline-block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: #eaf4ff;
+  color: #165a9c;
+  border: 1px solid #b3d4fc;
+  margin-top: 2px;
+  width: fit-content;
+}
+
+/* Settings Section */
+.seller-settings {
+  background-color: #fff3f3;
+  flex: 1;
+  padding: 50px 60px;
+  border-radius: 30px;
+  border: 2px solid #000;
+  height: 730px;
+  width: 600px;
+  margin-top: 20px;
+  margin-right: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.settings-title {
+  position: relative;
+  top: -35px;
+  left: -40px;
+  width: 100px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: black;
+  z-index: 1;
+  background: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.form-container {
+  height: 100%;
+  width: 100%;
+  flex: 1;
+  padding: 20px;
+  flex-direction: column;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin-bottom: 15px;
+}
+
+.form-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.form-input {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid #ccc;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #165a9c;
+  outline: none;
+  background-color: #f8fdff;
+}
+
+.settings-form {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.settings-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 40%;
+}
+
+.nav-button {
+  background-color: #165a9c;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 2px solid #0d3c6d;
+  font-weight: bold;
+  width: 300px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: #0d3c6d;
+}
+
+.red-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.delete-button {
+  flex: 1;
+  background-color: #ff4d4d;
+  color: white;
+  padding: 10px 0;
+  border-radius: 12px;
+  border: 2px solid #b00000;
+  font-weight: bold;
+  cursor: pointer;
+  height: 60px;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.delete-button:hover {
+  background-color: #c10000;
+  color: white;
+}
+
+/* Sparkle and Footer */
+.sparkle-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: white;
+  clip-path: polygon(
+    50% 0%,
+    60% 40%,
+    100% 50%,
+    60% 60%,
+    50% 100%,
+    40% 60%,
+    0% 50%,
+    40% 40%
+  );
+  opacity: 0.6;
+  transform: scale(0.8) rotate(0deg);
+  animation: sparkle-twinkle 2s infinite ease-in-out;
+  filter: drop-shadow(0 0 6px white);
+}
+
+@keyframes sparkle-twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5) rotate(45deg);
+  }
+}
+
+.seller-footer,
+.buyer-footer {
+  position: relative;
+  z-index: 1;
+  padding: 40px 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #165a9c;
+  background-color: #fff3f3;
+  width: 100%;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Total Income Label */
+.total-income-label {
+  position: absolute;
+  top: 12px;
+  right: 24px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #165a9c;
+  background: #fff;
+  padding: 4px 14px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+  z-index: 2;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .orders-card-scroll {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .seller-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    height: 55px;
+  }
+
+  .welcome-bg {
+    width: 200px;
+    padding: 0.1rem;
+    margin: 0 auto;
+    border-radius: 20px;
+    margin-top: -55px;
+    margin-left: 70px;
+  }
+
+  .seller-logo {
+    height: 45px;
+    margin-bottom: 0.8rem;
+    margin-left: -170px;
+    margin-top: -15px;
+  }
+
+  .seller-title {
+    font-size: 0.8rem;
+    margin: 0.5rem 0;
+  }
+
+  .seller-nav {
+    margin-top: 1rem;
+    position: relative;
+    top: -55px;
+    left: 140px;
+    margin-left: 0;
+  }
+
+  .seller-nav-link {
+    font-size: 0.5rem;
+    padding: 0.5rem 1rem;
+    width: 40px;
+    height: 40px;
+  }
+
+  .seller-orders-section {
+    flex-direction: column;
+    padding: 1rem;
+    width: 480px;
+    margin-top: -90px;
+    height: 300px;
+  }
+
+  .orders-grid,
+  .seller-settings {
+    width: 300px;
+    margin: 1rem 0;
+    margin-top: -80px;
+    height: 300px;
+  }
+
+  .floating-orders-card {
+    padding: 1rem;
+    height: 200px;
+  }
+
+  .orders-card-title {
+    font-size: 0.7rem;
+  }
+
+  .orders-card-scroll {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.7rem;
+    border-radius: 20px;
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .order-preview {
+    padding: 10px 6px;
+  }
+
+  .order-preview-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    margin-right: 8px;
+  }
+
+  .order-preview-info {
+    gap: 4px;
+  }
+
+  .settings-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-container {
+    padding: 1rem;
+    border: none;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+  }
+
+  .form-input {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .settings-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .red-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .nav-button,
+  .delete-button {
+    font-size: 1rem;
+    padding: 0.7rem;
+  }
+
+  .sparkle {
+    width: 4px;
+    height: 4px;
+  }
+
+  .seller-footer,
+  .buyer-footer {
+    font-size: 0.8rem;
+    padding: 1rem;
+    text-align: center;
+  }
+}

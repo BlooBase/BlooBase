@@ -1,0 +1,474 @@
+
+.create-shop-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    
+}
+
+/* Progress bar styles */
+.progress-container {
+    width: 100%;
+    height: 4px;
+    background-color: #e0e0e0;
+    margin-bottom: 2rem;
+    border-radius: 3px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #00aaff;
+    width: 33.33%;
+    transition: width 0.3s ease;
+    border-radius: 3px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.step-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.step {
+    font-weight: 500;
+    margin-right: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.form-box h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-box p {
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.input {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+}
+
+.half-width {
+box-sizing: border-box;
+}
+
+.input:not(.half-width) {
+    margin-bottom: 1rem;
+}
+
+.password-field {
+    margin-bottom: 1rem;
+}
+
+.password-hint {
+    font-size: 0.875rem;
+    color: #666;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.checkbox-row input {
+    margin-right: 0.5rem;
+}
+
+.terms-link {
+    color: #030099;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.next-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.next-button:hover {
+    background-color: #0090dd;
+}
+
+/* UploadProducts.css */
+.upload-shop-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.upload-progress-container {
+    width: 100%;
+    height: 4px;
+    background-color: #e0e0e0;
+    margin-bottom: 2rem;
+    border-radius: 3px;
+}
+
+.upload-progress-bar {
+    height: 100%;
+    background-color: #00aaff;
+    width: 66.66%; /* Second step */
+    transition: width 0.3s ease;
+    border-radius: 3px;
+}
+
+.upload-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.upload-step-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.upload-step {
+    font-weight: 500;
+    margin-right: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.upload-form-box h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.upload-form-box p {
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+}
+
+.upload-form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.upload-input {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+}
+
+.upload-half-width {
+    flex: 1;
+    width: 100%;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.upload-input:not(.upload-half-width) {
+    margin-bottom: 1rem;
+}
+
+textarea.upload-input {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.upload-form-row label.upload-input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+    border: 1px dashed #ccc;
+    text-align: center;
+    color: #666;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.upload-form-row label.upload-input:hover {
+    background-color: #f0f0f0;
+}
+
+.upload-file-preview {
+    margin-bottom: 1rem;
+}
+
+.upload-file-preview p {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.upload-file-preview ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.upload-file-preview li {
+    font-size: 0.875rem;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.upload-checkbox-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.upload-checkbox-row input {
+    margin-right: 0.5rem;
+}
+
+.upload-next-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.upload-next-button:hover {
+    background-color: #0090dd;
+}
+
+/* Verification page */
+.verify-shop-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 3px;
+}
+
+.verify-progress-container {
+    width: 100%;
+    height: 4px;
+    background-color: #e0e0e0;
+    margin-bottom: 2rem;
+    border-radius: 3px;
+}
+
+.verify-progress-bar {
+    height: 100%;
+    background-color: #00aaff;
+    width: 100%; /* Third step */
+    transition: width 0.3s ease;
+    border-radius: 3px;
+}
+
+.verify-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.verify-step-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.verify-step {
+    font-weight: 500;
+    margin-right: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.verify-form-box h2 {
+    font-size: 1.5rem;
+    font-family: 'DM Sans', sans-serif;
+    margin-bottom: 0.5rem;
+}
+
+.verify-form-box p {
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.verify-input {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+}
+
+.verify-home-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.verify-home-button:hover {
+    background-color: #0090dd;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .create-shop-container,
+    .upload-shop-container,
+    .verify-shop-container {
+        max-width: 80%;
+        padding: 2rem 0rem;
+    }
+
+    .progress-container,
+    .upload-progress-container,
+    .verify-progress-container {
+        margin-bottom: 1.5rem;
+    }
+
+    .header,
+    .upload-header,
+    .verify-header {
+        gap: 1px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .step-icon,
+    .upload-step-icon,
+    .verify-step-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    .step,
+    .upload-step,
+    .verify-step {
+        font-size: 0.7rem;
+        margin-right: 1rem;
+    }
+
+    .form-box h2,
+    .upload-form-box h2,
+    .verify-form-box h2 {
+        font-size: 1.25rem;
+    }
+
+    .form-box p,
+    .upload-form-box p,
+    .verify-form-box p {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-row,
+    .upload-form-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .input,
+    .upload-input,
+    .verify-input {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+        border-radius: 6px;
+    }
+
+    .half-width,
+    .upload-half-width {
+        width: 100%;
+    }
+
+    textarea.upload-input {
+        min-height: 80px;
+    }
+
+    .password-field {
+        margin-bottom: 0.75rem;
+    }
+
+    .password-hint {
+        font-size: 0.75rem;
+    }
+
+    .checkbox-row,
+    .upload-checkbox-row {
+        font-size: 0.9rem;
+    }
+
+    .next-button,
+    .upload-next-button,
+    .verify-home-button {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+        border-radius: 8px;
+    }
+
+    .upload-form-row label.upload-input {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .upload-file-preview p,
+    .upload-file-preview li {
+        font-size: 0.75rem;
+    }
+}

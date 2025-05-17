@@ -1,0 +1,8 @@
+[
+    {
+      "origin": ["http://localhost:3000", "https://gentle-beach-05eaad803.6.azurestaticapps.net"],
+      "method": ["GET"],
+      "maxAgeSeconds": 3600
+    }
+  ]
+  

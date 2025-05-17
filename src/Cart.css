@@ -1,0 +1,290 @@
+.cart-page {
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+  background-image: url('./assets/BGCreator.png'); /* Set the background image */
+  background-size: cover; /* Ensure the image covers the entire page */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
+  background-attachment: fixed; /* Make the background fixed while scrolling */
+  background-position: center; /* Center the background image */
+  min-height: 100vh; /* Ensure the page takes up the full viewport height */
+  padding-top: 90px;
+}
+
+.cart-header {
+  font-size: 2rem;
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.cart-products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.cart-product-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 35px;
+  padding: 1rem;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart-product-image-container {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 25px;
+  margin-bottom: 1rem;
+}
+
+.cart-product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-product-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cart-product-name {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.cart-product-price {
+  font-size: 1rem;
+  color: var(--highlight-color);
+  margin-bottom: 0.5rem;
+}
+
+.cart-product-quantity {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.cart-footer {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center align the content */
+  margin-top: 2rem;
+  gap: 2rem; /* Add spacing between Total and CheckoutForm */
+}
+
+.cart-checkout-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 35px;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto; /* Center the card horizontally */
+  gap: 1.5rem; /* Add spacing between elements */
+}
+
+.cart-total {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.cart-total span {
+  color: var(--highlight-color);
+}
+
+.checkout-form {
+  width: 100%; /* Ensure the form takes up the full width */
+  max-width: 400px; /* Limit the width of the form */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Add spacing between form elements */
+}
+
+.card-element {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 1rem;
+}
+
+.checkout-button {
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.checkout-button:hover {
+  background-color: var(--highlight-color);
+  transform: translateY(-2px);
+}
+
+.checkout-button:active {
+  transform: translateY(0);
+}
+
+.cart-remove-button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #f8d7da; /* Light red background */
+  color: #721c24; /* Dark red text */
+  border: 1px solid #f5c6cb; /* Light red border */
+  border-radius: 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cart-remove-button:hover {
+  background-color: #f5c6cb; /* Slightly darker red on hover */
+  transform: translateY(-2px);
+}
+
+.cart-remove-button:active {
+  transform: translateY(0);
+}
+
+.cart-product-image-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+}
+
+.cart-loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #ccc;
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  animation: cart-spin 1s linear infinite;
+}
+
+@keyframes cart-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cart-hidden {
+  display: none;
+}
+
+.cart-fade-in {
+  animation: cart-fade-in 0.5s ease-in-out;
+}
+
+@keyframes cart-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Adjust the grid layout for smaller screens */
+@media (max-width: 768px) {
+  .cart-products-grid {
+    grid-template-columns: repeat(2, 1fr); /* Two columns for mobile */
+    gap: 1rem; /* Reduce the gap between items */
+    padding: 0 1rem; /* Add padding around the grid */
+  }
+
+  .cart-product-image-container {
+    height: 120px; /* Reduce the height of the image container */
+    min-height: 160px;
+  }
+
+  .cart-product-name {
+    font-size: 1rem; /* Adjust font size for smaller screens */
+  }
+
+  .cart-product-price {
+    font-size: 0.9rem; /* Adjust font size for smaller screens */
+  }
+
+  .cart-remove-button {
+    font-size: 0.8rem; /* Adjust button font size */
+    padding: 0.4rem 0.8rem; /* Reduce button padding */
+  }
+}
+
+/* Adjust the grid layout for very small screens (e.g., phones) */
+@media (max-width: 480px) {
+  .cart-products-grid {
+    grid-template-columns: 1fr; /* Single column for very small screens */
+    gap: 2rem; /* Further reduce the gap between items */
+  }
+
+  .cart-product-item {
+    padding: 1rem; /* Further reduce padding */
+  }
+
+  .cart-product-image-container {
+    height: 100px; /* Further reduce image height */
+  }
+
+  .cart-product-name {
+    font-size: 0.9rem; /* Further reduce font size */
+  }
+
+  .cart-product-price {
+    font-size: 0.8rem; /* Further reduce font size */
+  }
+}
+
+.order-type-dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+  border: none; /* Remove the square border around the entire section */
+}
+
+.order-type-dropdown label {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+
+.order-type-dropdown select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+  border: 2px solid var(--primary-color); /* Thicker border for the dropdown */
+  border-radius: 12px; /* Rounded corners for a softer look */
+  background-color: #f9f9f9; /* Light background for a subtle effect */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.order-type-dropdown select:focus {
+  border-color: var(--highlight-color); /* Highlight border on focus */
+  outline: none; /* Remove default outline */
+}

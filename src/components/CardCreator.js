@@ -21,7 +21,7 @@ const CardCreator = () => {
   ]);
   const [hasStore, setHasStore] = useState(false);
   const [productAnimations, setProductAnimations] = useState([]);
-  const genres = ['Digital Art', 'Drawing', 'Painting', 'Photography', 'Sculptures', 'Mixed Media'];
+  const genres = ['Digital Art', 'Clothing', 'Accessores', 'Crafts', 'Jewelry', 'Art', 'Furniture', 'Mixed Media'];
 
   useEffect(() => {
     const fetchSellerCard = async () => {

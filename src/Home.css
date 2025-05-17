@@ -201,7 +201,7 @@ body {
   display: flex;
   flex-direction: column;
   padding-top: 80px;
-  background-image: url('./assets/BG0.jpg');
+  background-image: url('./assets/BGArtists.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;

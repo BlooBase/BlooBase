@@ -1,21 +1,36 @@
-import { apiRequest,uploadFile } from "./firebase";
+import { uploadImage } from "./uploadImage";
+import { apiRequest } from "./apiRequest"; // Make sure you have this utility function
 
-/**
- * Adds a new seller item to the Sellers collection in Firestore.
- * Uploads the image to Firebase Storage first and stores the image path.
- * @param {Object} sellerData - The data for the seller item.
- * @param {File} sellerData.image - File object to be uploaded.
- * @param {string} sellerData.color - Background color.
- * @param {string} sellerData.description - Description of the artwork.
- * @param {string} sellerData.genre - Genre of the art.
- * @param {string} sellerData.textColor - Text color.
- * @param {string} sellerData.title - Title of the art piece.
- */
-export const addSeller = async (sellerData) => {
-  const { image, ...rest } = sellerData;
-  let imagePath = null;
-  if (image instanceof File) {
-    imagePath = await uploadFile(image, "shop_images");
+export async function addSeller(sellerData) {
+  try {
+    const {
+      color,
+      description,
+      genre,
+      image,
+      textColor,
+      title
+    } = sellerData;
+
+    if (!color || !description || !genre || !image || !textColor || !title) {
+      throw new Error("Missing required seller data fields.");
+    }
+
+    // Upload the image to Firebase Storage
+    const imagePath = await uploadImage(image, "shop_images");
+
+    // Send the rest of the data to the backend
+    await apiRequest("/api/sellers", "POST", {
+      color,
+      description,
+      genre,
+      image: imagePath,
+      textColor,
+      title
+    });
+
+    console.log("Seller added successfully!");
+  } catch (error) {
+    console.error("Failed to create seller:", error);
   }
-  return apiRequest('/api/sellers', 'POST', { ...rest, image: imagePath });
-};
+}

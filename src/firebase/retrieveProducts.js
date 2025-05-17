@@ -1,45 +1,32 @@
-/*import { apiRequest } from "./firebase";
-
-export const retrieveProducts = async () => {
-  try {
-    const response = await apiRequest('/api/products');
-    return response;
-  } catch (error) {
-    console.error("Error retrieving products with images via API:", error);
-    return [];
-  }
-};*/
-import { collection, getDocs } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
-import { db, storage } from "./firebase"; // your existing firebase setup
+import { storage,apiRequest } from "./firebase";
 
 export async function retrieveProducts() {
-  const productsRef = collection(db, "Products");
-
   try {
-    const snapshot = await getDocs(productsRef);
+    // Fetch product data from your backend
+    const products = await apiRequest("/api/products", "GET");
 
-    const products = await Promise.all(
-      snapshot.docs.map(async (doc) => {
-        const data = doc.data();
-
+    // Convert image storage paths to download URLs
+    const productsWithUrls = await Promise.all(
+      products.map(async (product) => {
         let imageUrl = null;
         try {
-          const imageRef = ref(storage, data.image);
-          imageUrl = await getDownloadURL(imageRef);
+          if (product.image && typeof product.image === "string") {
+            const imageRef = ref(storage, product.image);
+            imageUrl = await getDownloadURL(imageRef);
+          }
         } catch (error) {
-          console.error(`Error fetching image for product ${doc.id}:`, error);
+          console.error(`Error fetching image for product ${product.id}:`, error);
         }
 
         return {
-          id: doc.id,
-          ...data,
+          ...product,
           imageUrl,
         };
       })
     );
 
-    return products;
+    return productsWithUrls;
   } catch (error) {
     console.error("Error retrieving products:", error);
     return [];

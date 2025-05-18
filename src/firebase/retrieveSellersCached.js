@@ -20,7 +20,7 @@ export const hardcodedSellers = [
     description: "Author and artist of 'Goodnight Punpun', 'Solanin' and 'A Girl On the Shore'.",
     color: "#ffffff",
     textColor: "#598EA0",
-    genre: "Drawing",
+    genre: "Art",
   },
   {
     id: "h3",
@@ -29,7 +29,7 @@ export const hardcodedSellers = [
     description: "Korean photographer, director and artisan, @chogiseok",
     color: "#e7e4d7",
     textColor: "#141118",
-    genre: "Photography",
+    genre: "Digital Art",
   },
   {
     id: "h4",
@@ -38,7 +38,7 @@ export const hardcodedSellers = [
     description: "Artist of 'One Punch Man' and 'Eyeshield 21'.",
     color: "#1e1e1e",
     textColor: "#ffffff",
-    genre: "Drawing",
+    genre: "Art",
   },
   {
     id: "h5",
@@ -65,7 +65,7 @@ export const hardcodedSellers = [
     description: "Physical inking artist and illustrator",
     color: "#ffffff",
     textColor: "#181818",
-    genre: "Photography",
+    genre: "Art",
   },
 ];
 

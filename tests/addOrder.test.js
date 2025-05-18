@@ -2,7 +2,7 @@ import { addOrder } from '../src/firebase/addOrder';
 import { auth, db, doc, getDoc, setDoc, collection, increment, updateDoc } from '../src/firebase/firebase';
 
 // Mock Firebase dependencies
-jest.mock('./firebase', () => ({
+jest.mock('../src/firebase/firebase', () => ({
   auth: {
     currentUser: null,
   },

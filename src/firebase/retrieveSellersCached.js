@@ -1,5 +1,6 @@
 import { ref, getDownloadURL } from "firebase/storage";
 import { storage,apiRequest } from "./firebase";
+import { cachedSellers } from "./retrieveSellers"; // optional separate file}
 
 // Hardcoded fallback sellers
 export const hardcodedSellers = [
@@ -70,6 +71,9 @@ export const hardcodedSellers = [
 
 export async function retrieveSellersCached() {
   try {
+    if (cachedSellers) {
+      return cachedSellers;
+    }
     const sellers = await apiRequest("/api/sellers", "GET");
 
     const sellersWithUrls = await Promise.all(

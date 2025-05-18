@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getUserName } from '../firebase/firebase';
 import { Link, useNavigate } from "react-router-dom";
-import { updateCredentials, deleteAccount, logout } from "../firebase/firebase";
+import { updateCredentials, getUserData, deleteAccount, logout, getUserAuthProvider } from "../firebase/firebase";
 import { retrieveSellerProducts } from "../firebase/retrieveSellerProducts";
 import { auth } from "../firebase/firebase";
 import '../SellerHome.css';
@@ -18,6 +18,7 @@ const SellerHomePage = () => {
     password: "",
     newpassword: "",
   });
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
 
   useEffect(() => {
     const fetchUserAndProducts = async () => {
@@ -43,6 +44,14 @@ const SellerHomePage = () => {
       setTotalIncome(cartTotal(soldProductsForTotal));
     };
     fetchUserAndProducts();
+  }, []);
+
+  useEffect(() => {
+    const checkProvider = async () => {
+      const provider = await getUserAuthProvider();
+      setIsGoogleUser(provider === "Google");
+    };
+    checkProvider();
   }, []);
 
   const handleChange = (e) => {
@@ -99,6 +108,26 @@ const SellerHomePage = () => {
       alert("Failed to log out: " + error.message);
     }
   };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userData = await getUserData();
+        setFormData(prev => ({
+          ...prev,
+          name: userData.Name || "",
+          email: userData.Email || ""
+        }));
+        console.log("Auto-populated seller formData:", {
+          name: userData.Name,
+          email: userData.Email
+        });
+      } catch (error) {
+        console.error("Failed to fetch seller data for auto-populate:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   return (
     <section className="seller-home">
@@ -163,17 +192,23 @@ const SellerHomePage = () => {
               <section className="form-field">
                 <label htmlFor="name" className="form-label">Name:</label>
                 <input type="text" name="name" id="name" value={formData.name} onChange={handleChange} className="form-input" />
-                <label htmlFor="email" className="form-label">Email:</label>
-                <input type="email" name="email" id="email" value={formData.email} onChange={handleChange} className="form-input" />
               </section>
-              <section className="form-field">
-                <label htmlFor="password" className="form-label">Current Password:</label>
-                <input type="password" name="password" id="password" value={formData.password} onChange={handleChange} className="form-input" />
-              </section>
-              <section className="form-field">
-                <label htmlFor="newpassword" className="form-label">New Password:</label>
-                <input type="password" name="newpassword" id="newpassword" value={formData.newpassword} onChange={handleChange} className="form-input" />
-              </section>
+              {!isGoogleUser && (
+                <>
+                  <section className="form-field">
+                    <label htmlFor="email" className="form-label">Email:</label>
+                    <input type="email" name="email" id="email" value={formData.email} onChange={handleChange} className="form-input" />
+                  </section>
+                  <section className="form-field">
+                    <label htmlFor="password" className="form-label">Current Password:</label>
+                    <input type="password" name="password" id="password" value={formData.password} onChange={handleChange} className="form-input" />
+                  </section>
+                  <section className="form-field">
+                    <label htmlFor="newpassword" className="form-label">New Password:</label>
+                    <input type="password" name="newpassword" id="newpassword" value={formData.newpassword} onChange={handleChange} className="form-input" />
+                  </section>
+                </>
+              )}
               <section className="settings-buttons">
                 <button type="button" onClick={handleSave} className="nav-button">Save Changes</button>
                 <button type="button" onClick={handleCancel} className="nav-button">Cancel</button>

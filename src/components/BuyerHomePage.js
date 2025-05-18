@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getUserName } from '../firebase/firebase';
 import { Link, useNavigate } from "react-router-dom";
-import { updateCredentials, deleteAccount, logout } from "../firebase/firebase";
+import { updateCredentials, deleteAccount, logout, getUserAuthProvider, getUserData } from "../firebase/firebase";
 import '../BuyerHome.css';
 import { getUserOrders } from '../firebase/retireveOrders';
 
@@ -18,6 +18,7 @@ const BuyerHomePage = () => {
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    console.log("Form data changed:", { ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSave = async () => {
@@ -34,8 +35,10 @@ const BuyerHomePage = () => {
       try {
         const userOrders = await getUserOrders();
         setOrders(userOrders);
+        console.log("Fetched orders:", userOrders);
       } catch (error) {
         setOrders([]);
+        console.error("Error fetching orders:", error);
       }
     };
     fetchOrders();
@@ -48,6 +51,7 @@ const BuyerHomePage = () => {
       password: "",
       newpassword: "",
     });
+    console.log("Form data reset");
   };
 
   const handleDeleteAccount = async () => {
@@ -66,6 +70,21 @@ const BuyerHomePage = () => {
     }
   };
 
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
+
+  useEffect(() => {
+    const checkProvider = async () => {
+      const provider = await getUserAuthProvider();
+      console.log("Auth provider fetched:", provider);
+      setIsGoogleUser(provider === "Google");
+    };
+    checkProvider();
+  }, []);
+
+  useEffect(() => {
+    console.log("isGoogleUser state changed:", isGoogleUser);
+  }, [isGoogleUser]);
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -79,8 +98,29 @@ const BuyerHomePage = () => {
     const fetchUser = async () => {
       const name = await getUserName();
       setUser({ name });
+      console.log("Fetched user name:", name);
     };
     fetchUser();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userData = await getUserData();
+        setFormData(prev => ({
+          ...prev,
+          name: userData.Name || "",
+          email: userData.Email || ""
+        }));
+        console.log("Auto-populated formData:", {
+          name: userData.Name,
+          email: userData.Email
+        });
+      } catch (error) {
+        console.error("Failed to fetch user data for auto-populate:", error);
+      }
+    };
+    fetchUserData();
   }, []);
 
   return (
@@ -105,7 +145,6 @@ const BuyerHomePage = () => {
                 ) : (
                 orders.map(order => {
                   const firstItem = order.items?.[0];
-                  // Calculate total price for the order
                   const orderTotal = order.items?.reduce((sum, item) => {
                     let price = item.price;
                     if (typeof price === 'string') price = price.replace('R', '');
@@ -147,41 +186,70 @@ const BuyerHomePage = () => {
         </section>
 
         <section className="buyer-settings">
-           <h3 className="settings-title">SETTINGS</h3>
+          <h3 className="settings-title">SETTINGS</h3>
           <form className="settings-form" onSubmit={(e) => e.preventDefault()}>
             <fieldset className="form-container">
               <section className="form-field">
                 <label htmlFor="name" className="form-label">Name:</label>
-                <input type="text" name="name" id="name" value={formData.name} onChange={handleChange} className="form-input" />
-                <label htmlFor="email" className="form-label">Email:</label>
-                <input type="email" name="email" id="email" value={formData.email} onChange={handleChange} className="form-input" />
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="form-input"
+                />
               </section>
-
-        
-
-              <section className="form-field">
-                <label htmlFor="password" className="form-label">Current Password:</label>
-                <input type="password" name="password" id="password" value={formData.password} onChange={handleChange} className="form-input" />
-              </section>
-
-              <section className="form-field">
-                <label htmlFor="newpassword" className="form-label">New Password:</label>
-                <input type="password" name="newpassword" id="newpassword" value={formData.newpassword} onChange={handleChange} className="form-input" />
-              </section>
-
+              {console.log("Rendering settings form. isGoogleUser:", isGoogleUser)}
+              {!isGoogleUser && (
+                <>
+                  <section className="form-field">
+                    <label htmlFor="email" className="form-label">Email:</label>
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="form-input"
+                    />
+                  </section>
+                  <section className="form-field">
+                    <label htmlFor="password" className="form-label">Current Password:</label>
+                    <input
+                      type="password"
+                      name="password"
+                      id="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="form-input"
+                    />
+                  </section>
+                  <section className="form-field">
+                    <label htmlFor="newpassword" className="form-label">New Password:</label>
+                    <input
+                      type="password"
+                      name="newpassword"
+                      id="newpassword"
+                      value={formData.newpassword}
+                      onChange={handleChange}
+                      className="form-input"
+                    />
+                  </section>
+                </>
+              )}
               <section className="settings-buttons">
                 <button type="button" onClick={handleSave} className="nav-button">Save Changes</button>
                 <button type="button" onClick={handleCancel} className="nav-button">Cancel</button>
-                  <section className="red-buttons">
-                    <button type="button" onClick={handleDeleteAccount} className="delete-button">Delete Account</button>
-                    <button type="button" onClick={handleLogout} className="delete-button">Log Out</button>
-                  </section>
+                <section className="red-buttons">
+                  <button type="button" onClick={handleDeleteAccount} className="delete-button">Delete Account</button>
+                  <button type="button" onClick={handleLogout} className="delete-button">Log Out</button>
+                </section>
               </section>
             </fieldset>
           </form>
         </section>
       </section>
-
 
       <section className="sparkle-overlay">
         {[...Array(30)].map((_, i) => (

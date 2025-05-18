@@ -115,6 +115,7 @@ const Store = () => {
               <section
                 key={product.id}
                 className="product-item-2"
+                style={{ backgroundColor: artist.color, color: artist.textColor }}
               >
                 <section className="product-image-container-2">
                   <img

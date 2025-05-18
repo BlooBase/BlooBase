@@ -13,6 +13,7 @@ module.exports = {
     'src/firebase/uploadImage.js',
     'src/firebase/removeFromCart.js',
     'src/firebase/firebase.js',
+    'src/firebase/addOrder.js',
     'src/firebase/addProduct.js',
     'src/firebase/addSeller.js',
     'src/firebase/retrieveSellersCached.js',

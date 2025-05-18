@@ -18,7 +18,7 @@ const BuyerHomePage = () => {
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    console.log("Form data changed:", { ...formData, [e.target.name]: e.target.value });
+    //console.log("Form data changed:", { ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSave = async () => {

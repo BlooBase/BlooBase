@@ -18,6 +18,7 @@ const Login = () => {
     try {
       await loginNormUser({ email, password });
       const userRole = await getUserRole();
+      console.log(userRole);
       if (userRole === "Seller") {
         navigate("/SellerHomepage");
       } else if (userRole === "Buyer") {

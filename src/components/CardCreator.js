@@ -229,18 +229,26 @@ const CardCreator = () => {
   };
 
   const handleProductPublish = async (index) => {
-    const { image, name, price, id } = productCreators[index];
-    if (!image || !name || !price) {
-      triggerAnimationFail('Please provide product image, name, and price.');
+    const { image, name, price, id, stock } = productCreators[index];
+    // Require all fields, including stock
+    if (!image || !name || !price || stock === undefined || stock === null || stock === '') {
+      triggerAnimationFail('Please provide product image, name, price, and stock.');
+      return;
+    }
+    // Ensure stock is a positive integer
+    const stockValue = parseInt(stock, 10);
+    if (isNaN(stockValue) || stockValue < 0) {
+      triggerAnimationFail('Stock must be a non-negative integer.');
       return;
     }
     try {
       if (id) {
-        await updateProduct({ id, image, name, price });
+        await updateProduct({ id, image, name, price, stock: stockValue });
+        console.log(`Updated product stock: ${stockValue}`); // <-- Log updated stock
         triggerProductAnimation(index);
         triggerProductMessage(`Product ${productCreators[index].name} Updated`);
       } else {
-        await addProduct({ image, name, price });
+        await addProduct({ image, name, price, stock: stockValue });
         triggerProductAnimation(index);
         triggerProductMessage(`Product ${productCreators[index].name} Published`);
       }
@@ -252,7 +260,7 @@ const CardCreator = () => {
           imagePreview: prod.image,
           name: prod.name,
           price: prod.price,
-          stock: prod.stock ?? 1, // <-- Add this line, default to 1 if undefined
+          stock: prod.stock ?? 1,
           id: prod.id
         }))
       );

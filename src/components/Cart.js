@@ -1,31 +1,56 @@
 import React, { useEffect, useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js'; // Import Stripe
-import { Elements } from '@stripe/react-stripe-js'; // Import Elements for Stripe
-import CheckoutForm from './CheckoutForm'; // Import the CheckoutForm component
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import CheckoutForm from './CheckoutForm';
 import '../Cart.css';
-import cartTotal from './cartTotal'; // Import the cart total calculation function
+import cartTotal from './cartTotal';
 import Navbar from './Navbar';
-import { retrieveCart } from '../firebase/retrieveCart'; // <-- Use retrieveCart instead of retrieveProducts
+import { retrieveCart } from '../firebase/retrieveCart';
 import { removeFromCart } from '../firebase/removeFromCart';
+import { retrieveProductByID } from '../firebase/retrieveProductByID'; // <-- Import here
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 
-const stripePromise = loadStripe('pk_test_51RM99WQ7pA4YvjQvIvIwI09MPnYHtckTQP8oaxV2CDIwjYbUPhf1UbWp0fN3lUNWfNe4mWHYT0bNDi2DVMkDyYEq002fjR855W'); // Replace with your Stripe publishable key
+const stripePromise = loadStripe('pk_test_51RM99WQ7pA4YvjQvIvIwI09MPnYHtckTQP8oaxV2CDIwjYbUPhf1UbWp0fN3lUNWfNe4mWHYT0bNDi2DVMkDyYEq002fjR855W');
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [imagesLoaded, setImagesLoaded] = useState({ products: {} });
-  const [orderType, setOrderType] = useState('Delivery'); // State for order type
-  
+  const [orderType, setOrderType] = useState('Delivery');
 
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const items = await retrieveCart();
-        setCartItems(items);
+
+        // Fetch latest product data for each cart item
+        const itemsWithProductData = await Promise.all(
+          items.map(async (cartItem) => {
+            try {
+              const product = await retrieveProductByID(cartItem.id);
+              return { ...cartItem, ...product };
+            } catch (error) {
+              // If product fetch fails (e.g., deleted), treat as out of stock
+              return { ...cartItem, stock: 0 };
+            }
+          })
+        );
+
+        // Remove out-of-stock items from cart in DB (but don't show them)
+        itemsWithProductData.forEach(async (item) => {
+          if (item.stock !== undefined && Number(item.stock) <= 0) {
+            await removeFromCart(item.id);
+          }
+        });
+
+        // Only keep items with stock > 0 or undefined (legacy)
+        const filteredItems = itemsWithProductData.filter(
+          item => item.stock === undefined || Number(item.stock) > 0
+        );
+        setCartItems(filteredItems);
 
         // Preload and check if product images are cached
-        items.forEach((item) => {
+        filteredItems.forEach((item) => {
           const img = new Image();
           img.src = item.imageUrl;
 

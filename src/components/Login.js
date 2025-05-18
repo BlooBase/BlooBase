@@ -139,7 +139,7 @@ const Login = () => {
         </form>
 
        
-        <section className="sectionider">
+        <section className="section-divider">
           <p>or continue with</p>
         </section>
 

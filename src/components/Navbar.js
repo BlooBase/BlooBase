@@ -183,13 +183,29 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
 
           {auth.currentUser && (
             <Link
-              to={userRole === "Buyer" ? "/BuyerHomepage" : "/SellerHomepage"}
-              style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: textColor, gap: '0.5rem' }}
+              to={
+                userRole === "Buyer"
+                  ? "/BuyerHomepage"
+                  : userRole === "Seller"
+                  ? "/SellerHomepage"
+                  : userRole === "Admin"
+                  ? "/Dashboard"
+                  : "/"
+              }
+              style={{
+                display: "flex",
+                alignItems: "center",
+                textDecoration: "none",
+                color: textColor,
+                gap: "0.5rem",
+              }}
             >
-              <p className="navbar-username" style={{ margin: 0 }}>{user.name}</p>
+              <p className="navbar-username" style={{ margin: 0 }}>
+                {user.name}
+              </p>
               <img
                 className="navbar-user-avatar"
-                src={'/user_profile.png'}
+                src={"/user_profile.png"}
                 alt={`${user.name}'s avatar`}
               />
             </Link>

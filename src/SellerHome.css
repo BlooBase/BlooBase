@@ -21,29 +21,27 @@ body {
 /* Header */
 .seller-header {
   background: linear-gradient(to right, #dff3ff, #f4faff);
-  padding: 60px 80px;
+  padding: 10px 20px; /* Reduced padding */
   border-bottom-left-radius: 70px;
   border-bottom-right-radius: 70px;
   border: #000000 2px solid;
-  text-align: center;
-  box-shadow: 0 9px 30px rgba(0, 0, 0, 0.2);
-  height: 150px;
   display: flex;
   align-items: center;
+  justify-content: space-between; /* Distribute space between logo, title, and nav */
+  height: 120px; /* Reduced height */
 }
 
 .seller-logo {
-  height: 120px;
-  margin-right: 140px;
-  margin-left: -40px;
+  height: 80px; /* Reduced logo height */
+  margin-right: 10px; /* Reduced margin */
+  margin-left: 10px; /* Reduced margin */
 }
 
 .seller-nav {
-  margin-top: 0px;
   display: flex;
-  margin-left: 300px;
-  justify-content: center;
-  gap: 20px;
+  justify-content: flex-end; /* Push buttons to the right */
+  gap: 10px; /* Reduced gap */
+  margin-right: 10px; /* Reduced margin */
 }
 
 .seller-nav-link {
@@ -54,11 +52,11 @@ body {
   text-decoration: none;
   color: #000000;
   font-weight: 900;
-  width: 100px;
-  height: 100px;
+  width: 80px; /* Reduced width */
+  height: 80px; /* Reduced height */
   text-align: center;
   border: #1a1a1a 2px solid;
-  padding: 10px 20px;
+  padding: 5px 10px; /* Reduced padding */
   border-radius: 999px;
   background-color: #f9f9f9;
   transition: all 0.3s ease;
@@ -75,26 +73,24 @@ body {
 .welcome-bg-seller {
   background-color: #f9f9f9;
   display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
   border-radius: 80px;
   border: #000000 2px solid;
-  padding-left: 40px;
-  padding-right: 40px;
-  height: 100px;
-  margin-left: 270px;
+  padding-left: 15px; /* Reduced padding */
+  padding-right: 15px; /* Reduced padding */
+  height: 80px; /* Reduced height */
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
-  white-space: nowrap; /* Prevent text from wrapping */
+  white-space: nowrap;
+  margin: 0 auto; /* Center the welcome section */
 }
 
 .seller-title {
-  font-size: 2.5rem; /* Reduced font size */
+  font-size: 1.8rem; /* Reduced font size */
   font-weight: 700;
-  margin: 20px 0;
   color: #165a9c;
+  margin: 0; /* Removed margin */
 }
 .welcome-bg-seller:hover {
   transform: translateY(-5px);
@@ -251,6 +247,8 @@ body {
   border-radius: 30px;
   border: 2px solid #000;
   width: 600px;
+  height:fit-content ;
+  max-height: 730px;
   margin-top: 20px;
   margin-right: 20px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
@@ -449,139 +447,144 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 1rem;
+    padding: 10px; /* Reduced padding */
     border-bottom-left-radius: 40px;
     border-bottom-right-radius: 40px;
-    height: 55px;
-  }
-
-  .welcome-bg {
-    width: 200px;
-    padding: 0.1rem;
-    margin: 0 auto;
-    border-radius: 20px;
-    margin-top: -55px;
-    margin-left: 70px;
+    height: auto; /* Adjust height to auto */
   }
 
   .seller-logo {
-    height: 45px;
-    margin-bottom: 0.8rem;
-    margin-left: -170px;
-    margin-top: -15px;
-  }
-
-  .seller-title {
-    font-size: 0.8rem;
-    margin: 0.5rem 0;
-  }
-
-  .seller-nav {
-    margin-top: 1rem;
-    position: relative;
-    top: -55px;
-    left: 140px;
+    height: 60px; /* Adjust logo height */
+    margin-bottom: 5px;
+    margin-right: 0;
     margin-left: 0;
   }
 
+  .welcome-bg-seller {
+    width: auto; /* Adjust width to auto */
+    padding: 5px 10px; /* Reduced padding */
+    margin: 5px auto;
+    border-radius: 40px;
+    height: auto;
+
+    min-height: 40px;
+  }
+
+  .seller-title {
+    font-size: 1.2rem; /* Adjust title font size */
+    margin: 0;
+  }
+
+  .seller-nav {
+    margin-top: 10px;
+    margin-left: 0;
+    justify-content: center;
+    gap: 10px;
+  }
+
   .seller-nav-link {
-    font-size: 0.5rem;
-    padding: 0.5rem 1rem;
-    width: 40px;
-    height: 40px;
+    font-size: 0.7rem; /* Adjust nav link font size */
+    padding: 5px 10px;
+    width: auto; /* Adjust width to auto */
+    height: auto; /* Adjust height to auto */
   }
 
   .seller-orders-section {
     flex-direction: column;
     padding: 1rem;
-    width: 480px;
-    margin-top: -90px;
-    height: 300px;
+    margin-top: 0px;
+    align-items: center; /* Center items */
   }
 
-  .orders-grid,
-  .seller-settings {
-    width: 300px;
+  .orders-grid {
+    width: 100%; /* Adjust width to 100% */
     margin: 1rem 0;
-    margin-top: -80px;
-    height: 300px;
   }
 
   .floating-orders-card {
+    width: 100%; /* Adjust width to 100% */
+    height: 400px;
     padding: 1rem;
-    height: 200px;
   }
 
   .orders-card-title {
-    font-size: 0.7rem;
+    font-size: 1rem; /* Adjust card title font size */
   }
 
   .orders-card-scroll {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.7rem;
-    border-radius: 20px;
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(1, 1fr); /* Single column */
+    gap: 1rem;
   }
 
   .order-preview {
-    padding: 10px 6px;
+    padding: 1rem;
   }
 
   .order-preview-img {
-    width: 45px;
-    height: 45px;
-    border-radius: 10px;
-    margin-right: 8px;
+    width: 50px; /* Adjust image width */
+    height: 50px; /* Adjust image height */
+    margin-right: 1rem;
   }
 
   .order-preview-info {
-    gap: 4px;
+    gap: 0.5rem;
   }
 
   .settings-title {
-    font-size: 1.3rem;
+    font-size: 1rem; /* Adjust settings title font size */
     margin-bottom: 1rem;
+    margin-left: 40px;
+    margin-top: 30px;
+  }
+
+  .seller-settings {
+    width: 95%; /* Adjust width to 95% */
+    margin: 1rem auto; /* Center the settings section */
+    padding: 20px; /* Reduce padding */
   }
 
   .form-container {
-    padding: 1rem;
-    border: none;
+    width: 100%; /* Adjust width to 100% */
+    padding: 15; /* Remove padding */
   }
 
   .form-field {
-    display: flex;
-    flex-direction: column;
+    width: 100%; /* Adjust width to 100% */
     margin-bottom: 1rem;
   }
 
   .form-label {
+    font-size: 1rem; /* Adjust label font size */
     margin-bottom: 0.3rem;
-    font-size: 0.9rem;
   }
 
   .form-input {
-    padding: 0.5rem;
-    font-size: 1rem;
+    padding: 0.7rem;
+    font-size: 1rem; /* Adjust input font size */
+  }
+
+  .settings-form {
+    flex-direction: column; /* Change to column */
+    gap: 10px;
   }
 
   .settings-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .red-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
+    width: 100%; /* Adjust width to 100% */
+    flex-direction: row; /* Change to row */
+    justify-content: space-between; /* Distribute buttons */
   }
 
   .nav-button,
   .delete-button {
-    font-size: 1rem;
-    padding: 0.7rem;
+    width: 178%; /* Adjust button width */
+    font-size: 0.9rem; /* Adjust font size */
+    padding: 0.5rem;
+  }
+
+  .red-buttons {
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 0;
   }
 
   .sparkle {
@@ -591,7 +594,7 @@ body {
 
   .seller-footer,
   .buyer-footer {
-    font-size: 0.8rem;
+    font-size: 0.8rem; /* Adjust footer font size */
     padding: 1rem;
     text-align: center;
   }

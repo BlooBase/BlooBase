@@ -13,6 +13,35 @@
   background-position: center;
 }
 
+.section-divider {
+  margin: 25px auto; /* This should center the element horizontally */
+  text-align: center;
+  position: relative;
+  max-width: 130px;
+  width: 100%; /* Add this line to take up full width */
+}
+
+.section-divider p {
+  background: #f1ece1; /* Match the container background */
+  padding: 0 10px;
+  color: #666;
+  font-size: 14px;
+  position: relative;
+  border-radius: 10px;
+  z-index: 1;
+  display: inline-block; /* Add this line */
+}
+
+.section-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #ddd;
+}
+
 .login-container {
   background: #f1ece1;
   padding: 20px;

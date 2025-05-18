@@ -1,5 +1,5 @@
 import { uploadImage } from "./uploadImage";
-import { apiRequest } from "./apiRequest"; // Make sure you have this utility function
+import { apiRequest } from "./firebase"; // Make sure you have this utility function
 
 export async function addSeller(sellerData) {
   try {

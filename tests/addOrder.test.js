@@ -1,12 +1,8 @@
-/**
- * @jest-environment node
- */
-
-import { addOrder } from '../src/firebase/addOrder';
-import { auth, db, doc, getDoc, setDoc, collection, increment, updateDoc } from '../src/firebase/firebase';
+import { addOrder } from './addOrder';
+import { auth, db, doc, getDoc, setDoc, collection, increment, updateDoc } from './firebase';
 
 // Mock Firebase dependencies
-jest.mock('../src/firebase/firebase', () => ({
+jest.mock('./firebase', () => ({
   auth: {
     currentUser: null,
   },
@@ -62,11 +58,13 @@ describe('addOrder', () => {
     const productRef1 = { id: 'prod1' };
     const productRef2 = { id: 'prod2' };
 
-    doc.mockImplementation((_, id) => {
-      if (id === mockUser.uid) return cartDocRef;
-      if (id === 'prod1') return productRef1;
-      if (id === 'prod2') return productRef2;
-      return orderDocRef;
+    // Updated doc mock to handle collection names
+    doc.mockImplementation((db, collectionName, id) => {
+      if (collectionName === 'Carts' && id === mockUser.uid) return cartDocRef;
+      if (collectionName === 'Products' && id === 'prod1') return productRef1;
+      if (collectionName === 'Products' && id === 'prod2') return productRef2;
+      if (collectionName === 'Orders') return orderDocRef;
+      return orderDocRef; // Fallback for order document
     });
     collection.mockReturnValue(orderCollectionRef);
     getDoc.mockResolvedValue({
@@ -126,8 +124,10 @@ describe('addOrder', () => {
     const orderCollectionRef = { id: 'orders' };
     const invalidItems = [{ name: 'Product 1', quantity: 1 }];
 
-    doc.mockImplementation((_, id) => {
-      if (id === mockUser.uid) return cartDocRef;
+    // Updated doc mock to handle collection names
+    doc.mockImplementation((db, collectionName, id) => {
+      if (collectionName === 'Carts' && id === mockUser.uid) return cartDocRef;
+      if (collectionName === 'Orders') return orderDocRef;
       return orderDocRef;
     });
     collection.mockReturnValue(orderCollectionRef);
@@ -141,6 +141,14 @@ describe('addOrder', () => {
 
     expect(result.items).toEqual(invalidItems);
     expect(updateDoc).not.toHaveBeenCalled();
+    expect(setDoc).toHaveBeenCalledWith(orderDocRef, {
+      userId: mockUser.uid,
+      items: invalidItems,
+      orderType: 'delivery',
+      total: 99.99,
+      createdAt: mockTimestamp,
+      status: 'Pending',
+    });
     expect(setDoc).toHaveBeenCalledWith(cartDocRef, { items: [] }, { merge: true });
   });
 
@@ -149,8 +157,9 @@ describe('addOrder', () => {
     const orderDocRef = { id: mockOrderDocId };
     const orderCollectionRef = { id: 'orders' };
 
-    doc.mockImplementation((_, id) => {
-      if (id === mockUser.uid) return cartDocRef;
+    doc.mockImplementation((db, collectionName, id) => {
+      if (collectionName === 'Carts' && id === mockUser.uid) return cartDocRef;
+      if (collectionName === 'Orders') return orderDocRef;
       return orderDocRef;
     });
     collection.mockReturnValue(orderCollectionRef);

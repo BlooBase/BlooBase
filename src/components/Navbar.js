@@ -183,7 +183,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
 
           {auth.currentUser && (
             <Link
-              to={userRole === "Buyer" ? "/BuyerHomepage" : "/SellerHomepage"}
+              to={userRole === "Buyer" ? "/BuyerHomepage" : (userRole === "Seller" ? "/SellerHomepage" : "/Dashboard")}
               style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: textColor, gap: '0.5rem' }}
             >
               <p className="navbar-username" style={{ margin: 0 }}>{user.name}</p>

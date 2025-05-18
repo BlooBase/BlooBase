@@ -17,7 +17,7 @@ const CardCreator = () => {
   const [description, setDescription] = useState('Bio');
   const [genre, setGenre] = useState('Mixed Media');
   const [productCreators, setProductCreators] = useState([
-    { image: null, imagePreview: null, name: '', price: '' }
+    { image: null, imagePreview: null, name: '', price: '', stock: 1 }
   ]);
   const [hasStore, setHasStore] = useState(false);
   const [productAnimations, setProductAnimations] = useState([]);
@@ -51,6 +51,7 @@ const CardCreator = () => {
             imagePreview: prod.image,
             name: prod.name,
             price: prod.price,
+            stock: prod.stock ?? 1, // <-- Add this line, default to 1 if undefined
             id: prod.id
           }))
         );
@@ -208,10 +209,16 @@ const CardCreator = () => {
     setProductCreators(updated);
   };
 
+  const handleProductStockChange = (index, value) => {
+    const updated = [...productCreators];
+    updated[index].stock = value;
+    setProductCreators(updated);
+  };
+
   const addProductCreator = () => {
     setProductCreators([
       ...productCreators,
-      { image: null, imagePreview: null, name: '', price: '' }
+      { image: null, imagePreview: null, name: '', price: '', stock: 1 }
     ]);
   };
 
@@ -245,6 +252,7 @@ const CardCreator = () => {
           imagePreview: prod.image,
           name: prod.name,
           price: prod.price,
+          stock: prod.stock ?? 1, // <-- Add this line, default to 1 if undefined
           id: prod.id
         }))
       );
@@ -435,6 +443,16 @@ const CardCreator = () => {
             placeholder="Enter price"
             value={creator.price}
             onChange={(e) => handleProductPriceChange(index, e.target.value)}
+            min="0"
+            step="1"
+          />
+
+          <input
+            type="number"
+            className="product-stock-input"
+            placeholder="Enter stock"
+            value={creator.stock}
+            onChange={(e) => handleProductStockChange(index, e.target.value)}
             min="0"
             step="1"
           />

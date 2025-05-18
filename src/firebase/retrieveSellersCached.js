@@ -95,7 +95,7 @@ export async function retrieveSellersCached() {
       })
     );
 
-    return [...hardcodedSellers, ...sellersWithUrls];
+    return sellersWithUrls;
   } catch (error) {
     console.error("Error retrieving sellers:", error);
     return hardcodedSellers;

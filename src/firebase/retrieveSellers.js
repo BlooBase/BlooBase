@@ -34,7 +34,7 @@ export async function retrieveSellers() {
       })
     );
 
-    cachedSellers = [...hardcodedSellers, ...sellersWithUrls];
+    cachedSellers = sellersWithUrls;
     return cachedSellers;
   } catch (error) {
     console.error("Error retrieving sellers:", error);

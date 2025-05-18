@@ -326,7 +326,7 @@ export const deleteSellerCard = async () => {
 
   await apiRequest(`/api/seller/card`, "DELETE");
 };
-export const addProduct = async ({ image, name, price }) => {
+export const addProduct = async ({ image, name, price, stock }) => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
 
@@ -350,6 +350,7 @@ export const addProduct = async ({ image, name, price }) => {
     image: imageUrl,
     name,
     price: randPrice,
+    stock, // <-- Add this line
   });
 };
 export const getSellerProducts = async () => {
@@ -380,7 +381,7 @@ export const getSellerProducts = async () => {
 
   return products;
 };
-export const updateProduct = async ({ id, image, name, price }) => {
+export const updateProduct = async ({ id, image, name, price, stock }) => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
 
@@ -404,6 +405,7 @@ export const updateProduct = async ({ id, image, name, price }) => {
     image: imageUrl,
     name,
     price: formattedPrice,
+    stock, // <-- Add this line
   });
 };
 export const deleteProduct = async (id) => {

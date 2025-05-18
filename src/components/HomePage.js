@@ -173,6 +173,9 @@ useEffect(() => {
    useEffect(() => {
       let result = [...products];
 
+      // Filter out products with stock === 0 or stock is falsy
+      result = result.filter(product => product.stock === undefined || Number(product.stock) > 0);
+
       // Filter by category
       if (selectedCategory !== 'All') {
         result = result.filter(product =>

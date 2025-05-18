@@ -71,9 +71,9 @@ export const uploadFile = async (file, folder) => {
 };
 
 
-export async function addUserToFirestore(userId, email, name, role, autheProvider) {
+export async function addUserToFirestore(userId, email, name, role, authProvider) {
   try {
-    await apiRequest('/api/users', 'POST', { userId, email, name, role, autheProvider });
+    await apiRequest('/api/users', 'POST', { userId, email, name, role, authProvider });
     console.log("User added via API!");
   } catch (error) {
     console.error("Error adding user via API:", error);
@@ -168,13 +168,17 @@ export const signupNormUser = async ({ name, email, password, confirmPassword, r
     const user = userCredential.user;
 
     await sendEmailVerification(user);
-    await apiRequest('/api/users', 'POST', { userId: user.uid, email, name, role, autheProvider: 'Firebase Auth' });
+
+    // Force refresh the ID token to ensure it's up-to-date
+    const token = await user.getIdToken(true);
+
+    await apiRequest('/api/users', 'POST', { userId: user.uid, email, name, role, authProvider: 'Firebase Auth' }, false, token); // Pass the token directly
+
     alert("Account created! Please check your email for verification.");
   } catch (error) {
     alert(`Signup failed: ${error.message}`);
   }
 };
-
 export const GoogleSignup = async (role) => {
   const provider = new GoogleAuthProvider();
   try {

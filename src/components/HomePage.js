@@ -106,6 +106,7 @@ useEffect(() => {
    const unsubscribe = auth.onAuthStateChanged(async (user) => {
      if (user) {
        const role = await getUserRole();
+       console.log(role)
        setUserRole(role);
        
      } else {

@@ -1,4 +1,4 @@
-import { auth, db, doc, getDoc, setDoc, collection, increment, updateDoc, } from './firebase';
+import { auth, db, doc, getDoc, setDoc, collection, increment, updateDoc } from './firebase';
 
 /**
  * Places an order for the current user by moving their cart items to an Orders collection.
@@ -30,12 +30,13 @@ export const addOrder = async (orderDetails = {}) => {
   const orderDocRef = doc(collection(db, 'Orders'));
   await setDoc(orderDocRef, orderPayload);
 
-    // 4. Increment sales for each product
+  // 4. Increment sales and decrement stock for each product
   for (const item of cartItems) {
     if (item.id) {
       const productRef = doc(db, 'Products', item.id);
       await updateDoc(productRef, {
-        sales: increment(1)
+        sales: increment(1),
+        stock: increment(-1), // <-- Decrement stock by 1
       });
     }
   }

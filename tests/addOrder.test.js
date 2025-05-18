@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import { addOrder } from '../src/firebase/addOrder';
 import { auth, db, doc, getDoc, setDoc, collection, increment, updateDoc } from '../src/firebase/firebase';
 

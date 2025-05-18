@@ -34,10 +34,17 @@ export const addOrder = async (orderDetails = {}) => {
   for (const item of cartItems) {
     if (item.id) {
       const productRef = doc(db, 'Products', item.id);
-      await updateDoc(productRef, {
-        sales: increment(1),
-        stock: increment(-1), // <-- Decrement stock by 1
-      });
+      const productSnap = await getDoc(productRef);
+      if (productSnap.exists() && productSnap.data().stock !== undefined) {
+        await updateDoc(productRef, {
+          sales: increment(1),
+          stock: increment(-1), // Only decrement if stock exists
+        });
+      } else {
+        await updateDoc(productRef, {
+          sales: increment(1),
+        });
+      }
     }
   }
 

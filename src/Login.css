@@ -29,7 +29,7 @@
   position: relative;
   border-radius: 10px;
   z-index: 1;
-  display: inline-block; /* Add this line */
+  display: inline-block; 
 }
 
 .section-divider::before {

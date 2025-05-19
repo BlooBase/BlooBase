@@ -3,7 +3,9 @@ import { getUserName } from '../firebase/firebase';
 import { Link, useNavigate } from "react-router-dom";
 import { updateCredentials, getUserData, deleteAccount, logout, getUserAuthProvider } from "../firebase/firebase";
 import { retrieveSellerProducts } from "../firebase/retrieveSellerProducts";
-import { auth } from "../firebase/firebase";
+import { auth,getSellerCard } from "../firebase/firebase";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 import '../SellerHome.css';
 import cartTotal from './cartTotal';
 
@@ -57,6 +59,135 @@ const SellerHomePage = () => {
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+ const handleDownloadPDF = async () => {
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      alert("You must be logged in to download a PDF.");
+      return;
+    }
+
+    // Retrieve seller info
+    let sellerCard;
+    try {
+      sellerCard = await getSellerCard();
+      if (!sellerCard || !sellerCard.storeName) {
+        sellerCard = { storeName: user.displayName || "Artisan" };
+      }
+    } catch (error) {
+      console.error("Error fetching seller card:", error);
+      sellerCard = { storeName: user.displayName || "Artisan" };
+    }
+
+    const logo = new Image();
+    logo.src = "/bloobase.png";
+
+    logo.onload = () => {
+      try {
+        const doc = new jsPDF();
+        const now = new Date();
+        const formattedDate = now.toLocaleString("en-ZA", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        });
+
+        // Add logo
+        doc.addImage(logo, "PNG", 150, 10, 40, 28);
+
+        // Heading: BlooBase
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0, 86, 179);
+        doc.setFontSize(22);
+        doc.text("BlooBase Sales Report", 14, 20);
+
+        // Reset color
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(12);
+
+        let y = 40;
+
+        // Seller
+        doc.setFont("helvetica", "bold");
+        doc.text("Seller:", 14, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(`${sellerCard.storeName}`, 40, y);
+        y += 8;
+
+        // Email
+        doc.setFont("helvetica", "bold");
+        doc.text("Email:", 14, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(`${user.email || "Not available"}`, 40, y);
+        y += 8;
+
+        // Generated
+        doc.setFont("helvetica", "bold");
+        doc.text("Generated:", 14, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(`${formattedDate}`, 40, y);
+        y += 8;
+
+        // Total Income
+        const totalIncome = products.reduce((sum, product) => {
+          let price = typeof product.price === "string"
+            ? parseFloat(product.price.replace(/[^\d.]/g, "")) || 0
+            : product.price || 0;
+          let sales = typeof product.sales === "number" ? product.sales : 0;
+          return sum + price * sales;
+        }, 0);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Total Income:", 14, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(`R${totalIncome.toFixed(2)}`, 50, y);
+        y += 12;
+
+        // Sales header
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.text("Sales:", 14, y);
+        y += 8;
+
+        products.forEach((product, index) => {
+          let price = typeof product.price === "string"
+            ? parseFloat(product.price.replace(/[^\d.]/g, "")) || 0
+            : product.price || 0;
+          let sales = typeof product.sales === "number" ? product.sales : 0;
+          const total = price * sales;
+
+          const title = `${index + 1}. - ${product.title || product.name || `Product ${index + 1}`}`;
+
+          doc.setFont("helvetica", "bold");
+          doc.text(title, 14, y);
+          y += 6;
+
+          doc.setFont("helvetica", "normal");
+          doc.text(`   Price: R${price.toFixed(2)}`, 14, y);
+          y += 6;
+          doc.text(`   Sold: ${sales}`, 14, y);
+          y += 6;
+          doc.text(`   Total: R${total.toFixed(2)}`, 14, y);
+          y += 10;
+        });
+
+        doc.save("sales_report.pdf");
+        console.log("PDF generated successfully");
+      } catch (pdfError) {
+        console.error("PDF generation error:", pdfError);
+        alert("Failed to generate PDF document");
+      }
+    };
+
+    logo.onerror = () => {
+      alert("Failed to load BlooBase logo.");
+    };
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    alert(`${error.message || "Unknown error"}`);
+  }
+};
+
 
   const handleSave = async () => {
     try {
@@ -146,6 +277,15 @@ const SellerHomePage = () => {
         <section className="orders-grid">
           <section className="floating-orders-card">
             <h3 className="orders-card-title">SALES</h3>
+            <section className="download-sales">
+              <img
+                src="/download.png"
+                alt="Download Sales Statement"
+                onClick={handleDownloadPDF}
+                className="download-icon"
+                title="Download Sales Statement"
+              />
+            </section>
             <section className="total-income-label">
               Total Income: <strong>R{totalIncome.toFixed(2)}</strong>
             </section>

@@ -28,24 +28,31 @@ const Cart = () => {
           items.map(async (cartItem) => {
             try {
               const product = await retrieveProductByID(cartItem.id);
+              // If product doesn't exist, treat as out of stock
+              if (!product || Object.keys(product).length === 0) {
+                return { ...cartItem, stock: 0, deleted: true };
+              }
               return { ...cartItem, ...product };
             } catch (error) {
               // If product fetch fails (e.g., deleted), treat as out of stock
-              return { ...cartItem, stock: 0 };
+              return { ...cartItem, stock: 0, deleted: true };
             }
           })
         );
 
-        // Remove out-of-stock items from cart in DB (but don't show them)
+        // Remove out-of-stock or deleted items from cart in DB (but don't show them)
         itemsWithProductData.forEach(async (item) => {
-          if (item.stock !== undefined && Number(item.stock) <= 0) {
+          if (
+            (item.stock !== undefined && Number(item.stock) <= 0) ||
+            item.deleted
+          ) {
             await removeFromCart(item.id);
           }
         });
 
         // Only keep items with stock > 0 or undefined (legacy)
         const filteredItems = itemsWithProductData.filter(
-          item => item.stock === undefined || Number(item.stock) > 0
+          item => (item.stock === undefined || Number(item.stock) > 0) && !item.deleted
         );
         setCartItems(filteredItems);
 

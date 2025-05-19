@@ -275,18 +275,31 @@ useEffect(() => {
               <p className="store-name-1">{product.Seller}</p>
               {auth.currentUser && userRole === 'Buyer' && (
                 <button
-                className="add-to-cart-button-1"
-                onClick={async () => {
-                   try {
-                   await addToCart(product);
-                   toast.success(`Added ${product.name} to cart`);
-                   } catch (error) {
-                   toast.error("Failed to add to cart: " + error.message);
-                   }
-                }}
-             >
-                Add to Cart
-             </button>
+                  className="add-to-cart-button-1"
+                  onClick={async () => {
+                    try {
+                      // 1. Retrieve the user's cart
+                      const { retrieveCart } = await import('../firebase/retrieveCart');
+                      const cart = await retrieveCart();
+
+                      // 2. Check if product is already in cart
+                      const alreadyInCart = cart.some(item => item.id === product.id);
+
+                      if (alreadyInCart) {
+                        toast.info(`${product.name} is already in cart`);
+                        return;
+                      }
+
+                      // 3. Add to cart if not present
+                      await addToCart(product);
+                      toast.success(`Added ${product.name} to cart`);
+                    } catch (error) {
+                      toast.error("Failed to add to cart: " + error.message);
+                    }
+                  }}
+                >
+                  Add to Cart
+                </button>
               )}
             </section>
           </section>

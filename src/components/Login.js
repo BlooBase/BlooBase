@@ -51,7 +51,7 @@ const Login = () => {
         navigate("/BuyerHomePage")
       }
       else if(userRole==="Admin"){
-        navigate("/dashboard")
+        navigate("/Dashboard")
       }
       else {
         alert("User role not recognized");

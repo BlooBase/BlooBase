@@ -456,7 +456,7 @@ h1 {
   color: #165a9c;
   margin: 0; /* Removed margin */
 }
-.welcome-bg-seller:hover {
+.welcome-bg-dash:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }

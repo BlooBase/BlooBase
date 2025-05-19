@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../Signup.css";
 import { Link, useNavigate} from "react-router-dom";
 import { isPasswordStrong } from "../checkPasswordStrength";
-import { signupNormUser,GoogleSignup, logout } from "../firebase/firebase";
+import { signupNormUser,GoogleSignup, logout, getUserRole } from "../firebase/firebase";
 
 const Signup = () => {
 
@@ -33,8 +33,21 @@ const Signup = () => {
         alert(result?.message || "Google signup failed. Please try again.");
         return; // Stop here if signup failed
       }
-      await logout();
-      navigate("/Login");
+      const userRole = await getUserRole(); 
+      console.log(userRole);
+            if (userRole === "Seller" ) {
+              navigate("/SellerHomepage");
+            }
+            else if(userRole === "Buyer"){
+              navigate("/BuyerHomePage")
+            }
+            else if(userRole==="Admin"){
+              navigate("/Dashboard")
+            }
+            else {
+              alert("User role not recognized");
+            }
+
     } catch (error) {
       console.error("Google signup failed:", error);
       alert("Google signup failed. Please try again.");

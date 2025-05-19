@@ -223,7 +223,11 @@ const SellerHomePage = () => {
     if (!confirmDelete) return;
 
     try {
-      if (isGoogleUser) {
+      // Always check provider at the moment of deletion for reliability
+      const providerId = auth.currentUser?.providerData?.[0]?.providerId;
+      const isGoogle = isGoogleUser || providerId === "google.com";
+
+      if (isGoogle) {
         const provider = new GoogleAuthProvider();
         await reauthenticateWithPopup(auth.currentUser, provider);
         await deleteAccount();

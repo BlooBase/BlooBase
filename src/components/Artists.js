@@ -75,7 +75,7 @@ const Products = () => {
 
   return (
     <section className="page-wrapper">
-      <Navbar pageTitle="Artists" bgColor="#fff6fb" textColor="#165a9c" />
+      <Navbar pageTitle="Artisans" bgColor="#fff6fb" textColor="#165a9c" />
 
       <section className="products-container">
         <section className="search-bar-wrapper">

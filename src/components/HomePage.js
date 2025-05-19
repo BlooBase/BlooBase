@@ -210,7 +210,7 @@ useEffect(() => {
               alt="Artist Preview"
               className="artist-button-image-1"
             />
-            <p className="artist-button-text-1">Artists</p>
+            <p className="artist-button-text-1">Artisans</p>
           </section>
         </Link>
 

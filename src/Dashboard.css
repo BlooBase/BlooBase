@@ -1,27 +1,44 @@
 .dashboard-page {
   margin: 0;
   font-family: 'DM Sans', sans-serif;
- 
+  /* overflow: hidden; /* Disable scrolling */
+  height: auto; /* Set height to 100vh */
 }
 
 .dashboard-container {
-  min-height: 110vh;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding-top: 80px;
+  position: relative; /* Add position relative */
+  min-height: 100vh; /* Set min-height to 100vh */
+  width: 100%; /* Ensure the container takes up the full width */
+  overflow: auto; /* Hide any overflowing content */
+  transform-origin: top center; /* Set the transform origin */
+}
+
+.dashboard-container::before {
+  content: "";
+  position: fixed; /* Use fixed positioning */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-image: url('./assets/BG0.jpg');
   background-size: cover;
   background-repeat: no-repeat;
-  background-attachment: fixed;
   background-position: center;
-  position: relative;
-  padding-left: 1%;
-  padding-right: 1%;
-  max-width: 2000px
+  z-index: -1; /* Place the background behind the content */
 }
 
-
+.dashboard-main {
+  position: relative; /* Add position relative */
+  padding-top: 20px; /* Increased padding to push content down */
+  padding-left: 1%;
+  padding-right: 1%;
+  max-width: 2000px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* min-height: 100vh; Remove min-height */
+  height: auto; /* Set a fixed height */
+}
 
 .dashboard-header {
   display: flex;
@@ -52,7 +69,7 @@ h1 {
 }
 
 .stat-card {
-  background: #fff;
+  background: #f9f9f9; /* Changed background color to #f9f9f9 */
   padding: 1rem;
   border-radius: 28px;
   text-align: center;
@@ -75,7 +92,7 @@ h1 {
 }
 
 .user-card {
-  background: #fff;
+  background: #f9f9f9; /* Changed background color to #f9f9f9 */
   padding: 1rem;
   border-radius: 28px;
   text-align: center;
@@ -92,7 +109,7 @@ h1 {
 }
 
 .progress-card {
-  background: #fff;
+  background: #f9f9f9; /* Changed background color to #f9f9f9 */
   padding: 1rem;
   border-radius: 28px;
   flex: 1;
@@ -140,7 +157,7 @@ h1 {
 }
 
 .transactions {
-  background: #fff;
+  background: #f9f9f9; /* Changed background color to #f9f9f9 */
   padding: 1rem;
   border-radius: 28px;
   text-align: center;
@@ -169,7 +186,7 @@ h1 {
 }
 
 .calendar-section {
-  background: #fff;
+  background: #f9f9f9; /* Changed background color to #f9f9f9 */
   padding: 1rem;
   border-radius: 28x;
   flex: 1;
@@ -210,7 +227,7 @@ h1 {
 }
 
 .graph-section {
-  background: #fff;
+  background: #f9f9f9; /* Changed background color to #f9f9f9 */
   padding: 1rem;
   border-radius: 28px;
   flex: 1;
@@ -321,7 +338,7 @@ h1 {
 }
 
 .tasks-section {
-  background: #333;
+  background: #f9f9f9; /* Changed background color to #f9f9f9 */
   color: #fff;
   padding: 1rem;
   border-radius: 28px;
@@ -365,8 +382,91 @@ h1 {
   font-size: clamp(0.8rem, 2.5vw, 0.9rem);
 }
 
+/* Header */
+.seller-header {
+  background: linear-gradient(to right, #dff3ff, #f4faff);
+  padding: 10px 20px; /* Reduced padding */
+  border-bottom-left-radius: 70px;
+  border-bottom-right-radius: 70px;
+  border: #000000 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Distribute space between logo, title, and nav */
+  height: 120px; /* Reduced height */
+}
+
+.seller-logo {
+  height: 80px; /* Reduced logo height */
+  margin-right: 10px; /* Reduced margin */
+  margin-left: 10px; /* Reduced margin */
+}
+
+.seller-nav {
+  display: flex;
+  justify-content: flex-end; /* Push buttons to the right */
+  gap: 10px; /* Reduced gap */
+  margin-right: 10px; /* Reduced margin */
+}
+
+.seller-nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #000000;
+  font-weight: 900;
+  width: 80px; /* Reduced width */
+  height: 80px; /* Reduced height */
+  text-align: center;
+  border: #1a1a1a 2px solid;
+  padding: 5px 10px; /* Reduced padding */
+  border-radius: 999px;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.seller-nav-link:hover {
+  background-color: #eaf4ff;
+  color: #0d3c6d;
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-bg-dash {
+  background-color: #fffaf5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 80px;
+  border: #000000 2px solid;
+  padding-left: 15px; /* Reduced padding */
+  padding-right: 15px; /* Reduced padding */
+  height: 80px; /* Reduced height */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  margin: 0 auto; /* Center the welcome section */
+}
+
+.seller-title {
+  font-size: 1.8rem; /* Reduced font size */
+  font-weight: 700;
+  color: #165a9c;
+  margin: 0; /* Removed margin */
+}
+.welcome-bg-dash:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
+  .welcome-bg-dash {
+    height:fit-content;
+    padding: 10px;
+  }
   .dashboard-container {
     padding: 2.9rem;
   }
@@ -381,7 +481,7 @@ h1 {
     align-items: center;
     gap: 0.5rem;
     position: relative;
-    margin-top: -1.8rem;
+
   }
 
   .dropdown-card {
@@ -463,4 +563,25 @@ h1 {
   .graph-tooltip {
     font-size: clamp(8px, 1.8vw, 10px);
   }
+}
+
+.stat-card,
+.user-card,
+.progress-card,
+.transactions,
+.graph-section,
+.tasks-section {
+  background-color: #fffaf5; /* Changed background color to #f9f9f9 */
+  border: 2px solid black;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Added transition for box-shadow */
+}
+
+.stat-card:hover,
+.user-card:hover,
+.progress-card:hover,
+.transactions:hover,
+.graph-section:hover,
+.tasks-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../Dashboard.css";
-import Navbar from '../components/Navbar';
-import { getRoleSize, getCollectionSize } from "../firebase/firebase";
+import { getRoleSize, getCollectionSize, getUserName } from "../firebase/firebase";
+import { Link } from "react-router-dom"; // Import Link
 
 const Dashboard = () => {
   async function getAllRoleSizes() {
@@ -28,59 +28,69 @@ const Dashboard = () => {
   }
 
   const [roleCounts, setRoleCounts] = useState(null);
-  const [Stores, setStoresCount] = useState(null);
   const [Orders, setOrdersCount] = useState(null);
+  const [user, setUser] = useState({ name: '' });
 
   useEffect(() => {
     async function fetchData() {
       const roles = await getAllRoleSizes();
       setRoleCounts(roles);
 
-      // Get Stores and Orders collection sizes
-      const stores = await getCollectionSize("Stores");
+      // Get Orders collection sizes
       const orders = await getCollectionSize("Orders");
-      setStoresCount(stores);
       setOrdersCount(orders);
     }
 
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      const name = await getUserName();
+      setUser({ name });
+    };
+    fetchUser();
+  }, []);
+
   return (
     <section className="dashboard-container">
-      <Navbar pageTitle="Dashboard" bgColor="#fff6fb" textColor="#165a9c" />
+      {/* Seller Header */}
+      <section className="seller-header">
+        <img src="/bloobase.png" alt="Bloobase" className="seller-logo" />
+        <section className="welcome-bg-dash">
+          <h1 className="seller-title">Welcome, {user.name}</h1>
+        </section>
+        <nav className="seller-nav">
+          <Link to="/" className="seller-nav-link">HOME</Link>
+          {/* Removed "Your Store" button */}
+        </nav>
+      </section>
 
       <main className="dashboard-main">
         <section className="stats-row">
           <article className="stat-card">
-            <span>
+            <p>
               Artisans <img src="artisan.png" alt="artisan-img" className="icons" />
-            </span>
+            </p>
             <p className="stat-value">{roleCounts ? roleCounts.Seller : "Loading.."}</p>
           </article>
           <article className="stat-card">
-            <span>
+            <p>
               Sales <img src="sales.png" alt="sales-img" className="icons" />
-            </span>
+            </p>
             <p className="stat-value sales">0</p>
           </article>
           <article className="stat-card">
-            <span>
-              Stores <img src="shop.png" alt="store-img" className="icons" />
-            </span>
-            <p className="stat-value">{Stores ? Stores : "Loading.."}</p>
-          </article>
-          <article className="stat-card">
-            <span>
+            <p>
               Orders <img src="product.png" alt="order-img" className="icons" />
-            </span>
+            </p>
             <p className="stat-value">{Orders ? Orders : "Loading.."}</p>
           </article>
         </section>
         {/* this is mock data for testing purposes */}
         <section className="overview-row">
           <aside className="user-card">
-            <h3>New Stores</h3>
+            <h3>New Artisans</h3>
             <p>
               Paul's furniture{" "}
               <img src="verify.png" alt="Verified" className="verify-icon" />
@@ -94,37 +104,37 @@ const Dashboard = () => {
           </aside>
 
           <article className="progress-card">
-            <h3>Most performing stores</h3>
+            <h3>Most performing artisans</h3>
             <ul className="store-list">
               <li className="store-item">
-                <span className="store-name">Artisan Crafts Co.</span>
+                <p className="store-name">Artisan Crafts Co.</p>
                 <section className="store-bar">
                   <section
                     className="store-progress"
                     style={{ width: "85%" }}
                   ></section>
                 </section>
-                <span className="store-value">85+</span>
+                <p className="store-value">85+</p>
               </li>
               <li className="store-item">
-                <span className="store-name">Handmade Haven</span>
+                <p className="store-name">Handmade Haven</p>
                 <section className="store-bar">
                   <section
                     className="store-progress"
                     style={{ width: "72%" }}
                   ></section>
                 </section>
-                <span className="store-value">72+</span>
+                <p className="store-value">72+</p>
               </li>
               <li className="store-item">
-                <span className="store-name">Craft Corner</span>
+                <p className="store-name">Craft Corner</p>
                 <section className="store-bar">
                   <section
                     className="store-progress"
                     style={{ width: "64%" }}
                   ></section>
                 </section>
-                <span className="store-value">64+</span>
+                <p className="store-value">64+</p>
               </li>
             </ul>
           </article>
@@ -151,76 +161,52 @@ const Dashboard = () => {
             <h3>Monthly Sales Performance</h3>
             <section className="graph-container">
               <section className="graph-y-axis">
-                <span>5k</span>
-                <span>4k</span>
-                <span>3k</span>
-                <span>2k</span>
-                <span>1k</span>
-                <span>0</span>
+                <p>5k</p>
+                <p>4k</p>
+                <p>3k</p>
+                <p>2k</p>
+                <p>1k</p>
+                <p>0</p>
               </section>
               <section className="graph-content">
                 <section className="graph-bar" style={{ height: "30%" }}>
-                  <span className="graph-tooltip">Jan: R1,500</span>
+                  <p className="graph-tooltip">Jan: R1,500</p>
                 </section>
                 <section className="graph-bar" style={{ height: "40%" }}>
-                  <span className="graph-tooltip">Feb: R2,000</span>
+                  <p className="graph-tooltip">Feb: R2,000</p>
                 </section>
                 <section className="graph-bar" style={{ height: "35%" }}>
-                  <span className="graph-tooltip">Mar: R1,750</span>
+                  <p className="graph-tooltip">Mar: R1,750</p>
                 </section>
                 <section className="graph-bar" style={{ height: "60%" }}>
-                  <span className="graph-tooltip">Apr: R3,000</span>
+                  <p className="graph-tooltip">Apr: R3,000</p>
                 </section>
                 <section className="graph-bar active" style={{ height: "80%" }}>
-                  <span className="graph-tooltip">May: R4,000</span>
+                  <p className="graph-tooltip">May: R4,000</p>
                 </section>
                 <section className="graph-bar forecast" style={{ height: "70%" }}>
-                  <span className="graph-tooltip">Jun: R3,500 (forecast)</span>
+                  <p className="graph-tooltip">Jun: R3,500 (forecast)</p>
                 </section>
               </section>
               <section className="graph-x-axis">
-                <span>May</span>
-                <span>June</span>
-                <span>July</span>
-                <span>Aug</span>
-                <span>Sep</span>
-                <span>Oct</span>
+                <p>May</p>
+                <p>June</p>
+                <p>July</p>
+                <p>Aug</p>
+                <p>Sep</p>
+                <p>Oct</p>
               </section>
             </section>
             <section className="graph-legend">
               <section className="legend-item">
-                <span className="legend-color"></span>
-                <span>Monthly Sales</span>
+                <p className="legend-color"></p>
+                <p>Monthly Sales</p>
               </section>
               <section className="legend-item">
-                <span className="legend-color forecast"></span>
-                <span>Forecast</span>
+                <p className="legend-color forecast"></p>
+                <p>Forecast</p>
               </section>
             </section>
-          </article>
-          <article className="tasks-section">
-            <h3>Admin Tasks: 3/5</h3>
-            <section className="task-progress">
-              <p>Tasks</p>
-              <progress className="progress-bar" value="60" max="100"></progress>
-              <p>60%</p>
-            </section>
-            <ol className="task-list">
-              <li>
-                Review Artisan Applications
-                <img src="verify.png" alt="Verified" className="verify-icon" />
-              </li>
-              <li>
-                Update Marketplace Listings
-                <img src="verify.png" alt="Verified" className="verify-icon" />
-              </li>
-              <li>
-                Check Order Status
-                <img src="verify.png" alt="Verified" className="verify-icon" />
-              </li>
-              <li>Approve New Products</li>
-              <li>Customer Support</li>
-            </ol>
           </article>
         </section>
       </main>

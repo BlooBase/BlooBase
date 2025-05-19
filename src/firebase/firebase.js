@@ -175,8 +175,11 @@ export const signupNormUser = async ({ name, email, password, confirmPassword, r
     await apiRequest('/api/users', 'POST', { userId: user.uid, email, name, role, authProvider: 'Firebase Auth' }, false, token); // Pass the token directly
 
     alert("Account created! Please check your email for verification.");
+
+    return true;
   } catch (error) {
     alert(`Signup failed: ${error.message}`);
+    return false;
   }
 };
 export const GoogleSignup = async (role) => {
@@ -197,7 +200,6 @@ export const GoogleSignup = async (role) => {
       });
     }
 
-    alert("Signed in with Google!");
   } catch (error) {
     console.error("Google Sign-in Error:", error);
     alert(`Google Sign-in failed: ${error.message}`);

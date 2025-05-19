@@ -250,7 +250,7 @@ export const deleteAccount = async (currentPassword) => {
   if (!user || !user.email) throw new Error("User not authenticated");
 
   try {
-    await apiRequest(`/api/users/${user.uid}`, 'DELETE', { currentPassword });
+    await apiRequest(`/api/users/${user.uid}`, 'DELETE', currentPassword ? { currentPassword } : undefined);
     await deleteUser(user);
     alert("Account deleted successfully!");
   } catch (error) {

@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { getUserName } from '../firebase/firebase';
 import { Link, useNavigate } from "react-router-dom";
-import { updateCredentials, getUserData, deleteAccount, logout, getUserAuthProvider } from "../firebase/firebase";
+import { updateCredentials, getUserData, deleteAccount, logout, getUserAuthProvider, deleteSellerCard } from "../firebase/firebase";
 import { retrieveSellerProducts } from "../firebase/retrieveSellerProducts";
 import { auth,getSellerCard } from "../firebase/firebase";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import '../SellerHome.css';
 import cartTotal from './cartTotal';
+import { GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SellerHomePage = () => {
   const [user, setUser] = useState({ name: '' });
@@ -220,14 +223,24 @@ const SellerHomePage = () => {
     if (!confirmDelete) return;
 
     try {
-      const password = prompt("Enter your current password to confirm:");
-      if (!password) return;
-      await deleteAccount(password);
-      alert("Account deleted successfully.");
+      if (isGoogleUser) {
+        const provider = new GoogleAuthProvider();
+        await reauthenticateWithPopup(auth.currentUser, provider);
+        await deleteAccount();
+      } else {
+        const password = window.prompt("Enter your current password to confirm:");
+        if (!password) return;
+        await deleteAccount(password);
+      }
+
+      // Only delete the store card if account deletion succeeded
+      await deleteSellerCard();
+
+      toast.success("Account deleted successfully.");
       await logout();
       navigate("/");
     } catch (error) {
-      alert("Failed to delete account: " + error.message);
+      toast.error("Failed to delete account: " + error.message);
     }
   };
 

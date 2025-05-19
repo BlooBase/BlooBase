@@ -4,6 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { updateCredentials, deleteAccount, logout, getUserAuthProvider, getUserData } from "../firebase/firebase";
 import '../BuyerHome.css';
 import { getUserOrders } from '../firebase/retireveOrders';
+import { GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { auth } from "../firebase/firebase";
 
 const BuyerHomePage = () => {
   const [user, setUser] = useState({ name: '' });
@@ -59,14 +63,25 @@ const BuyerHomePage = () => {
     if (!confirmDelete) return;
 
     try {
-      const password = prompt("Enter your current password to confirm:");
-      if (!password) return;
-      await deleteAccount(password);
-      alert("Account deleted successfully.");
+      // Always check provider at the moment of deletion for reliability
+      const providerId = auth.currentUser?.providerData?.[0]?.providerId;
+      const isGoogle = isGoogleUser || providerId === "google.com";
+
+      if (isGoogle) {
+        const provider = new GoogleAuthProvider();
+        await reauthenticateWithPopup(auth.currentUser, provider);
+        await deleteAccount();
+      } else {
+        const password = window.prompt("Enter your current password to confirm:");
+        if (!password) return;
+        await deleteAccount(password);
+      }
+
+      toast.success("Account deleted successfully.");
       await logout();
       navigate("/");
     } catch (error) {
-      alert("Failed to delete account: " + error.message);
+      toast.error("Failed to delete account: " + error.message);
     }
   };
 

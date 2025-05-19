@@ -126,16 +126,17 @@ export async function getUserAuthProvider() {
   }
 }
 
+//Logout User 
 export const logout = async () => {
   try {
     await auth.signOut();
     console.log("User signed out");
-    // Optionally call an API endpoint on your server for logout-related tasks
   } catch (error) {
     console.error("Sign-out error:", error);
   }
 };
 
+//General function gets the numbe of user with a certain role
 export const getRoleSize = async (name) => {
   try {
     const result = await apiRequest(`/api/roles/${name}/size`); // Define this API endpoint
@@ -147,6 +148,7 @@ export const getRoleSize = async (name) => {
   }
 };
 
+//General function for getting the size of a collction in database
 export const getCollectionSize = async (name) => {
   try {
     const result = await apiRequest(`/api/collections/${name}/size`); // Define this API endpoint
@@ -157,6 +159,7 @@ export const getCollectionSize = async (name) => {
   }
 };
 
+//Sign up a normal user with a normal email
 export const signupNormUser = async ({ name, email, password, confirmPassword, role }) => {
   if (password !== confirmPassword) {
     alert("Passwords do not match");
@@ -169,7 +172,6 @@ export const signupNormUser = async ({ name, email, password, confirmPassword, r
 
     await sendEmailVerification(user);
 
-    // Force refresh the ID token to ensure it's up-to-date
     const token = await user.getIdToken(true);
 
     await apiRequest('/api/users', 'POST', { userId: user.uid, email, name, role, authProvider: 'Firebase Auth' }, false, token); // Pass the token directly
@@ -182,6 +184,8 @@ export const signupNormUser = async ({ name, email, password, confirmPassword, r
     return false;
   }
 };
+
+// Signup user with google auth service
 export const GoogleSignup = async (role) => {
   const provider = new GoogleAuthProvider();
   try {
@@ -206,6 +210,7 @@ export const GoogleSignup = async (role) => {
   }
 };
 
+//Login users with firebase auth
 export const loginNormUser = async ({ email, password }) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -225,6 +230,7 @@ export const loginNormUser = async ({ email, password }) => {
   }
 };
 
+//Updates user's general details name, email and password
 export const updateCredentials = async ({ name, email, password, newpassword }) => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
@@ -245,6 +251,7 @@ export const updateCredentials = async ({ name, email, password, newpassword }) 
   }
 };
 
+//Deletes user's account
 export const deleteAccount = async (currentPassword) => {
   const user = auth.currentUser;
   if (!user || !user.email) throw new Error("User not authenticated");
@@ -260,6 +267,7 @@ export const deleteAccount = async (currentPassword) => {
   }
 };
 
+//Login a user with google auth
 export const GoogleLogin = async () => {
   const auth = getAuth();
   const provider = new GoogleAuthProvider();

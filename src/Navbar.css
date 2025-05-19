@@ -19,17 +19,29 @@
 .navbar-site-title {
   font-size: 1rem;
   margin: 0;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+  max-width: 150px; /* Limit the width of the site title */
 }
 
 .navbar-page-title {
   font-size: 1.5rem;
   text-align: center;
+  position: absolute; /* Position the page title absolutely */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust for the element's width */
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+  max-width: 300px; /* Limit the width of the page title */
 }
 
 .navbar-user-info {
   display: flex;
   align-items: center;
   gap: 10px;
+  white-space: nowrap; /* Prevent user info from wrapping */
 }
 
 .navbar-nav-left,
@@ -80,6 +92,9 @@
 .navbar-username {
   font-weight: 700;
   font-size: 1.5rem;
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+  max-width: 150px; /* Limit the width of the username */
 }
 
 .navbar-options-button {
@@ -142,26 +157,30 @@
   }
 
   .navbar-site-title {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
+    max-width: 80px; /* Limit the width of the site title */
   }
 
   .navbar-page-title {
     padding-left: 15px;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    max-width: 120px; /* Limit the width of the page title */
   }
 
   .navbar-username {
-    font-size: 0.8rem;
+    font-size: 1rem;
     font-weight: bold;
+    max-width: 60px; /* Limit the width of the username */
   }
 
   .navbar-user-avatar {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
   }
 
   .navbar-user-info {
-    gap: 6px;
+    gap: 4px; /* Reduce the gap between user info elements */
+    margin-right: -8px; /* Move user info more to the right */
   }
 
   .navbar-options-button {

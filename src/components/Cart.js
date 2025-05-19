@@ -140,6 +140,7 @@ const Cart = () => {
           </Elements>
         </section>
       </section>
+      <section className="opacity-fade" />
     </section>
   );
 };

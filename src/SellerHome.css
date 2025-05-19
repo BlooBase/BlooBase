@@ -21,27 +21,27 @@ body {
 /* Header */
 .seller-header {
   background: linear-gradient(to right, #dff3ff, #f4faff);
-  padding: 10px 20px; /* Reduced padding */
+  padding: 10px 20px; 
   border-bottom-left-radius: 70px;
   border-bottom-right-radius: 70px;
   border: #000000 2px solid;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Distribute space between logo, title, and nav */
-  height: 120px; /* Reduced height */
+  justify-content: space-between; 
+  height: 120px; 
 }
 
 .seller-logo {
-  height: 80px; /* Reduced logo height */
-  margin-right: 10px; /* Reduced margin */
-  margin-left: 10px; /* Reduced margin */
+  height: 80px; 
+  margin-right: 10px; 
+  margin-left: 10px; 
 }
 
 .seller-nav {
   display: flex;
-  justify-content: flex-end; /* Push buttons to the right */
-  gap: 10px; /* Reduced gap */
-  margin-right: 10px; /* Reduced margin */
+  justify-content: flex-end; 
+  gap: 10px; 
+  margin-right: 10px; 
 }
 
 .seller-nav-link {
@@ -52,11 +52,10 @@ body {
   text-decoration: none;
   color: #000000;
   font-weight: 900;
-  width: 80px; /* Reduced width */
-  height: 80px; /* Reduced height */
+  width: 80px;
+  height: 80px; 
   text-align: center;
   border: #1a1a1a 2px solid;
-  padding: 5px 10px; /* Reduced padding */
   border-radius: 999px;
   background-color: #f9f9f9;
   transition: all 0.3s ease;
@@ -77,24 +76,40 @@ body {
   justify-content: center;
   border-radius: 80px;
   border: #000000 2px solid;
-  padding-left: 15px; /* Reduced padding */
-  padding-right: 15px; /* Reduced padding */
-  height: 80px; /* Reduced height */
+  padding-left: 15px; 
+  padding-right: 15px; 
+  height: 80px; 
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
   white-space: nowrap;
-  margin: 0 auto; /* Center the welcome section */
+  margin: 0 auto; 
 }
 
 .seller-title {
-  font-size: 1.8rem; /* Reduced font size */
+  font-size: 1.8rem; 
   font-weight: 700;
   color: #165a9c;
-  margin: 0; /* Removed margin */
+  margin: 0; 
 }
 .welcome-bg-seller:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.download-sales{
+  position: absolute;
+  top: 16px;
+  left: 105px; 
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+}
+.download-icon{
+  width:20px;
+  height: 20px; 
 }
 
 /* Orders/Stores Section */

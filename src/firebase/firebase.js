@@ -2,6 +2,8 @@ import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, deleteUser} from "firebase/auth";
 import { getFirestore, doc, setDoc, getDocs,  collection,deleteDoc,query,where,updateDoc,increment,getDoc} from "firebase/firestore";
 import { getStorage, ref,uploadBytes,getDownloadURL } from "firebase/storage";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBLRZEHtvWJex2S_6wUgU9-0PyUZ6XvYdc",
@@ -159,7 +161,7 @@ export const getCollectionSize = async (name) => {
 
 export const signupNormUser = async ({ name, email, password, confirmPassword, role }) => {
   if (password !== confirmPassword) {
-    alert("Passwords do not match");
+    toast.error("Passwords do not match");
     return;
   }
 
@@ -172,13 +174,13 @@ export const signupNormUser = async ({ name, email, password, confirmPassword, r
     // Force refresh the ID token to ensure it's up-to-date
     const token = await user.getIdToken(true);
 
-    await apiRequest('/api/users', 'POST', { userId: user.uid, email, name, role, authProvider: 'Firebase Auth' }, false, token); // Pass the token directly
+    await apiRequest('/api/users', 'POST', { userId: user.uid, email, name, role, authProvider: 'Firebase Auth' }, false, token);
 
-    alert("Account created! Please check your email for verification.");
+    toast.success("Account created! Please check your email for verification.");
 
     return true;
   } catch (error) {
-    alert(`Signup failed: ${error.message}`);
+    toast.error(`Signup failed: ${error.message}`);
     return false;
   }
 };
@@ -202,7 +204,7 @@ export const GoogleSignup = async (role) => {
 
   } catch (error) {
     console.error("Google Sign-in Error:", error);
-    alert(`Google Sign-in failed: ${error.message}`);
+    toast.error(`Google Sign-in failed: ${error.message}`);
   }
 };
 
@@ -212,15 +214,16 @@ export const loginNormUser = async ({ email, password }) => {
     const user = userCredential.user;
 
     if (!user.emailVerified) {
-      alert("Please verify your email before logging in.");
+      toast.error("Please verify your email before logging in.");
       await auth.signOut();
       throw new Error("Email not verified");
     }
 
-    alert('Login successful!');
+    toast.success('Login successful!');
     return user;
   } catch (error) {
     console.error("Login failed:", error);
+    toast.error(`Login failed: ${error.message}`);
     throw error;
   }
 };
@@ -237,10 +240,8 @@ export const updateCredentials = async ({ name, email, password, newpassword }) 
     if (password && (email || newpassword)) updates.password = password; // Need current password for email/password update
 
     await apiRequest(`/api/users/${user.uid}`, 'PATCH', updates);
-    alert("Credentials updated successfully!");
   } catch (error) {
     console.error("Error updating credentials via API:", error);
-    alert(`Error updating credentials: ${error.message}`);
     throw error;
   }
 };
@@ -252,10 +253,9 @@ export const deleteAccount = async (currentPassword) => {
   try {
     await apiRequest(`/api/users/${user.uid}`, 'DELETE', currentPassword ? { currentPassword } : undefined);
     await deleteUser(user);
-    alert("Account deleted successfully!");
   } catch (error) {
     console.error("Error deleting account via API:", error);
-    alert(`Error deleting account: ${error.message}`);
+    toast.error(`Error deleting account: ${error.message}`);
     throw error;
   }
 };
@@ -271,14 +271,14 @@ export const GoogleLogin = async () => {
     const existingUser = await apiRequest(`/api/users/${user.uid}`).catch(() => null);
 
     if (!existingUser) {
-      alert("User does not exist (likely a signup issue).");
+      toast.error("User does not exist (likely a signup issue).");
       return;
     }
 
-    alert("Logged in with Google!");
+    toast.success("Logged in with Google!");
   } catch (error) {
     console.error("Google Login Error:", error);
-    alert(`Google Login failed: ${error.message}`);
+    toast.error(`Google Login failed: ${error.message}`);
   }
 };
 

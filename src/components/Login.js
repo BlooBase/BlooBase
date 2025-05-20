@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { loginNormUser, GoogleLogin,getUserRole } from '../firebase/firebase';
 import '../Login.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -29,7 +31,7 @@ const Login = () => {
       }
       else {
         console.log(userRole)
-        alert("User role not recognized");
+        toast.error("User role not recognized");
       }
     } catch (error) {
       setError(error.message);
@@ -54,7 +56,7 @@ const Login = () => {
         navigate("/Dashboard")
       }
       else {
-        alert("User role not recognized");
+        toast.error("User role not recognized");
       }
     } catch (err) {
       setError(err.message);

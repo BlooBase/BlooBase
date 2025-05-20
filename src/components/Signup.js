@@ -3,6 +3,8 @@ import "../Signup.css";
 import { Link, useNavigate} from "react-router-dom";
 import { isPasswordStrong } from "../checkPasswordStrength";
 import { signupNormUser,GoogleSignup, logout, getUserRole } from "../firebase/firebase";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Signup = () => {
 
@@ -24,13 +26,13 @@ const Signup = () => {
   const[passwordMatch,setPasswordMatch]=useState("");
   const handleGoogleSignup = async () => {
     if (!googleRole) {
-      alert("Please select a role before signing up with Google.");
+      toast.error("Please select a role before signing up with Google.");
       return;
     }
     try {
       const result = await GoogleSignup(googleRole);
       if (!result || result.success === false) {
-        alert(result?.message || "Google signup failed. Please try again.");
+        toast.error(result?.message || "Google signup failed. Please try again.");
         return; // Stop here if signup failed
       }
       const userRole = await getUserRole(); 
@@ -45,12 +47,12 @@ const Signup = () => {
               navigate("/Dashboard")
             }
             else {
-              alert("User role not recognized");
+              toast.error("User role not recognized");
             }
 
     } catch (error) {
       console.error("Google signup failed:", error);
-      alert("Google signup failed. Please try again.");
+      toast.error("Google signup failed. Please try again.");
       return; // Stop here if error thrown
     }
   };
@@ -99,7 +101,7 @@ const Signup = () => {
       navigate("/Login");
     } catch (error) {
       console.error("Signup failed:", error);
-      alert("Signup failed. Please try again.");
+      toast.error("Signup failed. Please try again.");
       return; // Stop here if error thrown
     }
   };

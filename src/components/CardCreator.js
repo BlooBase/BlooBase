@@ -231,8 +231,14 @@ const CardCreator = () => {
   const handleProductPublish = async (index) => {
     const { image, name, price, id, stock } = productCreators[index];
     // Require all fields, including stock
-    if (!image || !name || !price || stock === undefined || stock === null || stock === '') {
+    if (!image || !name || price === '' || stock === undefined || stock === null || stock === '') {
       triggerAnimationFail('Please provide product image, name, price, and stock.');
+      return;
+    }
+    // Ensure price is a non-negative number
+    const priceValue = parseFloat(price);
+    if (isNaN(priceValue) || priceValue < 0) {
+      triggerAnimationFail('Please enter a non-negative price.');
       return;
     }
     // Ensure stock is a positive integer
@@ -243,12 +249,11 @@ const CardCreator = () => {
     }
     try {
       if (id) {
-        await updateProduct({ id, image, name, price, stock: stockValue });
-        console.log(`Updated product stock: ${stockValue}`); // <-- Log updated stock
+        await updateProduct({ id, image, name, price: priceValue, stock: stockValue });
         triggerProductAnimation(index);
         triggerProductMessage(`Product ${productCreators[index].name} Updated`);
       } else {
-        await addProduct({ image, name, price, stock: stockValue });
+        await addProduct({ image, name, price: priceValue, stock: stockValue });
         triggerProductAnimation(index);
         triggerProductMessage(`Product ${productCreators[index].name} Published`);
       }
@@ -296,6 +301,28 @@ const CardCreator = () => {
       removeProductCreator(index);
     }
   };
+
+  // Helper to get luminance
+function luminance(hex) {
+  hex = hex.replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
+  const rgb = [
+    parseInt(hex.substr(0,2),16),
+    parseInt(hex.substr(2,2),16),
+    parseInt(hex.substr(4,2),16)
+  ].map(v => {
+    v /= 255;
+    return v <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4);
+  });
+  return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+}
+
+// Helper to get contrast ratio
+function contrast(hex1, hex2) {
+  const lum1 = luminance(hex1);
+  const lum2 = luminance(hex2);
+  return (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
+}
 
   return (
     <section className="card-creator-wrapper" style={{ backgroundColor }}>
@@ -393,7 +420,17 @@ const CardCreator = () => {
           <section className="color-picker-row">
             <label style={{ color: '#242424' }}>Text Color</label>
             <section className="color-circle" style={{ backgroundColor: textColor }}>
-              <input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} />
+              <input
+                type="color"
+                value={textColor}
+                onChange={e => {
+                  const newColor = e.target.value;
+                  if (contrast(newColor, backgroundColor) >= 2) {
+                    setTextColor(newColor);
+                  }
+                  // If contrast is too low, do nothing (color won't update)
+                }}
+              />
             </section>
           </section>
 
@@ -475,11 +512,30 @@ const CardCreator = () => {
       ))}
 
       {hasStore && (
-      <section className="add-product-bar" onClick={addProductCreator} style={{ cursor: 'pointer', textAlign: 'center', marginTop: '1rem' }}>
-        <p style={{ fontSize: '2rem', color: '#4a4a4a' }}>
-          <img src="/plus.png" alt="add-product-plus" style={{ width: '40px', height: '40px' }} />
-        </p>
-      </section>
+        <section
+          className="add-product-bar"
+          onClick={addProductCreator}
+          style={{
+            cursor: 'pointer',
+            textAlign: 'center',
+            marginTop: '1rem'
+          }}
+        >
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            style={{ display: 'inline-block', verticalAlign: 'middle' }}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20 10v20M10 20h20"
+              stroke={textColor}
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+          </svg>
+        </section>
       )}
 
       <section className="opacity-fade2" />

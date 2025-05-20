@@ -143,7 +143,7 @@ const Cart = () => {
             </select>
           </fieldset>
           <Elements stripe={stripePromise}>
-            <CheckoutForm total={total} orderType={orderType} />
+            <CheckoutForm total={total} orderType={orderType} cartItems={cartItems} />
           </Elements>
         </section>
       </section>

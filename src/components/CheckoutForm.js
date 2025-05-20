@@ -6,15 +6,30 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../CheckoutForm.css';
 import { addOrder } from '../firebase/addOrder';
 
-const CheckoutForm = ({ total, orderType }) => {
+const CheckoutForm = ({ total, orderType, cartItems }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(false); // <-- Add loading state
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (loading) return; // <-- Prevent multiple submissions
+
     if (!stripe || !elements) {
+      return;
+    }
+
+    if (!cartItems || cartItems.length === 0) {
+      toast.error('Your cart is empty. Please add items before checking out.', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       return;
     }
 
@@ -31,6 +46,8 @@ const CheckoutForm = ({ total, orderType }) => {
       return;
     }
 
+    setLoading(true); // <-- Set loading to true
+
     try {
       // Place the order in Firestore
       await addOrder({ orderType, total });
@@ -46,6 +63,8 @@ const CheckoutForm = ({ total, orderType }) => {
       });
     } catch (error) {
       toast.error('Failed to place order: ' + error.message);
+    } finally {
+      setLoading(false); // <-- Reset loading
     }
   };
 
@@ -53,8 +72,12 @@ const CheckoutForm = ({ total, orderType }) => {
     <>
       <form onSubmit={handleSubmit} className="checkout-form-3">
         <CardElement className="card-element-3" />
-        <button type="submit" className="checkout-button-3" disabled={!stripe}>
-          Pay Now
+        <button
+          type="submit"
+          className="checkout-button-3"
+          disabled={!stripe || loading} // <-- Disable when loading
+        >
+          {loading ? 'Processing...' : 'Pay Now'}
         </button>
       </form>
     </>

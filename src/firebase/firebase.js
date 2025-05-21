@@ -2,6 +2,8 @@ import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, deleteUser} from "firebase/auth";
 import { getFirestore, doc, setDoc, getDocs,  collection,deleteDoc,query,where,updateDoc,increment,getDoc} from "firebase/firestore";
 import { getStorage, ref,uploadBytes,getDownloadURL } from "firebase/storage";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBLRZEHtvWJex2S_6wUgU9-0PyUZ6XvYdc",
@@ -162,7 +164,7 @@ export const getCollectionSize = async (name) => {
 //Sign up a normal user with a normal email
 export const signupNormUser = async ({ name, email, password, confirmPassword, role }) => {
   if (password !== confirmPassword) {
-    alert("Passwords do not match");
+    toast.error("Passwords do not match");
     return;
   }
 
@@ -174,13 +176,17 @@ export const signupNormUser = async ({ name, email, password, confirmPassword, r
 
     const token = await user.getIdToken(true);
 
-    await apiRequest('/api/users', 'POST', { userId: user.uid, email, name, role, authProvider: 'Firebase Auth' }, false, token); // Pass the token directly
+    await apiRequest('/api/users', 'POST', { userId: user.uid, email, name, role, authProvider: 'Firebase Auth' }, false, token);
 
-    alert("Account created! Please check your email for verification.");
-
+    toast.success("Account created! Please check your email for verification.");
     return true;
   } catch (error) {
-    alert(`Signup failed: ${error.message}`);
+    // Check if email is already in use
+    if (error.code === "auth/email-already-in-use") {
+      toast.error("Email already in use");
+    } else {
+      toast.error(`Signup failed: ${error.message}`);
+    }
     return false;
   }
 };
@@ -192,8 +198,10 @@ export const GoogleSignup = async (role) => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    const existingUser = await apiRequest(`/api/users/${user.uid}`).catch(() => null);
+    // Try to fetch the user from your backend
+    let existingUser = await apiRequest(`/api/users/${user.uid}`).catch(() => null);
 
+    // If not found, create the user record (signup) automatically
     if (!existingUser) {
       await apiRequest('/api/users', 'POST', {
         userId: user.uid,
@@ -202,11 +210,21 @@ export const GoogleSignup = async (role) => {
         role: role,
         authProvider: "Google",
       });
+      // Optionally fetch the newly created user, if needed:
+      existingUser = await apiRequest(`/api/users/${user.uid}`);
     }
 
+    // After successfully signing up (or if the user already existed),
+    // consider the process a success and log the user in.
+    return true; // Success
   } catch (error) {
-    console.error("Google Sign-in Error:", error);
-    alert(`Google Sign-in failed: ${error.message}`);
+    if (error.code === "auth/popup-closed-by-user") {
+      // User closed the popup, do nothing
+      return false;
+    }
+    console.error("Google Sign-up failed:", error);
+    toast.error(`Google sign in failed: ${error.message}`);
+    return false;
   }
 };
 
@@ -217,16 +235,26 @@ export const loginNormUser = async ({ email, password }) => {
     const user = userCredential.user;
 
     if (!user.emailVerified) {
-      alert("Please verify your email before logging in.");
       await auth.signOut();
-      throw new Error("Email not verified");
+      toast.error("Please verify your email before logging in.");
+      // Throw a new error so downstream catches show the same message
+      throw new Error("Please verify your email before logging in.");
     }
 
-    alert('Login successful!');
     return user;
   } catch (error) {
-    console.error("Login failed:", error);
-    throw error;
+    let message = "";
+    if (error.code === "auth/invalid-credential") {
+      message = "Invalid sign in credentials";
+      toast.error(message);
+    } else if (error.message !== "Please verify your email before logging in.") {
+      message = `Login failed: ${error.message}`;
+      toast.error(message);
+    } else {
+      message = error.message;
+    }
+    // Throw a new error with the custom message so that any UI error field shows the same message.
+    throw new Error(message);
   }
 };
 
@@ -243,10 +271,8 @@ export const updateCredentials = async ({ name, email, password, newpassword }) 
     if (password && (email || newpassword)) updates.password = password; // Need current password for email/password update
 
     await apiRequest(`/api/users/${user.uid}`, 'PATCH', updates);
-    alert("Credentials updated successfully!");
   } catch (error) {
     console.error("Error updating credentials via API:", error);
-    alert(`Error updating credentials: ${error.message}`);
     throw error;
   }
 };
@@ -257,36 +283,41 @@ export const deleteAccount = async (currentPassword) => {
   if (!user || !user.email) throw new Error("User not authenticated");
 
   try {
-    await apiRequest(`/api/users/${user.uid}`, 'DELETE', { currentPassword });
+    await apiRequest(`/api/users/${user.uid}`, 'DELETE', currentPassword ? { currentPassword } : undefined);
     await deleteUser(user);
-    alert("Account deleted successfully!");
   } catch (error) {
     console.error("Error deleting account via API:", error);
-    alert(`Error deleting account: ${error.message}`);
+    toast.error(`Error deleting account: ${error.message}`);
     throw error;
   }
 };
 
 //Login a user with google auth
 export const GoogleLogin = async () => {
-  const auth = getAuth();
   const provider = new GoogleAuthProvider();
 
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
+    // Check if the user exists in your backend
     const existingUser = await apiRequest(`/api/users/${user.uid}`).catch(() => null);
 
     if (!existingUser) {
-      alert("User does not exist (likely a signup issue).");
-      return;
+      // If the user doesn't exist, show a toast and return
+      toast.error("Sign up first");
+      return false;
     }
 
-    alert("Logged in with Google!");
+    return true;
   } catch (error) {
+    if (error.code === "auth/popup-closed-by-user") {
+      // User closed the popup, do nothing
+      return false;
+    }
     console.error("Google Login Error:", error);
-    alert(`Google Login failed: ${error.message}`);
+    toast.error(`Google Login failed: ${error.message}`);
+    return false;
   }
 };
 
@@ -446,10 +477,6 @@ export const getSellerCard = async () => {
 
   return data;
 };
-
-
-
-
 
 export {
   auth,

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { getUserName } from '../firebase/firebase';
 import { Link, useNavigate } from "react-router-dom";
-import { updateCredentials, deleteAccount, logout, getUserAuthProvider, getUserData } from "../firebase/firebase";
+import { updateCredentials, logout, getUserAuthProvider, getUserData } from "../firebase/firebase";
 import '../BuyerHome.css';
 import { getUserOrders } from '../firebase/retireveOrders';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const BuyerHomePage = () => {
-  const [user, setUser] = useState({ name: '' });
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -24,9 +24,9 @@ const BuyerHomePage = () => {
   const handleSave = async () => {
     try {
       await updateCredentials(formData);
-      alert("Settings updated successfully!");
+      toast.success("Settings updated successfully!");
     } catch (error) {
-      alert("Failed to update settings: " + error.message);
+      toast.error("Failed to update settings: " + error.message);
     }
   };
 
@@ -54,22 +54,6 @@ const BuyerHomePage = () => {
     console.log("Form data reset");
   };
 
-  const handleDeleteAccount = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete your account?");
-    if (!confirmDelete) return;
-
-    try {
-      const password = prompt("Enter your current password to confirm:");
-      if (!password) return;
-      await deleteAccount(password);
-      alert("Account deleted successfully.");
-      await logout();
-      navigate("/");
-    } catch (error) {
-      alert("Failed to delete account: " + error.message);
-    }
-  };
-
   const [isGoogleUser, setIsGoogleUser] = useState(false);
 
   useEffect(() => {
@@ -90,18 +74,9 @@ const BuyerHomePage = () => {
       await logout();
       navigate("/");
     } catch (error) {
-      alert("Failed to log out: " + error.message);
+      toast.error("Failed to log out: " + error.message);
     }
   };
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const name = await getUserName();
-      setUser({ name });
-      console.log("Fetched user name:", name);
-    };
-    fetchUser();
-  }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -128,7 +103,7 @@ const BuyerHomePage = () => {
       <section className="buyer-header">
         <img src="/bloobase.png" alt="Bloobase" className="buyer-logo" />
         <section className="welcome-bg">
-          <h1 className="buyer-title">Welcome, {user.name}</h1>
+          <h1 className="buyer-title">Welcome, {formData.name}</h1>
         </section>
         <nav className="buyer-nav">
           <Link to="/" className="buyer-nav-link">HOME</Link>
@@ -200,49 +175,10 @@ const BuyerHomePage = () => {
                   className="form-input"
                 />
               </section>
-              {console.log("Rendering settings form. isGoogleUser:", isGoogleUser)}
-              {!isGoogleUser && (
-                <>
-                  <section className="form-field">
-                    <label htmlFor="email" className="form-label">Email:</label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="form-input"
-                    />
-                  </section>
-                  <section className="form-field">
-                    <label htmlFor="password" className="form-label">Current Password:</label>
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      className="form-input"
-                    />
-                  </section>
-                  <section className="form-field">
-                    <label htmlFor="newpassword" className="form-label">New Password:</label>
-                    <input
-                      type="password"
-                      name="newpassword"
-                      id="newpassword"
-                      value={formData.newpassword}
-                      onChange={handleChange}
-                      className="form-input"
-                    />
-                  </section>
-                </>
-              )}
               <section className="settings-buttons">
                 <button type="button" onClick={handleSave} className="nav-button">Save Changes</button>
-                <button type="button" onClick={handleCancel} className="nav-button">Cancel</button>
+                <button type="button" onClick={handleCancel} className="nav-button">Clear</button>
                 <section className="red-buttons">
-                  <button type="button" onClick={handleDeleteAccount} className="delete-button">Delete Account</button>
                   <button type="button" onClick={handleLogout} className="delete-button">Log Out</button>
                 </section>
               </section>

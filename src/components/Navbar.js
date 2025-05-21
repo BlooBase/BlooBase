@@ -121,7 +121,7 @@ const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
                     className="navbar-dropdown-item"
                     style={{ textDecoration: 'none', color: '#000000' }}
                   >
-                    Artists
+                    Artisans
                   </Link>
                 )}
                 {userRole === "Seller" && auth.currentUser && currentPath !== '/CardCreator' && (

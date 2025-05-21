@@ -44,7 +44,11 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      await GoogleLogin();
+      const loginSuccess = await GoogleLogin();
+      if (!loginSuccess) {
+        // Login was cancelled or failed, do not check user role
+        return;
+      }
       const userRole = await getUserRole(); 
       if (userRole === "Seller" ) {
         navigate("/SellerHomepage");

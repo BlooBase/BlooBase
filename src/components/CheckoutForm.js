@@ -54,12 +54,12 @@ const CheckoutForm = ({ total, orderType, cartItems }) => {
 
       toast.success('Order placed successfully!', {
         position: 'top-right',
-        autoClose: 3000,
+        autoClose: 1000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        onClose: () => navigate('/Homepage'),
+        onClose: () => navigate('/BuyerHomePage'),
       });
     } catch (error) {
       toast.error('Failed to place order: ' + error.message);

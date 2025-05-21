@@ -177,10 +177,14 @@ export const signupNormUser = async ({ name, email, password, confirmPassword, r
     await apiRequest('/api/users', 'POST', { userId: user.uid, email, name, role, authProvider: 'Firebase Auth' }, false, token);
 
     toast.success("Account created! Please check your email for verification.");
-
     return true;
   } catch (error) {
-    toast.error(`Signup failed: ${error.message}`);
+    // Check if email is already in use
+    if (error.code === "auth/email-already-in-use") {
+      toast.error("Email already in use");
+    } else {
+      toast.error(`Signup failed: ${error.message}`);
+    }
     return false;
   }
 };
@@ -190,8 +194,10 @@ export const GoogleSignup = async (role) => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    const existingUser = await apiRequest(`/api/users/${user.uid}`).catch(() => null);
+    // Try to fetch the user from your backend
+    let existingUser = await apiRequest(`/api/users/${user.uid}`).catch(() => null);
 
+    // If not found, create the user record (signup) automatically
     if (!existingUser) {
       await apiRequest('/api/users', 'POST', {
         userId: user.uid,
@@ -200,11 +206,21 @@ export const GoogleSignup = async (role) => {
         role: role,
         authProvider: "Google",
       });
+      // Optionally fetch the newly created user, if needed:
+      existingUser = await apiRequest(`/api/users/${user.uid}`);
     }
 
+    // After successfully signing up (or if the user already existed),
+    // consider the process a success and log the user in.
+    return true; // Success
   } catch (error) {
-    console.error("Google Sign-in Error:", error);
-    toast.error(`Google Sign-in failed: ${error.message}`);
+    if (error.code === "auth/popup-closed-by-user") {
+      // User closed the popup, do nothing
+      return false;
+    }
+    console.error("Google Sign-up failed:", error);
+    toast.error(`Google sign in failed: ${error.message}`);
+    return false;
   }
 };
 
@@ -214,17 +230,26 @@ export const loginNormUser = async ({ email, password }) => {
     const user = userCredential.user;
 
     if (!user.emailVerified) {
-      toast.error("Please verify your email before logging in.");
       await auth.signOut();
-      throw new Error("Email not verified");
+      toast.error("Please verify your email before logging in.");
+      // Throw a new error so downstream catches show the same message
+      throw new Error("Please verify your email before logging in.");
     }
 
-    toast.success('Login successful!');
     return user;
   } catch (error) {
-    console.error("Login failed:", error);
-    toast.error(`Login failed: ${error.message}`);
-    throw error;
+    let message = "";
+    if (error.code === "auth/invalid-credential") {
+      message = "Invalid sign in credentials";
+      toast.error(message);
+    } else if (error.message !== "Please verify your email before logging in.") {
+      message = `Login failed: ${error.message}`;
+      toast.error(message);
+    } else {
+      message = error.message;
+    }
+    // Throw a new error with the custom message so that any UI error field shows the same message.
+    throw new Error(message);
   }
 };
 
@@ -261,24 +286,30 @@ export const deleteAccount = async (currentPassword) => {
 };
 
 export const GoogleLogin = async () => {
-  const auth = getAuth();
   const provider = new GoogleAuthProvider();
 
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
+    // Check if the user exists in your backend
     const existingUser = await apiRequest(`/api/users/${user.uid}`).catch(() => null);
 
     if (!existingUser) {
-      toast.error("User does not exist (likely a signup issue).");
-      return;
+      // If the user doesn't exist, show a toast and return
+      toast.error("Sign up first");
+      return false;
     }
 
-    toast.success("Logged in with Google!");
+    return true;
   } catch (error) {
+    if (error.code === "auth/popup-closed-by-user") {
+      // User closed the popup, do nothing
+      return false;
+    }
     console.error("Google Login Error:", error);
     toast.error(`Google Login failed: ${error.message}`);
+    return false;
   }
 };
 
@@ -438,10 +469,6 @@ export const getSellerCard = async () => {
 
   return data;
 };
-
-
-
-
 
 export {
   auth,

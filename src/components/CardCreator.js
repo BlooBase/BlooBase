@@ -413,7 +413,19 @@ function contrast(hex1, hex2) {
           <section className="color-picker-row">
             <label style={{ color: '#242424' }}>Background Color</label>
             <section className="color-circle" style={{ backgroundColor }}>
-              <input type="color" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} />
+              <input
+                type="color"
+                value={backgroundColor}
+                onChange={(e) => {
+                  const newColor = e.target.value;
+                  if (contrast(newColor, textColor) >= 2) {
+                    setBackgroundColor(newColor);
+                  } else {
+                    // Optionally show a message or keep the previous color
+                    console.warn("Background color is too similar to the text color.");
+                  }
+                }}
+              />
             </section>
           </section>
 

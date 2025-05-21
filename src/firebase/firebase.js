@@ -20,8 +20,8 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
 
-const apiURL = 'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net'
-//const apiURL = 'http://localhost:5000'
+//const apiURL = 'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net'
+const apiURL = 'http://localhost:5000'
 //API requests fucntion
 export const apiRequest = async (url, method = 'GET', body = null, isFormData = false) => {
   const headers = {};

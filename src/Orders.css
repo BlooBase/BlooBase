@@ -1,0 +1,702 @@
+/* Your provided CSS goes here */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  background: linear-gradient(to right, #fff5e1, #ffd1ee);
+  color: #1a1a1a;
+}
+
+.buyer-home {
+  display: flex;
+  flex-direction: column;
+  min-height: 140vh;
+  background: linear-gradient(to right, #fff5e1, hwb(321 93% 0%));
+}
+
+/* Header */
+.buyer-header {
+  background: linear-gradient(to right, #dff3ff, #f4faff);
+  padding: 20px;
+  border-bottom-left-radius: 70px;
+  border-bottom-right-radius: 70px;
+  border: #000000 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 120px;
+}
+
+.buyer-logo {
+  height: 80px;
+  margin-right: 20px;
+  margin-left: 10px;
+}
+
+.buyer-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  margin-right: 20px;
+}
+
+.buyer-nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #000000;
+  font-weight: 900;
+  width: 80px;
+  height: 80px;
+  text-align: center;
+  border: #1a1a1a 2px solid;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.buyer-nav-link:hover {
+  background-color: #eaf4ff;
+  color: #0d3c6d;
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-bg {
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 80px;
+  border: #000000 2px solid;
+  padding-left: 20px;
+  padding-right: 20px;
+  height: 80px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  margin: 0 auto;
+}
+
+.welcome-bg:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  color: #0d3c6d;
+}
+
+.buyer-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #165a9c;
+  margin: 0;
+}
+
+/* Orders Section */
+.buyer-orders-section {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 10px;
+  flex: 1;
+  min-height: 50vh;
+  align-items: stretch;
+}
+
+.orders-grid {
+  width: 75%;
+  display: flex;
+  height: 100%;
+  justify-content: left;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+.floating-orders-card {
+  width: 96%;
+  height: 730px;
+  background-color: white;
+  border-radius: 30px;
+  border: 2px solid black;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  padding: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+   *** IMPORTANT CHANGES HERE FOR TITLE AND BACK BUTTON ***
+*/
+.orders-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px; /* Space between header and scroll content */
+  padding-right: 120px; /* Account for back button width */
+  position: relative; /* Needed for absolute positioning of title */
+  z-index: 1; /* Ensure header is above scroll content */
+}
+
+.orders-card-title {
+  /* Removed absolute positioning here as it's now part of a flex container */
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: black;
+  background: white; /* Still needs its own background for the "tag" effect */
+  padding: 4px 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: absolute; /* Kept absolute for "tag" styling relative to card */
+  top: 12px;
+  left: 20px;
+  width: auto; /* Allow content to dictate width */
+  max-width: calc(100% - 160px); /* Adjust max-width to not overlap back button */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.back-button {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: absolute; /* Absolute positioning relative to floating-orders-card */
+  top: 10px;
+  right: 20px;
+  z-index: 10;
+}
+
+.back-button:hover {
+  background-color: #e0e0e0;
+  border-color: #bbb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/*
+   *** END OF IMPORTANT CHANGES ***
+*/
+
+.orders-card-scroll {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  grid-auto-rows: min-content;
+  align-items: start;
+  padding-right: 8px;
+  border-radius: 40px;
+  /* Adjust margin-top to account for the header */
+  margin-top: 50px; /* Increased to give space for new header */
+  padding-bottom: 80px;
+}
+
+.orders-card-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.orders-card-scroll::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+.orders-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #888;
+  font-size: 1.2rem;
+  margin-top: 60px;
+}
+
+/* Order Preview Card (Semantic) */
+.order-preview {
+  background-color: #fff2e9;
+  border-radius: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 16px;
+  min-width: 0;
+  min-height: 0;
+  transition: box-shadow 0.2s;
+  border: 1.5px solid #e0c3b2;
+}
+
+.order-preview-figure {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0;
+  width: 100%;
+}
+
+.order-preview-img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-right: 18px;
+  border: 2px solid #e0c3b2;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.order-preview-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+}
+
+.order-preview-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.order-preview-price {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #165a9c;
+}
+
+.order-preview-type {
+  display: inline-block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: #eaf4ff;
+  color: #165a9c;
+  border: 1px solid #b3d4fc;
+  margin-top: 2px;
+  width: fit-content;
+}
+
+.order-preview-type.delivery {
+  background: #eaf4ff;
+  color: #165a9c;
+  border: 1px solid #b3d4fc;
+}
+
+.order-preview-type.pickup {
+  background: #ffeaea;
+  color: #b00000;
+  border: 1px solid #ffb3b3;
+}
+
+/* Order Total */
+.order-total {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px 20px;
+  background-color: white;
+  border-top: 1px solid #eee;
+  text-align: right;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #165a9c;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+  z-index: 2;
+}
+
+/* Settings Section */
+.buyer-settings {
+  background-color: #fff3f3;
+  flex: 1;
+  padding: 50px 60px;
+  border-radius: 30px;
+  border: 2px solid #000;
+  width: 600px;
+  height:fit-content ;
+  max-height: 730px;
+  margin-top: 20px;
+  margin-right: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-title {
+  position: relative;
+  top: -35px;
+  left: -40px;
+  width: 100px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: black;
+  z-index: 1;
+  background: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.form-container {
+  height: 100%;
+  width: 100%;
+  flex: 1;
+  padding: 20px;
+  flex-direction: column;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin-bottom: 15px;
+}
+
+.form-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.form-input {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid #ccc;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #165a9c;
+  outline: none;
+  background-color: #f8fdff;
+}
+
+.settings-form {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.settings-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 40%;
+}
+
+.nav-button {
+  background-color: #165a9c;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 2px solid #0d3c6d;
+  font-weight: bold;
+  width: 300px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: #0d3c6d;
+}
+
+.red-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.delete-button {
+  flex: 1;
+  background-color: #ff4d4d;
+  color: white;
+  padding: 10px 0;
+  border-radius: 12px;
+  border: 2px solid #b00000;
+  font-weight: bold;
+  cursor: pointer;
+  height: 60px;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.delete-button:hover {
+  background-color: #c10000;
+  color: white;
+}
+
+/* Sparkle and Footer */
+.sparkle-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: white;
+  clip-path: polygon(
+    50% 0%,
+    60% 40%,
+    100% 50%,
+    60% 60%,
+    50% 100%,
+    40% 60%,
+    0% 50%,
+    40% 40%
+  );
+  opacity: 0.6;
+  transform: scale(0.8) rotate(0deg);
+  animation: sparkle-twinkle 2s infinite ease-in-out;
+  filter: drop-shadow(0 0 6px white);
+}
+
+@keyframes sparkle-twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5) rotate(45deg);
+  }
+}
+
+.buyer-footer {
+  position: relative;
+  z-index: 1;
+  padding: 40px 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #165a9c;
+  background-color: #fff3f3;
+  width: 100%;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .orders-card-scroll {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .buyer-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    height: auto;
+  }
+
+  .buyer-logo {
+    height: 60px;
+    margin-bottom: 5px;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .welcome-bg {
+    width: auto;
+    padding: 5px 10px;
+    margin: 5px auto;
+    border-radius: 40px;
+    height: auto;
+    min-height: 40px;
+  }
+
+  .buyer-title {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+
+  .buyer-nav {
+    margin-top: 10px;
+    margin-left: 20px;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .buyer-nav-link {
+    font-size: 0.7rem;
+    padding: 5px 10px;
+    width: auto;
+    height: auto;
+  }
+
+  .buyer-orders-section {
+    flex-direction: column;
+    padding: 1rem;
+    margin-top: 0px;
+    align-items: center;
+  }
+
+  .orders-grid {
+    width: 100%;
+    margin: 1rem 0;
+  }
+
+  .floating-orders-card {
+    width: 100%;
+    height: 400px;
+    padding: 1rem;
+  }
+
+  /* Adjustments for title and back button on mobile */
+  .orders-card-header {
+    flex-direction: column;
+    align-items: flex-start; /* Align title/button to start on small screens */
+    margin-bottom: 10px;
+    padding-right: 0; /* No need for padding-right when stacked */
+  }
+
+  .orders-card-title {
+    font-size: 1rem;
+    position: static; /* Make it flow normally within the flex container */
+    top: auto;
+    left: auto;
+    max-width: 100%; /* Take full width within header */
+    margin-bottom: 10px; /* Space between title and button if stacked */
+  }
+
+  .back-button {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    position: static; /* Make it flow normally within the flex container */
+    top: auto;
+    right: auto;
+    align-self: flex-end; /* Push button to the right if space allows */
+    margin-bottom: 5px; /* Small margin if stacking */
+  }
+
+  .orders-card-scroll {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+    padding-bottom: 60px;
+    margin-top: 0; /* Remove top margin as header handles spacing */
+  }
+
+  .order-preview {
+    padding: 1rem;
+  }
+
+  .order-preview-img {
+    width: 50px;
+    height: 50px;
+    margin-right: 1rem;
+  }
+
+  .order-preview-info {
+    gap: 0.5rem;
+  }
+
+  .order-total {
+    font-size: 1.2rem;
+    padding: 10px 15px;
+  }
+
+  .settings-title {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 40px;
+    margin-top: 30px;
+  }
+
+  .buyer-settings {
+    width: 95%;
+    margin: 1rem auto;
+    padding: 20px;
+  }
+
+  .form-container {
+    width: 100%;
+    padding: 15;
+  }
+
+  .form-field {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .form-input {
+    padding: 0.7rem;
+    font-size: 1rem;
+  }
+
+  .settings-form {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .settings-buttons {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .nav-button,
+  .delete-button {
+    width: 48%;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+
+  .red-buttons {
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 0;
+  }
+
+  .sparkle {
+    width: 4px;
+    height: 4px;
+  }
+
+  .seller-footer,
+  .buyer-footer {
+    font-size: 0.8rem;
+    padding: 1rem;
+    text-align: center;
+  }
+}

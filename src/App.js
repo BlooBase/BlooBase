@@ -1,55 +1,92 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './components/HomePage';
-import CreateShop from './components/CreateShop';
-import UploadProducts from './components/UploadProducts';
-import VerifyArtisan from './components/verifyArtisan';
 import Login from './components/Login';
 import DashBoard from './components/Dashboard';
 import Artists from './components/Artists';
 import Signup from './components/Signup';
 import BuyerSettings from './components/BuyerSettings';
 import BuyerHomePage from './components/BuyerHomePage';
-import { useAuth } from './components/AuthContext';
+import { useAuth } from './components/AuthContext'; // Make sure this path is correct
 import TermsAndConditions from './components/TermsAndConditions';
 import Store from './components/Store';
 import CardCreator from './components/CardCreator';
 import SellerHomePage from './components/SellerHomepage';
 import SellerSettings from './components/SellerSettings';
-import Cart from './components/Cart'; 
+import Cart from './components/Cart';
+import Orders from './components/Orders';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 const App = () => {
-  const { currentUser } = useAuth();
+  //const { currentUser, userRole, loading } = useAuth();
+  
 
-  const ProtectedRoute = ({ element }) => {
-    return currentUser ? element : <Navigate to="/Homepage" />;
-  };
+const ProtectedRoute = ({ children, allowedRoles }) => {
+  const { currentUser, userRole, loading } = useAuth(); 
+
+  // Handle loading state first
+  if (loading) {
+    return <div>Loading authentication...</div>;
+  }
+
+  // --- Authentication Check ---
+  if (!currentUser) {
+    return <Navigate to="/Login" replace />;
+  }
+
+  // --- Role Check ---
+  if (allowedRoles && !allowedRoles.includes(userRole)) {
+    return <Navigate to="/Homepage" replace />;
+  }
+
+  // If authenticated and authorized, render children
+  return children;
+};
 
   return (
     <>
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/Homepage" element={<HomePage />} />
-      <Route path="/CreateShop" element={<ProtectedRoute element={<CreateShop />} />} />
-      <Route path="/UploadProducts" element={<ProtectedRoute element={<UploadProducts />} />} />
-      <Route path="/verifyArtisan" element={<ProtectedRoute element={<VerifyArtisan />} />} />
-      <Route path="/SellerHomepage" element = {<ProtectedRoute element ={<SellerHomePage/>}/>}/>
-      <Route path="/SellerSettings" element = {<ProtectedRoute element ={<SellerSettings/>}/>}/>
-      <Route path="/BuyerSettings" element={<ProtectedRoute element ={<BuyerSettings/>} />} />
-      <Route path="/BuyerHomepage" element={<ProtectedRoute element ={<BuyerHomePage/>} />} />
-      <Route path="/Dashboard" element={<ProtectedRoute element ={<DashBoard />}/>} />
-      <Route path="/Login" element={<Login />} />
-      <Route path="/Signup" element={<Signup />} />
-      <Route path="/Artists" element={<Artists />} />
-      <Route path="/Artists/:id" element={<Store />} />
-      <Route path="/Cart" element={<Cart />} /> {/* Add the Cart route */}
-      <Route path="/TermsAndConditions" element={<TermsAndConditions />} />
-      <Route path="/CardCreator" element={<CardCreator />} />
-    </Routes>
-          <ToastContainer />
+      <Routes>
+        {/* --- Public Routes --- */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/Homepage" element={<HomePage />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Signup" element={<Signup />} />
+        <Route path="/Artists" element={<Artists />} />
+        <Route path="/Artists/:id" element={<Store />} />
+        <Route path="/TermsAndConditions" element={<TermsAndConditions />} />
+
+        {/* --- Authenticated Routes with Role Protection --- */}
+
+        {/* SellerHomepage only open to Seller */}
+        <Route path="/SellerHomepage" element={<ProtectedRoute allowedRoles={['Seller']}><SellerHomePage /></ProtectedRoute>} />
+
+        {/* SellerSettings only open to Seller */}
+        <Route path="/SellerSettings" element={<ProtectedRoute allowedRoles={['Seller']}><SellerSettings /></ProtectedRoute>} />
+
+        {/* BuyerHomepage only open to Buyer */}
+        <Route path="/BuyerHomepage" element={<ProtectedRoute allowedRoles={['Buyer']}><BuyerHomePage /></ProtectedRoute>} />
+
+        {/* Orders only open to Buyer and Admin */}
+        <Route path="/OrderDetails/:id" element={<ProtectedRoute allowedRoles={['Buyer','Admin']}><Orders /></ProtectedRoute>} />
+        
+        {/* BuyerSettings only open to Buyer */}
+        <Route path="/BuyerSettings" element={<ProtectedRoute allowedRoles={['Buyer']}><BuyerSettings /></ProtectedRoute>} />
+
+        {/* Dashboard only open to Admin */}
+        <Route path="/Dashboard" element={<ProtectedRoute allowedRoles={['Admin']}><DashBoard /></ProtectedRoute>} />
+
+        {/* Cart only open to Buyer */}
+        <Route path="/Cart" element={<ProtectedRoute allowedRoles={['Buyer']}><Cart /></ProtectedRoute>} />
+
+        {/* CardCreator only open to Seller */}
+        <Route path="/CardCreator" element={<ProtectedRoute allowedRoles={['Seller']}><CardCreator /></ProtectedRoute>} />
+
+        {/* --- Route for fake links --- */}
+        <Route path="*" element={<Navigate to="/Homepage" replace />} />
+      </Routes>
+      <ToastContainer />
     </>
   );
 };

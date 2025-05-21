@@ -98,6 +98,11 @@ const BuyerHomePage = () => {
     fetchUserData();
   }, []);
 
+  // New handler for clicking on an order
+  const handleOrderClick = (orderId) => {
+    navigate(`/OrderDetails/${orderId}`); // Navigate to the order details page
+  };
+
   return (
     <section className="buyer-home">
       <section className="buyer-header">
@@ -128,7 +133,13 @@ const BuyerHomePage = () => {
                   }, 0) || 0;
 
                   return (
-                    <article key={order.id} className="order-preview">
+                    // Add onClick handler to the order preview
+                    <article
+                      key={order.id}
+                      className="order-preview"
+                      onClick={() => handleOrderClick(order.id)} // Call handler on click
+                      style={{ cursor: 'pointer' }} // Indicate it's clickable
+                    >
                       {firstItem && (
                         <figure className="order-preview-figure">
                           <img

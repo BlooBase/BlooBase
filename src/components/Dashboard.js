@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "../Dashboard.css";
 import { getRoleSize, getCollectionSize, getUserName } from "../firebase/firebase";
-import { Link } from "react-router-dom"; // Import Link
+import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers } from "../firebase/adminDashFunctions"; // Import getTopSellers
+import { Link, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   async function getAllRoleSizes() {
     try {
       const [buyerCount, sellerCount, adminCount] = await Promise.all([
@@ -11,7 +14,6 @@ const Dashboard = () => {
         getRoleSize("Seller"),
         getRoleSize("Admin"),
       ]);
-  
       return {
         Buyer: buyerCount,
         Seller: sellerCount,
@@ -28,17 +30,64 @@ const Dashboard = () => {
   }
 
   const [roleCounts, setRoleCounts] = useState(null);
-  const [Orders, setOrdersCount] = useState(null);
+  const [ordersCount, setOrdersCount] = useState(null);
   const [user, setUser] = useState({ name: '' });
+  const [latestTransactions, setLatestTransactions] = useState([]);
+  const [latestSellers, setLatestSellers] = useState([]);
+  const [sellersLoading, setSellersLoading] = useState(true);
+  const [sellersError, setSellersError] = useState(null);
+  const [totalSales, setTotalSales] = useState(0);
+  const [topPerformingSellers, setTopPerformingSellers] = useState([]); 
+  const [topSellersLoading, setTopSellersLoading] = useState(true);
+  const [topSellersError, setTopSellersError] = useState(null); 
 
   useEffect(() => {
     async function fetchData() {
       const roles = await getAllRoleSizes();
       setRoleCounts(roles);
 
-      // Get Orders collection sizes
       const orders = await getCollectionSize("Orders");
       setOrdersCount(orders);
+
+      const transactions = await getLatestOrders();
+      setLatestTransactions(transactions);
+
+      setSellersLoading(true);
+      setSellersError(null);
+      try {
+        const sellers = await getLatestSellers();
+        setLatestSellers(sellers);
+      } catch (err) {
+        console.error("Error fetching latest sellers:", err);
+        setSellersError("Failed to load new artisans.");
+        setLatestSellers([]);
+      } finally {
+        setSellersLoading(false);
+      }
+
+      try {
+        const sales = await getTotalSales();
+        setTotalSales(sales);
+      } catch (err) {
+        console.error("Error fetching overall sales:", err);
+        setTotalSales(0);
+      }
+
+      
+      setTopSellersLoading(true);
+      setTopSellersError(null);
+      try {
+        const topSellersData = await getTopSellers(); 
+        setTopPerformingSellers(topSellersData);
+        console.log("top sellers")
+        console.log(topSellersData)
+      } catch (err) {
+        console.error("Error fetching top performing sellers:", err);
+        setTopSellersError("Failed to load top performing artisans.");
+        setTopPerformingSellers([]);
+      } finally {
+        setTopSellersLoading(false);
+      }
     }
 
     fetchData();
@@ -52,9 +101,22 @@ const Dashboard = () => {
     fetchUser();
   }, []);
 
+  const handleTransactionClick = (orderId) => {
+    navigate(`/orderdetails/${orderId}`);
+  };
+
+  
+  const getMaxSellerCount = () => {
+    if (topPerformingSellers.length > 0) {
+      return topPerformingSellers[0].count; 
+    }
+    return 1; 
+  };
+
+  const maxCount = getMaxSellerCount();
+
   return (
     <section className="dashboard-container">
-      {/* Seller Header */}
       <section className="seller-header">
         <img src="/bloobase.png" alt="Bloobase" className="seller-logo" />
         <section className="welcome-bg-dash">
@@ -62,7 +124,6 @@ const Dashboard = () => {
         </section>
         <nav className="seller-nav">
           <Link to="/" className="seller-nav-link">HOME</Link>
-          {/* Removed "Your Store" button */}
         </nav>
       </section>
 
@@ -78,81 +139,79 @@ const Dashboard = () => {
             <p>
               Sales <img src="sales.png" alt="sales-img" className="icons" />
             </p>
-            <p className="stat-value sales">0</p>
+            <p className="stat-value sales">R {totalSales.toFixed(2)}</p>
           </article>
           <article className="stat-card">
             <p>
               Orders <img src="product.png" alt="order-img" className="icons" />
             </p>
-            <p className="stat-value">{Orders ? Orders : "Loading.."}</p>
+            <p className="stat-value">{ordersCount ? ordersCount : "Loading.."}</p>
           </article>
         </section>
-        {/* this is mock data for testing purposes */}
+
         <section className="overview-row">
           <aside className="user-card">
             <h3>New Artisans</h3>
-            <p>
-              Paul's furniture{" "}
-              <img src="verify.png" alt="Verified" className="verify-icon" />
-            </p>
-            <p>
-              Slim Jim <img src="verify.png" alt="Verified" className="verify-icon" />
-            </p>
-            <p>
-              Pop offs <img src="verify.png" alt="Verified" className="verify-icon" />
-            </p>
+            {sellersLoading ? (
+              <p>Loading new artisans...</p>
+            ) : sellersError ? (
+              <p className="error-message">{sellersError}</p>
+            ) : latestSellers.length > 0 ? (
+              latestSellers.map((seller, index) => (
+                <Link key={seller.id || index} to={`/Artists/${seller.id}`} className="seller-link">
+                  <p>{seller.name} </p>
+                </Link>
+              ))
+            ) : (
+              <p>No new artisans found.</p>
+            )}
           </aside>
 
           <article className="progress-card">
             <h3>Most performing artisans</h3>
-            <ul className="store-list">
-              <li className="store-item">
-                <p className="store-name">Artisan Crafts Co.</p>
-                <section className="store-bar">
-                  <section
-                    className="store-progress"
-                    style={{ width: "85%" }}
-                  ></section>
-                </section>
-                <p className="store-value">85+</p>
-              </li>
-              <li className="store-item">
-                <p className="store-name">Handmade Haven</p>
-                <section className="store-bar">
-                  <section
-                    className="store-progress"
-                    style={{ width: "72%" }}
-                  ></section>
-                </section>
-                <p className="store-value">72+</p>
-              </li>
-              <li className="store-item">
-                <p className="store-name">Craft Corner</p>
-                <section className="store-bar">
-                  <section
-                    className="store-progress"
-                    style={{ width: "64%" }}
-                  ></section>
-                </section>
-                <p className="store-value">64+</p>
-              </li>
-            </ul>
+            {topSellersLoading ? (
+              <p>Loading top performing artisans...</p>
+            ) : topSellersError ? (
+              <p className="error-message">{topSellersError}</p>
+            ) : topPerformingSellers.length > 0 ? (
+              <ul className="store-list">
+                {topPerformingSellers.map((sellerData, index) => (
+                  <li key={index} className="store-item">
+                    <p className="store-name">{sellerData.seller}</p>
+                    <section className="store-bar">
+                      <section
+                        className="store-progress"
+                        style={{ width: `${(sellerData.count / maxCount) * 100}%` }}
+                      ></section>
+                    </section>
+                    <p className="store-value">{sellerData.count}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No performance data available.</p>
+            )}
           </article>
 
           <article className="transactions">
             <h3>Latest Transactions</h3>
-            <section className="transaction-item">
-              <p>Crown Jewels</p>
-              <p className="amount">R 1,250.00</p>
-            </section>
-            <section className="transaction-item">
-              <p>Slim Jimm</p>
-              <p className="amount">R 845.50</p>
-            </section>
-            <section className="transaction-item">
-              <p>Craft Corner</p>
-              <p className="amount">R 320.75</p>
-            </section>
+            {latestTransactions.length > 0 ? (
+              <ul className="transaction-list">
+                {latestTransactions.map((transaction) => (
+                  <li key={transaction.id}>
+                    <button
+                      className="transaction-button"
+                      onClick={() => handleTransactionClick(transaction.id)}
+                    >
+                      <p className="transaction-id">Order ID: {transaction.id}</p>
+                      <p className="amount">R {transaction.total}</p>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No recent transactions found.</p>
+            )}
           </article>
         </section>
 

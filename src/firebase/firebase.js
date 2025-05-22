@@ -450,7 +450,7 @@ export const updateProduct = async ({ id, image, name, price, stock }) => {
     image: imageUrl,
     name,
     price: formattedPrice,
-    stock, // <-- Add this line
+    stock, 
   });
 };
 export const deleteProduct = async (id) => {

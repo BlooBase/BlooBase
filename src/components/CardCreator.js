@@ -229,50 +229,63 @@ const CardCreator = () => {
   };
 
   const handleProductPublish = async (index) => {
-    const { image, name, price, id, stock } = productCreators[index];
-    // Require all fields, including stock
-    if (!image || !name || price === '' || stock === undefined || stock === null || stock === '') {
-      triggerAnimationFail('Please provide product image, name, price, and stock.');
-      return;
+  const { image, name, price, id, stock } = productCreators[index];
+
+  // Require all fields, including stock
+  if (!image || !name || price === '' || stock === undefined || stock === null || stock === '') {
+    triggerAnimationFail('Please provide product image, name, price, and stock.');
+    return;
+  }
+
+  // Ensure price is a non-negative number
+  const priceValue = parseFloat(price);
+  if (isNaN(priceValue) || priceValue < 0) {
+    triggerAnimationFail('Please enter a non-negative price.');
+    return;
+  }
+
+  // Ensure price format is either integer or exactly two decimal places
+  const priceFormatRegex = /^\d+(\.\d{2})?$/;
+  if (!priceFormatRegex.test(price)) {
+    triggerAnimationFail('Price must be a whole number or have exactly two decimal places (e.g., 10 or 10.99).');
+    return;
+  }
+
+  // Ensure stock is a positive integer
+  const stockValue = parseInt(stock, 10);
+  if (isNaN(stockValue) || stockValue < 0) {
+    triggerAnimationFail('Stock must be a non-negative integer.');
+    return;
+  }
+
+  try {
+    if (id) {
+      await updateProduct({ id, image, name, price: priceValue, stock: stockValue });
+      triggerProductAnimation(index);
+      triggerProductMessage(`Product ${productCreators[index].name} Updated`);
+    } else {
+      await addProduct({ image, name, price: priceValue, stock: stockValue });
+      triggerProductAnimation(index);
+      triggerProductMessage(`Product ${productCreators[index].name} Published`);
     }
-    // Ensure price is a non-negative number
-    const priceValue = parseFloat(price);
-    if (isNaN(priceValue) || priceValue < 0) {
-      triggerAnimationFail('Please enter a non-negative price.');
-      return;
-    }
-    // Ensure stock is a positive integer
-    const stockValue = parseInt(stock, 10);
-    if (isNaN(stockValue) || stockValue < 0) {
-      triggerAnimationFail('Stock must be a non-negative integer.');
-      return;
-    }
-    try {
-      if (id) {
-        await updateProduct({ id, image, name, price: priceValue, stock: stockValue });
-        triggerProductAnimation(index);
-        triggerProductMessage(`Product ${productCreators[index].name} Updated`);
-      } else {
-        await addProduct({ image, name, price: priceValue, stock: stockValue });
-        triggerProductAnimation(index);
-        triggerProductMessage(`Product ${productCreators[index].name} Published`);
-      }
-      // Refresh products list
-      const prods = await getSellerProducts();
-      setProductCreators(
-        prods.map(prod => ({
-          image: prod.image,
-          imagePreview: prod.image,
-          name: prod.name,
-          price: prod.price,
-          stock: prod.stock ?? 1,
-          id: prod.id
-        }))
-      );
-    } catch (e) {
-      triggerAnimationFail('Failed to publish/update product.');
-    }
-  };
+
+    // Refresh products list
+    const prods = await getSellerProducts();
+    setProductCreators(
+      prods.map(prod => ({
+        image: prod.image,
+        imagePreview: prod.image,
+        name: prod.name,
+        price: prod.price,
+        stock: prod.stock ?? 1,
+        id: prod.id
+      }))
+    );
+  } catch (e) {
+    triggerAnimationFail('Failed to publish/update product.');
+  }
+};
+
 
   const handleProductRemove = async (index) => {
     const { id } = productCreators[index];

@@ -18,7 +18,7 @@
   &nbsp;
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" height="40" alt="firebase logo" />
   &nbsp;
-  <img src="src/assets/stripe.svg" height="40" alt="stripe logo" />
+  <img src="src/assets/stripe.png" height="40" alt="stripe logo" />
   &nbsp;
 
 </p>

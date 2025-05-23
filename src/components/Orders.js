@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { retrieveOrderDetails } from '../firebase/retrieveOrderDetails';
 import '../Orders.css';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getUserRole } from '../firebase/firebase'; // Assuming this function is async
+import { getUserRole } from '../firebase/firebase'; 
 
 const Orders = () => {
   const { id } = useParams();

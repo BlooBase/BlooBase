@@ -102,9 +102,13 @@ body {
   left: 105px; 
   display: flex;
   align-items: center;
-  z-index: 1;
+  z-index: 5;
   cursor: pointer;
   transition: all 0.3s ease;
+  padding: 10px;
+  margin-top: -10px;
+  border-radius: 15px;
+  background-color: #ffffff;
   
 }
 .download-icon{
@@ -134,7 +138,7 @@ body {
 .floating-orders-card {
   width: 96%;
   height: 730px;
-  background-color: white;
+  background-color: #ffe7ce;
   border-radius: 30px;
   border: 2px solid black;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -151,7 +155,7 @@ body {
   font-weight: 700;
   color: black;
   z-index: 1;
-  background: white;
+  background: #fff3f3;
   padding: 4px 10px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -200,6 +204,7 @@ body {
   min-height: 0;
   transition: box-shadow 0.2s;
   border: 1.5px solid #e0c3b2;
+  overflow: hidden;
 }
 
 .order-preview-figure {
@@ -254,7 +259,7 @@ body {
   width: fit-content;
 }
 
-/* Settings Section */
+
 .seller-settings {
   background-color: #fff3f3;
   flex: 1;
@@ -276,7 +281,7 @@ body {
   top: -35px;
   left: -40px;
   width: 100px;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: black;
   z-index: 1;
@@ -286,13 +291,15 @@ body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-.form-container {
+.form-container-1 {
   width: 100%;
   padding: 20px;
+  border-radius: 20px;
   flex-direction: column;
+  flex-wrap: wrap;
 }
 
-.form-field {
+.form-field-1 {
   display: flex;
   flex-direction: column;
   width: 90%;
@@ -306,7 +313,7 @@ body {
   margin-bottom: 8px;
 }
 
-.form-input {
+.form-input-1 {
   padding: 12px 16px;
   border-radius: 12px;
   border: 2px solid #ccc;
@@ -320,15 +327,16 @@ body {
   background-color: #f8fdff;
 }
 
-.settings-form {
+.settings-form-1 {
   display: flex;
   width: 100%;
   flex-direction: row;
+  border-radius: 20px;
   justify-content: space-between;
   gap: 20px;
 }
 
-.settings-buttons {
+.settings-buttons-1 {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -336,7 +344,7 @@ body {
   width: 40%;
 }
 
-.nav-button {
+.nav-button-1 {
   background-color: #165a9c;
   color: white;
   padding: 10px 18px;
@@ -352,14 +360,15 @@ body {
   background-color: #0d3c6d;
 }
 
-.red-buttons {
+.red-buttons-1 {
   display: flex;
   flex-direction: row;
   gap: 12px;
+  width: 300px;
   margin-top: 10px;
 }
 
-.delete-button {
+.delete-button-1 {
   flex: 1;
   background-color: #ff4d4d;
   color: white;
@@ -458,35 +467,42 @@ body {
 }
 
 @media (max-width: 768px) {
+  .total-income-label {
+    font-size: 0.85rem;
+  }
+
+  .download-sales{
+    margin-left: -20px;
+  }
+
   .seller-header {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 10px; /* Reduced padding */
+    padding: 10px;
     border-bottom-left-radius: 40px;
     border-bottom-right-radius: 40px;
-    height: auto; /* Adjust height to auto */
+    height: auto;
   }
 
   .seller-logo {
-    height: 60px; /* Adjust logo height */
+    height: 60px;
     margin-bottom: 5px;
     margin-right: 0;
     margin-left: 0;
   }
 
   .welcome-bg-seller {
-    width: auto; /* Adjust width to auto */
-    padding: 5px 10px; /* Reduced padding */
+    width: auto;
+    padding: 5px 10px;
     margin: 5px auto;
     border-radius: 40px;
     height: auto;
-
     min-height: 40px;
   }
 
   .seller-title {
-    font-size: 1.2rem; /* Adjust title font size */
+    font-size: 1.2rem;
     margin: 0;
   }
 
@@ -498,37 +514,40 @@ body {
   }
 
   .seller-nav-link {
-    font-size: 0.7rem; /* Adjust nav link font size */
+    font-size: 0.7rem;
     padding: 5px 10px;
-    width: auto; /* Adjust width to auto */
-    height: auto; /* Adjust height to auto */
+    width: auto;
+    height: auto;
   }
 
   .seller-orders-section {
     flex-direction: column;
     padding: 1rem;
     margin-top: 0px;
-    align-items: center; /* Center items */
+    align-items: center;
   }
 
   .orders-grid {
-    width: 100%; /* Adjust width to 100% */
+    width: 100%;
     margin: 1rem 0;
   }
 
   .floating-orders-card {
-    width: 100%; /* Adjust width to 100% */
-    height: 400px;
+    width: 100%;
+    height: auto; 
     padding: 1rem;
   }
 
   .orders-card-title {
-    font-size: 1rem; /* Adjust card title font size */
+    font-size: 1rem;
+    max-width: 90px !important;
   }
 
   .orders-card-scroll {
-    grid-template-columns: repeat(1, 1fr); /* Single column */
+    grid-template-columns: repeat(1, 1fr);
     gap: 1rem;
+    max-height: 400px; /* Added max-height for scrollable content */
+    overflow-y: auto; /* Ensure scrollbar appears when content overflows */
   }
 
   .order-preview {
@@ -536,8 +555,8 @@ body {
   }
 
   .order-preview-img {
-    width: 50px; /* Adjust image width */
-    height: 50px; /* Adjust image height */
+    width: 50px;
+    height: 50px;
     margin-right: 1rem;
   }
 
@@ -546,60 +565,66 @@ body {
   }
 
   .settings-title {
-    font-size: 1rem; /* Adjust settings title font size */
+    font-size: 1rem !important;
     margin-bottom: 1rem;
-    margin-left: 40px;
-    margin-top: 30px;
+    margin-left: 0px; 
+    margin-top: 30px; 
+    text-align: center; 
+    width: 40px; 
   }
 
   .seller-settings {
-    width: 95%; /* Adjust width to 95% */
-    margin: 1rem auto; /* Center the settings section */
-    padding: 20px; /* Reduce padding */
+    width: 95%;
+    margin: 1rem auto;
+    padding: 20px;
   }
 
-  .form-container {
-    width: 100%; /* Adjust width to 100% */
-    padding: 15; /* Remove padding */
+  .form-container-1 {
+    width: 100%;
+    padding: 15px;
   }
 
-  .form-field {
-    width: 100%; /* Adjust width to 100% */
+  .form-field-1 {
+    width: 100%;
     margin-bottom: 1rem;
   }
 
   .form-label {
-    font-size: 1rem; /* Adjust label font size */
+    font-size: 1rem;
     margin-bottom: 0.3rem;
   }
 
-  .form-input {
+  .form-input-1 {
     padding: 0.7rem;
-    font-size: 1rem; /* Adjust input font size */
+    font-size: 1rem;
   }
 
-  .settings-form {
-    flex-direction: column; /* Change to column */
+  .settings-form-1 {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%; 
+  }
+
+  .settings-buttons-1 {
+    width: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
     gap: 10px;
   }
 
-  .settings-buttons {
-    width: 100%; /* Adjust width to 100% */
-    flex-direction: row; /* Change to row */
-    justify-content: space-between; /* Distribute buttons */
+  .nav-button-1,
+  .delete-button-1 {
+    width: 100%; 
+    font-size: 0.9rem;
+    padding: 0.7rem;
+    text-align: center; 
   }
 
-  .nav-button,
-  .delete-button {
-    width: 178%; /* Adjust button width */
-    font-size: 0.9rem; /* Adjust font size */
-    padding: 0.5rem;
-  }
-
-  .red-buttons {
+  .red-buttons-1 {
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
     margin-top: 0;
+    width: 100%; 
   }
 
   .sparkle {
@@ -609,7 +634,7 @@ body {
 
   .seller-footer,
   .buyer-footer {
-    font-size: 0.8rem; /* Adjust footer font size */
+    font-size: 0.8rem;
     padding: 1rem;
     text-align: center;
   }

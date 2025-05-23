@@ -116,17 +116,29 @@ const Cart = () => {
                 className="cart-remove-button"
                 onClick={async () => {
                   try {
-                    const updatedItems = await removeFromCart(item.id);
-                    // Refetch the cart to ensure prices are correctly formatted
-                    // Or re-format the updatedItems directly
-                    const reFetchedItems = await Promise.all(
-                      updatedItems.map(async (cartItem) => {
-                        const product = await retrieveProductByID(cartItem.id);
-                        const formattedPrice = product.price ? parseFloat(product.price).toFixed(2) : '0.00';
-                        return { ...cartItem, ...product, price: formattedPrice };
+                    await removeFromCart(item.id);
+                    // Refetch the cart using the same logic as useEffect
+                    const items = await retrieveCart();
+                    const itemsWithProductData = await Promise.all(
+                      items.map(async (cartItem) => {
+                        try {
+                          const product = await retrieveProductByID(cartItem.id);
+                          if (!product || Object.keys(product).length === 0) {
+                            return { ...cartItem, stock: 0, deleted: true };
+                          }
+                          const formattedPrice = product.price
+                            ? parseFloat(String(product.price).replace(/[^\d.]/g, '')).toFixed(2)
+                            : '0.00';
+                          return { ...cartItem, ...product, price: formattedPrice };
+                        } catch (error) {
+                          return { ...cartItem, stock: 0, deleted: true };
+                        }
                       })
                     );
-                    setCartItems(reFetchedItems);
+                    const filteredItems = itemsWithProductData.filter(
+                      item => (item.stock === undefined || Number(item.stock) > 0) && !item.deleted
+                    );
+                    setCartItems(filteredItems);
                     toast.success(`Removed ${item.name} from cart`);
                   } catch (error) {
                     toast.error("Failed to remove item: " + error.message);

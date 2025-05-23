@@ -236,7 +236,6 @@ export const loginNormUser = async ({ email, password }) => {
 
     if (!user.emailVerified) {
       await auth.signOut();
-      toast.error("Please verify your email before logging in.");
       // Throw a new error so downstream catches show the same message
       throw new Error("Please verify your email before logging in.");
     }
@@ -246,10 +245,8 @@ export const loginNormUser = async ({ email, password }) => {
     let message = "";
     if (error.code === "auth/invalid-credential") {
       message = "Invalid sign in credentials";
-      toast.error(message);
     } else if (error.message !== "Please verify your email before logging in.") {
       message = `Login failed: ${error.message}`;
-      toast.error(message);
     } else {
       message = error.message;
     }
@@ -476,6 +473,10 @@ export const getSellerCard = async () => {
   }
 
   return data;
+};
+export const addToProductTotal = async (productId, amount) => {
+  // PATCH request to update or create the total field
+  await apiRequest(`/api/products/${productId}/total`, 'PATCH', { amount });
 };
 
 export {

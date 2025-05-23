@@ -90,7 +90,7 @@ const CheckoutForm = ({ total, orderType, cartItems, onCartUpdate }) => {
       const formattedTotal = parseFloat(total).toFixed(2);
 
       // Place the order in Firestore with the formatted total
-      await addOrder({ orderType, total: formattedTotal });
+      await addOrder({ orderType, total: formattedTotal, cartItems: filteredCartItems });
 
       toast.success('Order placed successfully!', {
         position: 'top-right',

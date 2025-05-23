@@ -233,10 +233,13 @@ const CardCreator = () => {
 
 
   const handleProductStockChange = (index, value) => {
+    // Prevent negative values
+    if (parseInt(value, 10) < 0) return;
+
     const updated = [...productCreators];
     // Ensure stock is an integer and non-negative
     const intValue = parseInt(value, 10);
-    updated[index].stock = isNaN(intValue) || intValue < 0 ? '' : intValue;
+    updated[index].stock = isNaN(intValue) ? '' : intValue;
     setProductCreators(updated);
   };
 

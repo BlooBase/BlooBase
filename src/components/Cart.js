@@ -11,7 +11,7 @@ import { retrieveProductByID } from '../firebase/retrieveProductByID';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 
-const stripePromise = loadStripe('pk_test_51RM99WQ7pA4YvjQvIvIwI09MPnYHtckTQP8oaxV2CDIwjYbUPh1UbWp0fN3lUNWfNe4mWHYT0bNDi2DVMkDyYEq002fjR855W');
+const stripePromise = loadStripe('pk_test_51RM99WQ7pA4YvjQvIvIwI09MPnYHtckTQP8oaxV2CDIwjYbUPhf1UbWp0fN3lUNWfNe4mWHYT0bNDi2DVMkDyYEq002fjR855W');
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -30,9 +30,11 @@ const Cart = () => {
               if (!product || Object.keys(product).length === 0) {
                 return { ...cartItem, stock: 0, deleted: true };
               }
-              // Ensure product price is a number and formatted to 2 decimals when retrieved
-              const formattedPrice = product.price ? parseFloat(product.price).toFixed(2) : '0.00';
-              return { ...cartItem, ...product, price: formattedPrice }; // Override price with formatted value
+              // Clean price string before parsing
+              const formattedPrice = product.price
+                ? parseFloat(String(product.price).replace(/[^\d.]/g, '')).toFixed(2)
+                : '0.00';
+              return { ...cartItem, ...product, price: formattedPrice };
             } catch (error) {
               return { ...cartItem, stock: 0, deleted: true };
             }
@@ -107,7 +109,9 @@ const Cart = () => {
             <section className="cart-product-info">
               <h3 className="cart-product-name">{item.name}</h3>
               {/* Display individual item price with 2 decimals */}
-              <p className="cart-product-price">R{parseFloat(item.price).toFixed(2)}</p>
+              <p className="cart-product-price">
+                R{item.price}
+              </p>
               <button
                 className="cart-remove-button"
                 onClick={async () => {
@@ -151,8 +155,12 @@ const Cart = () => {
             </select>
           </fieldset>
           <Elements stripe={stripePromise}>
-            {/* Pass total to CheckoutForm; it will also use toFixed(2) for display/Stripe amount */}
-            <CheckoutForm total={total} orderType={orderType} cartItems={cartItems} />
+            <CheckoutForm
+              total={total}
+              orderType={orderType}
+              cartItems={cartItems}
+              onCartUpdate={setCartItems} // Pass setCartItems directly
+            />
           </Elements>
         </section>
       </section>

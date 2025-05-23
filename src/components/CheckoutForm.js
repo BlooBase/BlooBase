@@ -8,7 +8,7 @@ import { addOrder } from '../firebase/addOrder';
 import { removeFromCart } from '../firebase/removeFromCart';
 import { retrieveProductByID } from '../firebase/retrieveProductByID';
 
-const CheckoutForm = ({ total, orderType, cartItems }) => {
+const CheckoutForm = ({ total, orderType, cartItems, onCartUpdate }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -62,7 +62,6 @@ const CheckoutForm = ({ total, orderType, cartItems }) => {
             }
             return cartItem; // Keep the item if it's in stock
           } catch (error) {
-            console.error('Error checking stock for item:', cartItem.id, error);
             return null; // Treat as out-of-stock if there's an error
           }
         })
@@ -80,6 +79,9 @@ const CheckoutForm = ({ total, orderType, cartItems }) => {
           pauseOnHover: true,
           draggable: true,
         });
+        if (onCartUpdate) {
+          onCartUpdate(filteredCartItems); // <-- update frontend cart
+        }
         setLoading(false);
         return;
       }

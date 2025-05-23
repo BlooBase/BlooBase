@@ -1,13 +1,23 @@
-//function for calculating the cart total
-function cartTotal(cartItems) {
-    if (!Array.isArray(cartItems) || cartItems.length === 0) {
-      return 0;
+// src/components/cartTotal.js
+
+const cartTotal = (items) => {
+  return items.reduce((total, item) => {
+    let price;
+
+    // Safely convert item.price to a number, handling strings with currency symbols
+    if (typeof item.price === 'string') {
+      const cleanedPrice = item.price.replace(/[^\d.]/g, ''); // Remove non-numeric except decimal
+      price = parseFloat(cleanedPrice);
+    } else {
+      // If it's already a number, or null/undefined, parseFloat will handle it
+      price = parseFloat(item.price);
     }
-  
-    return cartItems.reduce((total, item) => {
-      const price = parseFloat(item.price.replace('R', '')) || 0; // Remove "R" and convert to number
-      return total + price;
-    }, 0);
-  }
-  
-  export default cartTotal;
+
+    // Ensure price is a valid number; default to 0 if NaN
+    price = isNaN(price) ? 0 : price;
+
+    return total + price;
+  }, 0);
+};
+
+export default cartTotal;

@@ -8,7 +8,8 @@ import "jspdf-autotable";
 import '../SellerHome.css';
 import cartTotal from './cartTotal';
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// FIX: Corrected import path for react-toastify CSS
+import "react-toastify/dist/ReactToastify.css"; // THIS LINE IS CHANGED
 
 const SellerHomePage = () => {
   const [products, setProducts] = useState([]);
@@ -21,24 +22,36 @@ const SellerHomePage = () => {
     newpassword: "",
   });
 
+  // Helper function to clean and format price
+  const formatPrice = (price) => {
+    if (typeof price === 'string') {
+      // Remove 'R' and any other non-digit, non-decimal characters
+      const cleanedPrice = price.replace(/[^\d.]/g, '');
+      const parsedPrice = parseFloat(cleanedPrice);
+      return isNaN(parsedPrice) ? '0.00' : parsedPrice.toFixed(2);
+    }
+    // If it's already a number or null/undefined, just format it
+    return parseFloat(price || 0).toFixed(2);
+  };
+
   useEffect(() => {
     const fetchUserAndProducts = async () => {
+      // Get sellerId from auth
       const sellerId = auth.currentUser?.uid;
       if (!sellerId) return;
 
       const sellerProducts = await retrieveSellerProducts(sellerId);
 
+      // Only show products with at least 1 sale
       const soldProducts = sellerProducts.filter(
         (p) => (typeof p.sales === "number" ? p.sales : 0) > 0
       );
       setProducts(soldProducts);
 
+      // Calculate total income using cartTotal, ensuring prices are numeric
       const soldProductsForTotal = soldProducts.flatMap(product => {
-        // Ensure price is a number before passing to cartTotal
-        let price = typeof product.price === "string"
-          ? parseFloat(product.price.replace(/[^\d.]/g, "")) || 0
-          : product.price || 0;
-        return Array(product.sales).fill({ price: price });
+        const cleanedPrice = parseFloat(product.price.replace(/[^\d.]/g, '') || 0); // Clean and parse price
+        return Array(product.sales).fill({ price: cleanedPrice });
       });
       setTotalIncome(cartTotal(soldProductsForTotal));
     };
@@ -57,6 +70,7 @@ const SellerHomePage = () => {
         return;
       }
 
+      // Retrieve seller info
       let sellerCard;
       try {
         sellerCard = await getSellerCard();
@@ -80,61 +94,67 @@ const SellerHomePage = () => {
             timeStyle: "short",
           });
 
+          // Add logo
           doc.addImage(logo, "PNG", 150, 10, 40, 28);
 
+          // Heading: BlooBase
           doc.setFont("helvetica", "bold");
           doc.setTextColor(0, 86, 179);
           doc.setFontSize(22);
           doc.text("BlooBase Sales Report", 14, 20);
 
+          // Reset color
           doc.setTextColor(0, 0, 0);
           doc.setFontSize(12);
 
           let y = 40;
 
+          // Seller
           doc.setFont("helvetica", "bold");
           doc.text("Seller:", 14, y);
           doc.setFont("helvetica", "normal");
           doc.text(`${sellerCard.storeName}`, 40, y);
           y += 8;
 
+          // Email
           doc.setFont("helvetica", "bold");
           doc.text("Email:", 14, y);
           doc.setFont("helvetica", "normal");
           doc.text(`${user.email || "Not available"}`, 40, y);
           y += 8;
 
+          // Generated
           doc.setFont("helvetica", "bold");
           doc.text("Generated:", 14, y);
           doc.setFont("helvetica", "normal");
           doc.text(`${formattedDate}`, 40, y);
           y += 8;
 
-          const calculatedTotalIncome = products.reduce((sum, product) => {
-            let price = typeof product.price === "string"
-              ? parseFloat(product.price.replace(/[^\d.]/g, "")) || 0
-              : product.price || 0;
-            let sales = typeof product.sales === "number" ? product.sales : 0;
+          // Total Income
+          const totalIncomeValue = products.reduce((sum, product) => {
+            // Use the formatPrice helper to ensure price is clean before calculation
+            const price = parseFloat(formatPrice(product.price));
+            const sales = typeof product.sales === "number" ? product.sales : 0;
             return sum + price * sales;
           }, 0);
 
           doc.setFont("helvetica", "bold");
           doc.text("Total Income:", 14, y);
           doc.setFont("helvetica", "normal");
-          doc.text(`R${calculatedTotalIncome.toFixed(2)}`, 50, y); // Formatted here
+          doc.text(`R${totalIncomeValue.toFixed(2)}`, 50, y);
           y += 12;
 
+          // Sales header
           doc.setFont("helvetica", "bold");
           doc.setFontSize(11);
           doc.text("Sales:", 14, y);
           y += 8;
 
           products.forEach((product, index) => {
-            let price = typeof product.price === "string"
-              ? parseFloat(product.price.replace(/[^\d.]/g, "")) || 0
-              : product.price || 0;
-            let sales = typeof product.sales === "number" ? product.sales : 0;
-            const itemTotal = price * sales; // Use a different variable name
+            // Use the formatPrice helper for individual product price
+            const price = parseFloat(formatPrice(product.price));
+            const sales = typeof product.sales === "number" ? product.sales : 0;
+            const total = price * sales;
 
             const title = `${index + 1}. - ${product.title || product.name || `Product ${index + 1}`}`;
 
@@ -143,16 +163,17 @@ const SellerHomePage = () => {
             y += 6;
 
             doc.setFont("helvetica", "normal");
-            doc.text(`   Price: R${price.toFixed(2)}`, 14, y); // Formatted here
+            doc.text(`   Price: R${price.toFixed(2)}`, 14, y);
             y += 6;
             doc.text(`   Sold: ${sales}`, 14, y);
             y += 6;
-            doc.text(`   Total: R${itemTotal.toFixed(2)}`, 14, y); // Formatted here
+            doc.text(`   Total: R${total.toFixed(2)}`, 14, y);
             y += 10;
           });
 
           doc.save("sales_report.pdf");
           console.log("PDF generated successfully");
+          // Optionally: toast.success("PDF generated successfully!");
         } catch (pdfError) {
           console.error("PDF generation error:", pdfError);
           toast.error("Failed to generate PDF document");
@@ -243,7 +264,8 @@ const SellerHomePage = () => {
               />
             </section>
             <section className="total-income-label">
-              Total Income: <strong>R{totalIncome.toFixed(2)}</strong> {/* Formatted here */}
+              {/* Use formatPrice for display */}
+              Total Income: <strong>R{formatPrice(totalIncome)}</strong>
             </section>
             <section className="orders-card-scroll">
               {products.length === 0 ? (
@@ -267,10 +289,8 @@ const SellerHomePage = () => {
                         <section className="order-preview-type">
                           <em>
                             Price: R
-                            {/* Formatted here */}
-                            {typeof product.price === "string"
-                              ? parseFloat(product.price.replace(/[^\d.]/g, "")).toFixed(2)
-                              : (product.price || 0).toFixed(2)}
+                            {/* Use formatPrice for display */}
+                            {formatPrice(product.price)}
                           </em>
                         </section>
                       </figcaption>

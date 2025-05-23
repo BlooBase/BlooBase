@@ -304,9 +304,9 @@ const SellerHomePage = () => {
 
         <section className="seller-settings">
           <h3 className="settings-title">SETTINGS</h3>
-          <form className="settings-form" onSubmit={(e) => e.preventDefault()}>
-            <fieldset className="form-container">
-              <section className="form-field">
+          <form className="settings-form-1" onSubmit={(e) => e.preventDefault()}>
+            <fieldset className="form-container-1">
+              <section className="form-field-1">
                 <label htmlFor="name" className="form-label">Name:</label>
                 <input
                   type="text"
@@ -314,33 +314,19 @@ const SellerHomePage = () => {
                   id="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="form-input"
+                  className="form-input-1"
                 />
               </section>
-              <section className="settings-buttons">
-                <button type="button" onClick={handleSave} className="nav-button">Save Changes</button>
-                <button type="button" onClick={handleCancel} className="nav-button">Clear</button>
-                <section className="red-buttons">
-                  <button type="button" onClick={handleLogout} className="delete-button">Log Out</button>
+              <section className="settings-buttons-1">
+                <button type="button" onClick={handleSave} className="nav-button-1">Save Changes</button>
+                <button type="button" onClick={handleCancel} className="nav-button-1">Clear</button>
+                <section className="red-buttons-1">
+                  <button type="button" onClick={handleLogout} className="delete-button-1">Log Out</button>
                 </section>
               </section>
             </fieldset>
           </form>
         </section>
-      </section>
-
-      <section className="sparkle-overlay">
-        {[...Array(30)].map((_, i) => (
-          <p
-            key={i}
-            className="sparkle"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 2}s`,
-            }}
-          />
-        ))}
       </section>
 
       <footer className="buyer-footer">

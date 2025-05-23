@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../Navbar.css';
-import {auth} from '../firebase/firebase'; // Import auth from your firebase config
+import {auth} from '../firebase/firebase';
 import { getUserName, getUserRole } from '../firebase/firebase';
-import {logout} from "../firebase/firebase"; // Adjust path if needed
+import {logout} from "../firebase/firebase";
 
 const Navbar = ({ pageTitle, bgColor = '#f8f9fa', textColor = '#343a40' }) => {
   const [optionsOpen, setOptionsOpen] = useState(false);

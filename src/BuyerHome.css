@@ -21,27 +21,27 @@ body {
 /* Header */
 .buyer-header {
   background: linear-gradient(to right, #dff3ff, #f4faff);
-  padding: 20px; /* Reduced padding */
+  padding: 10px 20px;
   border-bottom-left-radius: 70px;
   border-bottom-right-radius: 70px;
   border: #000000 2px solid;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Distribute space between logo, title, and nav */
+  justify-content: space-between;
   height: 120px;
 }
 
 .buyer-logo {
   height: 80px;
-  margin-right: 20px; /* Reduced margin */
-  margin-left: 10px; /* Added margin */
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 .buyer-nav {
   display: flex;
-  justify-content: flex-end; /* Push buttons to the right */
-  gap: 20px;
-  margin-right: 20px; /* Added margin */
+  justify-content: flex-end;
+  gap: 10px;
+  margin-right: 10px;
 }
 
 .buyer-nav-link {
@@ -56,7 +56,6 @@ body {
   height: 80px;
   text-align: center;
   border: #1a1a1a 2px solid;
-  padding: 10px 20px;
   border-radius: 999px;
   background-color: #f9f9f9;
   transition: all 0.3s ease;
@@ -77,26 +76,25 @@ body {
   justify-content: center;
   border-radius: 80px;
   border: #000000 2px solid;
-  padding-left: 20px; /* Reduced padding */
-  padding-right: 20px; /* Reduced padding */
+  padding-left: 15px;
+  padding-right: 15px;
   height: 80px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
   white-space: nowrap;
-  margin: 0 auto; /* Center the welcome section */
-}
-
-.welcome-bg:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-  color: #0d3c6d;
+  margin: 0 auto;
 }
 
 .buyer-title {
   font-size: 1.8rem;
   font-weight: 700;
   color: #165a9c;
-  margin: 0; /* Removed margin */
+  margin: 0;
+}
+
+.welcome-bg:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 /* Orders Section */
@@ -121,7 +119,7 @@ body {
 .floating-orders-card {
   width: 96%;
   height: 730px;
-  background-color: white;
+  background-color: #fff3f3;
   border-radius: 30px;
   border: 2px solid black;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -138,7 +136,7 @@ body {
   font-weight: 700;
   color: black;
   z-index: 1;
-  background: white;
+  background: #fff3f3;
   padding: 4px 10px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -174,7 +172,7 @@ body {
   margin-top: 60px;
 }
 
-/* Order Preview Card (Semantic) */
+/* Store Preview Card (Semantic) */
 .order-preview {
   background-color: #fff2e9;
   border-radius: 24px;
@@ -185,8 +183,13 @@ body {
   padding: 18px 16px;
   min-width: 0;
   min-height: 0;
-  transition: box-shadow 0.2s;
   border: 1.5px solid #e0c3b2;
+  overflow: hidden; 
+  transition: box-shadow 0.3s ease; 
+}
+
+.order-preview:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .order-preview-figure {
@@ -194,6 +197,8 @@ body {
   flex-direction: row;
   align-items: center;
   margin: 0;
+  height: auto;
+  margin-bottom: 30px;
   width: 100%;
 }
 
@@ -219,6 +224,7 @@ body {
   font-size: 1.1rem;
   font-weight: 600;
   color: #333;
+  width: fit-content;
   margin-bottom: 2px;
 }
 
@@ -241,19 +247,6 @@ body {
   width: fit-content;
 }
 
-.order-preview-type.delivery {
-  background: #eaf4ff;
-  color: #165a9c;
-  border: 1px solid #b3d4fc;
-}
-
-.order-preview-type.pickup {
-  background: #ffeaea;
-  color: #b00000;
-  border: 1px solid #ffb3b3;
-}
-
-
 /* Settings Section */
 .buyer-settings {
   background-color: #fff3f3;
@@ -269,6 +262,7 @@ body {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
+  align-items: center; /* Add this line */
 }
 
 .settings-title {
@@ -287,11 +281,11 @@ body {
 }
 
 .form-container {
-  height: 100%;
   width: 100%;
-  flex: 1;
   padding: 20px;
+  border-radius: 20px;
   flex-direction: column;
+  flex-wrap: wrap;
 }
 
 .form-field {
@@ -326,6 +320,7 @@ body {
   display: flex;
   width: 100%;
   flex-direction: row;
+  border-radius: 20px;
   justify-content: space-between;
   gap: 20px;
 }
@@ -358,10 +353,11 @@ body {
   display: flex;
   flex-direction: row;
   gap: 12px;
+  width: 300px;
   margin-top: 10px;
 }
 
-.delete-button {
+.logout-button {
   flex: 1;
   background-color: #ff4d4d;
   color: white;
@@ -375,7 +371,7 @@ body {
   text-align: center;
 }
 
-.delete-button:hover {
+.logout-button:hover {
   background-color: #c10000;
   color: white;
 }
@@ -444,6 +440,10 @@ body {
 }
 
 @media (max-width: 768px) {
+  .total-income-label {
+    font-size: 0.85rem;
+  }
+
   .buyer-header {
     flex-direction: column;
     align-items: center;
@@ -468,6 +468,9 @@ body {
     border-radius: 40px;
     height: auto;
     min-height: 40px;
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Hide vertical scrollbar if it appears */
   }
 
   .buyer-title {
@@ -477,9 +480,13 @@ body {
 
   .buyer-nav {
     margin-top: 10px;
-    margin-left: 20px;
+    margin-left: 0;
     justify-content: center;
     gap: 10px;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Hide vertical scrollbar if it appears */
+    white-space: nowrap; /* Prevent items from wrapping */
+    padding-bottom: 5px; /* Add some padding to the bottom for better visibility */
   }
 
   .buyer-nav-link {
@@ -487,6 +494,7 @@ body {
     padding: 5px 10px;
     width: auto;
     height: auto;
+    display: inline-flex; /* Use inline-flex to prevent wrapping */
   }
 
   .buyer-orders-section {
@@ -503,17 +511,20 @@ body {
 
   .floating-orders-card {
     width: 100%;
-    height: 400px;
+    height: auto;
     padding: 1rem;
   }
 
   .orders-card-title {
     font-size: 1rem;
+
   }
 
   .orders-card-scroll {
     grid-template-columns: repeat(1, 1fr);
     gap: 1rem;
+    max-height: 400px; /* Added max-height for scrollable content */
+    overflow-y: auto; /* Ensure scrollbar appears when content overflows */
   }
 
   .order-preview {
@@ -533,8 +544,9 @@ body {
   .settings-title {
     font-size: 1rem;
     margin-bottom: 1rem;
-    margin-left: 40px;
-    margin-top: 30px;
+    margin-left: 0; 
+    margin-top: 1rem; 
+    text-align: center; 
   }
 
   .buyer-settings {
@@ -544,8 +556,8 @@ body {
   }
 
   .form-container {
-    width: 100%;
-    padding: 15;
+    width: 100%; 
+    padding: 15px;
   }
 
   .form-field {
@@ -566,25 +578,29 @@ body {
   .settings-form {
     flex-direction: column;
     gap: 10px;
+    width: 100%; 
   }
 
   .settings-buttons {
     width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
   }
 
   .nav-button,
-  .delete-button {
-    width: 48%;
+  .logout-button {
+    width: 100%; 
     font-size: 0.9rem;
-    padding: 0.5rem;
+    padding: 0.7rem;
+    text-align: center; 
   }
 
   .red-buttons {
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
     margin-top: 0;
+    width: 100%; 
   }
 
   .sparkle {
@@ -592,10 +608,10 @@ body {
     height: 4px;
   }
 
-  .seller-footer,
   .buyer-footer {
     font-size: 0.8rem;
     padding: 1rem;
     text-align: center;
   }
 }
+

@@ -10,12 +10,12 @@ const CheckoutForm = ({ total, orderType, cartItems }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  const [loading, setLoading] = React.useState(false); // <-- Add loading state
+  const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (loading) return; // <-- Prevent multiple submissions
+    if (loading) return;
 
     if (!stripe || !elements) {
       return;
@@ -46,11 +46,14 @@ const CheckoutForm = ({ total, orderType, cartItems }) => {
       return;
     }
 
-    setLoading(true); // <-- Set loading to true
+    setLoading(true);
 
     try {
-      // Place the order in Firestore
-      await addOrder({ orderType, total });
+      // Format the total to two decimal places before passing it to addOrder
+      const formattedTotal = parseFloat(total).toFixed(2);
+
+      // Place the order in Firestore with the formatted total
+      await addOrder({ orderType, total: formattedTotal });
 
       toast.success('Order placed successfully!', {
         position: 'top-right',
@@ -64,7 +67,7 @@ const CheckoutForm = ({ total, orderType, cartItems }) => {
     } catch (error) {
       toast.error('Failed to place order: ' + error.message);
     } finally {
-      setLoading(false); // <-- Reset loading
+      setLoading(false);
     }
   };
 
@@ -75,7 +78,7 @@ const CheckoutForm = ({ total, orderType, cartItems }) => {
         <button
           type="submit"
           className="checkout-button-3"
-          disabled={!stripe || loading} // <-- Disable when loading
+          disabled={!stripe || loading}
         >
           {loading ? 'Processing...' : 'Pay Now'}
         </button>

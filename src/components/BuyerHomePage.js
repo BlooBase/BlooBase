@@ -119,10 +119,10 @@ const BuyerHomePage = () => {
         <section className="orders-grid">
           <section className="floating-orders-card">
             <h3 className="orders-card-title">ORDERS</h3>
-              <section className="orders-card-scroll">
-                {orders.length === 0 ? (
-                  <p className="orders-empty">No orders yet.</p>
-                ) : (
+            <section className="orders-card-scroll">
+              {orders.length === 0 ? (
+                <p className="orders-empty">No orders yet.</p>
+              ) : (
                 orders.map(order => {
                   const firstItem = order.items?.[0];
                   const orderTotal = order.items?.reduce((sum, item) => {
@@ -166,8 +166,8 @@ const BuyerHomePage = () => {
                     </article>
                   );
                 })
-                )}
-              </section>
+              )}
+            </section>
           </section>
         </section>
 

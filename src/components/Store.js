@@ -24,7 +24,7 @@ const Store = () => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
-  const [userRole, setUserRole] = useState(null); 
+  const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
     const fetchStores = async () => {
@@ -52,7 +52,7 @@ const Store = () => {
           const sellerProducts = await retrieveSellerProducts(id);
           setProducts(sellerProducts);
           //console.log(id)
-          console.log(sellerProducts)
+          console.log(sellerProducts);
         } catch (err) {
           console.error('Error fetching seller products:', err);
         } finally {
@@ -74,6 +74,18 @@ const Store = () => {
 
     fetchUserRole();
   }, []);
+
+  // Helper function to clean and format price (copied from HomePage for consistency)
+  const formatPrice = (price) => {
+    if (typeof price === 'string') {
+      // Remove 'R' and any other non-digit, non-decimal characters
+      const cleanedPrice = price.replace(/[^\d.]/g, '');
+      const parsedPrice = parseFloat(cleanedPrice);
+      return isNaN(parsedPrice) ? '0.00' : parsedPrice.toFixed(2);
+    }
+    // If it's already a number or null/undefined, just format it
+    return parseFloat(price || 0).toFixed(2);
+  };
 
   if (loading) return <p>Loading...</p>;
 
@@ -111,45 +123,58 @@ const Store = () => {
             <p>Loading products...</p>
           ) : (
             <section className="products-grid-2">
-            {products
-              .filter(product => product.stock === undefined || Number(product.stock) > 0) // <-- Only show if stock > 0 or undefined
-              .map((product) => (
-                <section
-                  key={product.id}
-                  className="product-item-2"
-                  style={{ backgroundColor: artist.color, color: artist.textColor }}
-                >
-                  <section className="product-image-container-2">
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="product-image-2"
-                      loading="lazy"
-                    />
+              {products
+                .filter(product => product.stock === undefined || Number(product.stock) > 0)
+                .map((product) => (
+                  <section
+                    key={product.id}
+                    className="product-item-2"
+                    style={{ backgroundColor: artist.color, color: artist.textColor }}
+                  >
+                    <section className="product-image-container-2">
+                      <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        className="product-image-2"
+                        loading="lazy"
+                      />
+                    </section>
+                    <section className="product-info-2">
+                      <h3 className="product-name-2">{product.name}</h3>
+                      {/* Use the new formatPrice helper function here */}
+                      <p className="product-price-2">R {formatPrice(product.price)}</p>
+                      {auth.currentUser && userRole === 'Buyer' && (
+                        <button
+                          className="add-to-cart-button-2"
+                          style={{ backgroundColor: "#165a9c", color: "#ffffff" }}
+                          onClick={async () => {
+                            try {
+                              // Dynamically import retrieveCart to avoid circular dependency if it exists
+                              const { retrieveCart } = await import('../firebase/retrieveCart');
+                              const cart = await retrieveCart();
+
+                              // Check if product is already in cart
+                              const alreadyInCart = cart.some(item => item.id === product.id);
+
+                              if (alreadyInCart) {
+                                toast.info(`${product.name} is already in cart`);
+                                return; // Stop if already in cart
+                              }
+
+                              await addToCart(product);
+                              toast.success(`Added ${product.name} to cart`);
+                            } catch (error) {
+                              toast.error("Failed to add to cart: " + error.message);
+                            }
+                          }}
+                        >
+                          Add to Cart
+                        </button>
+                      )}
+                    </section>
                   </section>
-                  <section className="product-info-2">
-                    <h3 className="product-name-2">{product.name}</h3>
-                    <p className="product-price-2">{product.price}</p>
-                    {auth.currentUser && userRole === 'Buyer' && (
-                      <button
-                        className="add-to-cart-button-2"
-                        style={{ backgroundColor: "#165a9c", color: "#ffffff" }}
-                        onClick={async () => {
-                          try {
-                            await addToCart(product);
-                            toast.success(`Added ${product.name} to cart`);
-                          } catch (error) {
-                            toast.error("Failed to add to cart: " + error.message);
-                          }
-                        }}
-                      >
-                        Add to Cart
-                      </button>
-                    )}
-                  </section>
-                </section>
-              ))}
-          </section>
+                ))}
+            </section>
           )}
         </section>
       </section>
@@ -158,7 +183,7 @@ const Store = () => {
 
       {/* Conditionally render FloatingCart */}
       {auth.currentUser && userRole === 'Buyer' && <FloatingCart />}
-      
+
     </section>
   );
 };

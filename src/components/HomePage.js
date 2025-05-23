@@ -32,7 +32,7 @@ const hardcodedProducts = [
     },
     {
       id: 'h3',
-      title: '조기석 Cho Gi-Seok',
+      title: '조기석 Cho Gi-Seok',
       image: '/Chogiseok.jpg',
       description: 'Korean photographer, director and artisan, @chogiseok',
       color: '#e7e4d7',
@@ -78,242 +78,243 @@ const hardcodedProducts = [
   ];
 
 const HomePage = () => {
-   const [products, setProducts] = useState([]);
-   const [filteredProducts, setFilteredProducts] = useState([]);
-   const [searchQuery, setSearchQuery] = useState('');
-   const [userRole, setUserRole] = useState(null); // State to store the user's role
-   const [selectedCategory, setSelectedCategory] = useState('All');
+    const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [userRole, setUserRole] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState('All');
 
-   // Artist Image Carousel Logic
-   const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
-   const [artistImage, setArtistImage] = useState(hardcodedProducts[0].image);
+    // Artist Image Carousel Logic
+    const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
+    const [artistImage, setArtistImage] = useState(hardcodedProducts[0].image);
 
-   useEffect(() => {
-      const intervalId = setInterval(() => {
-         setCurrentArtistIndex((prevIndex) => (prevIndex + 1) % hardcodedProducts.length);
-      }, 3000); // Change image every 3 seconds
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setCurrentArtistIndex((prevIndex) => (prevIndex + 1) % hardcodedProducts.length);
+        }, 3000);
 
-      return () => clearInterval(intervalId); // Clear interval on unmount
-   }, []);
+        return () => clearInterval(intervalId);
+    }, []);
 
-   useEffect(() => {
-      setArtistImage(hardcodedProducts[currentArtistIndex].image);
-   }, [currentArtistIndex]);
+    useEffect(() => {
+        setArtistImage(hardcodedProducts[currentArtistIndex].image);
+    }, [currentArtistIndex]);
 
-   // Fetch the user's role on component mount
-   // filepath: c:\University\SD\BlooBase\Coding_New\BlooBase\src\components\HomePage.js
-useEffect(() => {
-   const unsubscribe = auth.onAuthStateChanged(async (user) => {
-     if (user) {
-       const role = await getUserRole();
-       console.log(role)
-       setUserRole(role);
-       
-     } else {
-       setUserRole(null);
-     }
-   });
-   return () => unsubscribe();
- }, []);
-
-   // Categories similar to the genres in Artists page
-   const categories = ['All','Digital Art', 'Clothing', 'Accessories', 'Crafts', 'Jewelry','Art', 'Furniture', 'Mixed media'];
-
-   // Effect to close options dropdown when clicking outside
-
-   const [imagesLoaded, setImagesLoaded] = useState({
-      logo: false,
-      products: {}
-   });
-
-   useEffect(() => {
-      const fetchProducts = async () => {
-         const fetchedProducts = await retrieveProducts();
-         setProducts(fetchedProducts);
-         setFilteredProducts(fetchedProducts);
-
-         // Preload and check if product images are cached
-         fetchedProducts.forEach((product) => {
-            const img = new Image();
-            img.src = product.imageUrl;
-
-            if (img.complete && img.naturalHeight !== 0) {
-               setImagesLoaded(prev => ({
-                  ...prev,
-                  products: { ...prev.products, [product.id]: true }
-               }));
+    // Fetch the user's role on component mount
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                const role = await getUserRole();
+                console.log(role);
+                setUserRole(role);
             } else {
-               img.onload = () => {
-                  setImagesLoaded(prev => ({
-                     ...prev,
-                     products: { ...prev.products, [product.id]: true }
-                  }));
-               };
+                setUserRole(null);
             }
-         });
-      };
+        });
+        return () => unsubscribe();
+    }, []);
 
-      fetchProducts();
+    // Categories similar to the genres in Artists page
+    const categories = ['All','Digital Art', 'Clothing', 'Accessories', 'Crafts', 'Jewelry','Art', 'Furniture', 'Mixed media'];
 
-      // Preload logo image
-      const logoImg = new Image();
-      logoImg.src = "/bloobase.png";
-      if (logoImg.complete && logoImg.naturalHeight !== 0) {
-         setImagesLoaded(prev => ({ ...prev, logo: true }));
-      } else {
-         logoImg.onload = () =>
-            setImagesLoaded(prev => ({ ...prev, logo: true }));
-      }
+    const [imagesLoaded, setImagesLoaded] = useState({
+        logo: false,
+        products: {}
+    });
 
-      // Preload background image
-      const bgImg = new Image();
-      bgImg.src = './assets/BG0.jpg';
-   }, []);
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const fetchedProducts = await retrieveProducts();
+            setProducts(fetchedProducts);
+            setFilteredProducts(fetchedProducts);
 
-   // Filter products based on search query and selected category
-   useEffect(() => {
-      let result = [...products];
+            fetchedProducts.forEach((product) => {
+                const img = new Image();
+                img.src = product.imageUrl;
 
-      // Filter out products with stock === 0 or stock is falsy
-      result = result.filter(product => product.stock === undefined || Number(product.stock) > 0);
-
-      // Filter by category
-      if (selectedCategory !== 'All') {
-        result = result.filter(product =>
-            (product.genre?.toLowerCase() === selectedCategory.toLowerCase()) ||
-            (product.category?.toLowerCase() === selectedCategory.toLowerCase())
-        );
-      }
-
-      // Search by product name
-      if (searchQuery) {
-         result = result.filter(product =>
-            product.name.toLowerCase().includes(searchQuery.toLowerCase())
-         );
-      }
-
-      setFilteredProducts(result);
-   }, [searchQuery, selectedCategory, products]);
-
-   
-   return (
-    <section className="page-wrapper-home-1">
-    <section id="bg-preload-1"></section>
-    <Navbar pageTitle="Explore" bgColor="#fff6fb" textColor="#165a9c" />
-
-    <section className="products-container-1">
-      <section className="artist-search-container-1">
-        <Link to="/Artists" className="artist-button-link">
-          <section className="artist-button-1">
-            <img
-              src={artistImage}
-              alt="Artist Preview"
-              className="artist-button-image-1"
-            />
-            <p className="artist-button-text-1">Artisans</p>
-          </section>
-        </Link>
-
-        <section className="search-bar-wrapper-1">
-          <input
-            type="text"
-            className="search-bar-1"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </section>
-      </section>
-
-      <section className="genre-filter-wrapper-1">
-        {categories.map((category) => (
-          <button
-            key={category}
-            className={`genre-button-1 ${
-              selectedCategory === category ? 'active' : ''
-            }`}
-            onClick={() => setSelectedCategory(category)}
-          >
-            {category}
-          </button>
-        ))}
-      </section>
-
-      <section className="products-grid-home-1">
-        {filteredProducts.map((product) => (
-          <section
-            key={product.id}
-            className="product-card-1"
-            role="button"
-            tabIndex="0"
-            aria-label={`View details of ${product.name}`}
-          >
-            <section className="product-image-container-1">
-              {!imagesLoaded.products[product.id] && (
-                <section className="product-image-placeholder-1">
-                  <section className="loading-spinner-1"></section>
-                </section>
-              )}
-              <img
-                src={product.imageUrl}
-                alt={product.name}
-                className={`product-image-1 ${
-                  imagesLoaded.products[product.id] ? 'fade-in' : 'hidden'
-                }`}
-                onLoad={() =>
-                  setImagesLoaded((prev) => ({
-                    ...prev,
-                    products: { ...prev.products, [product.id]: true },
-                  }))
+                if (img.complete && img.naturalHeight !== 0) {
+                    setImagesLoaded(prev => ({
+                        ...prev,
+                        products: { ...prev.products, [product.id]: true }
+                    }));
+                } else {
+                    img.onload = () => {
+                        setImagesLoaded(prev => ({
+                            ...prev,
+                            products: { ...prev.products, [product.id]: true }
+                        }));
+                    };
                 }
-                loading="lazy"
-              />
+            });
+        };
+
+        fetchProducts();
+
+        const logoImg = new Image();
+        logoImg.src = "/bloobase.png";
+        if (logoImg.complete && logoImg.naturalHeight !== 0) {
+            setImagesLoaded(prev => ({ ...prev, logo: true }));
+        } else {
+            logoImg.onload = () =>
+                setImagesLoaded(prev => ({ ...prev, logo: true }));
+        }
+
+        const bgImg = new Image();
+        bgImg.src = './assets/BG0.jpg';
+    }, []);
+
+    // Filter products based on search query and selected category
+    useEffect(() => {
+        let result = [...products];
+
+        // Filter out products with stock === 0 or stock is falsy
+        result = result.filter(product => product.stock === undefined || Number(product.stock) > 0);
+
+        // Filter by category
+        if (selectedCategory !== 'All') {
+            result = result.filter(product =>
+                (product.genre?.toLowerCase() === selectedCategory.toLowerCase()) ||
+                (product.category?.toLowerCase() === selectedCategory.toLowerCase())
+            );
+        }
+
+        // Search by product name
+        if (searchQuery) {
+            result = result.filter(product =>
+                product.name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+
+        setFilteredProducts(result);
+    }, [searchQuery, selectedCategory, products]);
+
+    // Helper function to clean and format price
+    const formatPrice = (price) => {
+        if (typeof price === 'string') {
+            // Remove 'R' and any other non-digit, non-decimal characters
+            const cleanedPrice = price.replace(/[^\d.]/g, '');
+            const parsedPrice = parseFloat(cleanedPrice);
+            return isNaN(parsedPrice) ? '0.00' : parsedPrice.toFixed(2);
+        }
+        // If it's already a number, just format it
+        return parseFloat(price || 0).toFixed(2);
+    };
+
+    return (
+        <section className="page-wrapper-home-1">
+            <section id="bg-preload-1"></section>
+            <Navbar pageTitle="Explore" bgColor="#fff6fb" textColor="#165a9c" />
+
+            <section className="products-container-1">
+                <section className="artist-search-container-1">
+                    <Link to="/Artists" className="artist-button-link">
+                        <section className="artist-button-1">
+                            <img
+                                src={artistImage}
+                                alt="Artist Preview"
+                                className="artist-button-image-1"
+                            />
+                            <p className="artist-button-text-1">Artisans</p>
+                        </section>
+                    </Link>
+
+                    <section className="search-bar-wrapper-1">
+                        <input
+                            type="text"
+                            className="search-bar-1"
+                            placeholder="Search products..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </section>
+                </section>
+
+                <section className="genre-filter-wrapper-1">
+                    {categories.map((category) => (
+                        <button
+                            key={category}
+                            className={`genre-button-1 ${
+                                selectedCategory === category ? 'active' : ''
+                            }`}
+                            onClick={() => setSelectedCategory(category)}
+                        >
+                            {category}
+                        </button>
+                    ))}
+                </section>
+
+                <section className="products-grid-home-1">
+                    {filteredProducts.map((product) => (
+                        <section
+                            key={product.id}
+                            className="product-card-1"
+                            role="button"
+                            tabIndex="0"
+                            aria-label={`View details of ${product.name}`}
+                        >
+                            <section className="product-image-container-1">
+                                {!imagesLoaded.products[product.id] && (
+                                    <section className="product-image-placeholder-1">
+                                        <section className="loading-spinner-1"></section>
+                                    </section>
+                                )}
+                                <img
+                                    src={product.imageUrl}
+                                    alt={product.name}
+                                    className={`product-image-1 ${
+                                        imagesLoaded.products[product.id] ? 'fade-in' : 'hidden'
+                                    }`}
+                                    onLoad={() =>
+                                        setImagesLoaded((prev) => ({
+                                            ...prev,
+                                            products: { ...prev.products, [product.id]: true },
+                                        }))
+                                    }
+                                    loading="lazy"
+                                />
+                            </section>
+                            <section className="product-info-1">
+                                <h3 className="product-title-1">{product.name}</h3>
+                                {/* Use the new formatPrice helper function */}
+                                <p className="product-price-1">R {formatPrice(product.price)}</p>
+                                <p className="store-name-1">{product.Seller}</p>
+                                {auth.currentUser && userRole === 'Buyer' && (
+                                    <button
+                                        className="add-to-cart-button-1"
+                                        onClick={async () => {
+                                            try {
+                                                const { retrieveCart } = await import('../firebase/retrieveCart');
+                                                const cart = await retrieveCart();
+
+                                                const alreadyInCart = cart.some(item => item.id === product.id);
+
+                                                if (alreadyInCart) {
+                                                    toast.info(`${product.name} is already in cart`);
+                                                    return;
+                                                }
+
+                                                await addToCart(product);
+                                                toast.success(`Added ${product.name} to cart`);
+                                            } catch (error) {
+                                                toast.error("Failed to add to cart: " + error.message);
+                                            }
+                                        }}
+                                    >
+                                        Add to Cart
+                                    </button>
+                                )}
+                            </section>
+                        </section>
+                    ))}
+                </section>
+
+                <section className="opacity-fade-2" />
             </section>
-            <section className="product-info-1">
-              <h3 className="product-title-1">{product.name}</h3>
-              <p className="product-price-1">{product.price}</p>
-              <p className="store-name-1">{product.Seller}</p>
-              {auth.currentUser && userRole === 'Buyer' && (
-                <button
-                  className="add-to-cart-button-1"
-                  onClick={async () => {
-                    try {
-                      // 1. Retrieve the user's cart
-                      const { retrieveCart } = await import('../firebase/retrieveCart');
-                      const cart = await retrieveCart();
 
-                      // 2. Check if product is already in cart
-                      const alreadyInCart = cart.some(item => item.id === product.id);
+            {auth.currentUser && userRole === 'Buyer' && <FloatingCart />}
 
-                      if (alreadyInCart) {
-                        toast.info(`${product.name} is already in cart`);
-                        return;
-                      }
-
-                      // 3. Add to cart if not present
-                      await addToCart(product);
-                      toast.success(`Added ${product.name} to cart`);
-                    } catch (error) {
-                      toast.error("Failed to add to cart: " + error.message);
-                    }
-                  }}
-                >
-                  Add to Cart
-                </button>
-              )}
-            </section>
-          </section>
-        ))}
-      </section>
-
-      <section className="opacity-fade-2" />
-    </section>
-
-     {/* Conditionally render FloatingCart */}
-     {auth.currentUser && userRole === 'Buyer' && <FloatingCart />}
-
-    <footer className="page-footer-1">© 2025 BlooBase. All rights reserved.</footer>
-  </section>
+            <footer className="page-footer-1">© 2025 BlooBase. All rights reserved.</footer>
+        </section>
     );
 };
 

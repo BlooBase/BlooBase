@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../Dashboard.css";
 import { getRoleSize, getCollectionSize, getUserName } from "../firebase/firebase";
-import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers } from "../firebase/adminDashFunctions"; // Import getTopSellers
+import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers } from "../firebase/adminDashFunctions";
 import { Link, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
@@ -37,9 +37,9 @@ const Dashboard = () => {
   const [sellersLoading, setSellersLoading] = useState(true);
   const [sellersError, setSellersError] = useState(null);
   const [totalSales, setTotalSales] = useState(0);
-  const [topPerformingSellers, setTopPerformingSellers] = useState([]); 
+  const [topPerformingSellers, setTopPerformingSellers] = useState([]);
   const [topSellersLoading, setTopSellersLoading] = useState(true);
-  const [topSellersError, setTopSellersError] = useState(null); 
+  const [topSellersError, setTopSellersError] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -50,7 +50,12 @@ const Dashboard = () => {
       setOrdersCount(orders);
 
       const transactions = await getLatestOrders();
-      setLatestTransactions(transactions);
+      // Ensure transaction totals are numbers and formatted to 2 decimals
+      const formattedTransactions = transactions.map(t => ({
+        ...t,
+        total: parseFloat(t.total || 0).toFixed(2) // Format total here
+      }));
+      setLatestTransactions(formattedTransactions);
 
       setSellersLoading(true);
       setSellersError(null);
@@ -67,20 +72,19 @@ const Dashboard = () => {
 
       try {
         const sales = await getTotalSales();
-        setTotalSales(sales);
+        setTotalSales(sales); // totalSales will be formatted in the JSX
       } catch (err) {
         console.error("Error fetching overall sales:", err);
         setTotalSales(0);
       }
 
-      
       setTopSellersLoading(true);
       setTopSellersError(null);
       try {
-        const topSellersData = await getTopSellers(); 
+        const topSellersData = await getTopSellers();
         setTopPerformingSellers(topSellersData);
-        console.log("top sellers")
-        console.log(topSellersData)
+        console.log("top sellers");
+        console.log(topSellersData);
       } catch (err) {
         console.error("Error fetching top performing sellers:", err);
         setTopSellersError("Failed to load top performing artisans.");
@@ -105,12 +109,11 @@ const Dashboard = () => {
     navigate(`/orderdetails/${orderId}`);
   };
 
-  
   const getMaxSellerCount = () => {
     if (topPerformingSellers.length > 0) {
-      return topPerformingSellers[0].count; 
+      return topPerformingSellers[0].count;
     }
-    return 1; 
+    return 1;
   };
 
   const maxCount = getMaxSellerCount();
@@ -139,7 +142,8 @@ const Dashboard = () => {
             <p>
               Sales <img src="sales.png" alt="sales-img" className="icons" />
             </p>
-            <p className="stat-value sales">R {totalSales.toFixed(2)}</p>
+            {/* Format totalSales here */}
+            <p className="stat-value sales">R {parseFloat(totalSales).toFixed(2)}</p>
           </article>
           <article className="stat-card">
             <p>
@@ -204,6 +208,7 @@ const Dashboard = () => {
                       onClick={() => handleTransactionClick(transaction.id)}
                     >
                       <p className="transaction-id">Order ID: {transaction.id}</p>
+                      {/* transaction.total is already formatted in useEffect */}
                       <p className="amount">R {transaction.total}</p>
                     </button>
                   </li>
@@ -220,6 +225,7 @@ const Dashboard = () => {
             <h3>Monthly Sales Performance</h3>
             <section className="graph-container">
               <section className="graph-y-axis">
+                {/* These are static, illustrative values. If they were dynamic, they'd need formatting. */}
                 <p>5k</p>
                 <p>4k</p>
                 <p>3k</p>
@@ -228,23 +234,24 @@ const Dashboard = () => {
                 <p>0</p>
               </section>
               <section className="graph-content">
+                {/* Static graph data with manual formatting. If dynamic, ensure values are formatted. */}
                 <section className="graph-bar" style={{ height: "30%" }}>
-                  <p className="graph-tooltip">Jan: R1,500</p>
+                  <p className="graph-tooltip">Jan: R1,500.00</p>
                 </section>
                 <section className="graph-bar" style={{ height: "40%" }}>
-                  <p className="graph-tooltip">Feb: R2,000</p>
+                  <p className="graph-tooltip">Feb: R2,000.00</p>
                 </section>
                 <section className="graph-bar" style={{ height: "35%" }}>
-                  <p className="graph-tooltip">Mar: R1,750</p>
+                  <p className="graph-tooltip">Mar: R1,750.00</p>
                 </section>
                 <section className="graph-bar" style={{ height: "60%" }}>
-                  <p className="graph-tooltip">Apr: R3,000</p>
+                  <p className="graph-tooltip">Apr: R3,000.00</p>
                 </section>
                 <section className="graph-bar active" style={{ height: "80%" }}>
-                  <p className="graph-tooltip">May: R4,000</p>
+                  <p className="graph-tooltip">May: R4,000.00</p>
                 </section>
                 <section className="graph-bar forecast" style={{ height: "70%" }}>
-                  <p className="graph-tooltip">Jun: R3,500 (forecast)</p>
+                  <p className="graph-tooltip">Jun: R3,500.00 (forecast)</p>
                 </section>
               </section>
               <section className="graph-x-axis">

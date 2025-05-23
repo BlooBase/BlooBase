@@ -40,18 +40,19 @@ const CardCreator = () => {
     };
     fetchSellerCard();
 
-      // Fetch and show existing products in tabs
+    // Fetch and show existing products in tabs
     const fetchProducts = async () => {
       try {
         const prods = await getSellerProducts();
-        // Map products to the productCreators format
+        // Map products to the productCreators format, ensuring price is formatted
         setProductCreators(
           prods.map(prod => ({
             image: prod.image,
             imagePreview: prod.image,
             name: prod.name,
-            price: prod.price,
-            stock: prod.stock ?? 1, // <-- Add this line, default to 1 if undefined
+            // Format price to two decimal places when fetched for display
+            price: prod.price ? parseFloat(prod.price).toFixed(2) : '',
+            stock: prod.stock ?? 1,
             id: prod.id
           }))
         );
@@ -108,19 +109,19 @@ const CardCreator = () => {
   };
 
   const triggerProductAnimation = (index) => {
-  setProductAnimations((prev) => {
-    const updated = [...prev];
-    updated[index] = true;
-    return updated;
-  });
-  setTimeout(() => {
     setProductAnimations((prev) => {
       const updated = [...prev];
-      updated[index] = false;
+      updated[index] = true;
       return updated;
     });
-  }, 1000); // Duration matches your CSS animation
-};
+    setTimeout(() => {
+      setProductAnimations((prev) => {
+        const updated = [...prev];
+        updated[index] = false;
+        return updated;
+      });
+    }, 1000); // Duration matches your CSS animation
+  };
 
   const handlePublish = async () => {
     if ((!image && !imagePreview) || !name || !description) {
@@ -156,7 +157,7 @@ const CardCreator = () => {
       setBackgroundColor('#fff0e6');
       setTextColor('#93aed9');
       setHasStore(false);
-      setProductCreators([{ image: null, imagePreview: null, name: '', price: '' }]); // <-- Clear products
+      setProductCreators([{ image: null, imagePreview: null, name: '', price: '', stock: 1 }]); // Clear products and reset stock
       triggerAnimation('Card Removed');
     } catch (error) {
       console.error('Failed to remove card:', error);
@@ -205,13 +206,37 @@ const CardCreator = () => {
 
   const handleProductPriceChange = (index, value) => {
     const updated = [...productCreators];
-    updated[index].price = value;
+    // Remove non-numeric characters except for a single decimal point
+    const cleanedValue = value.replace(/[^\d.]/g, '');
+
+    // Allow empty string for initial input
+    if (cleanedValue === '') {
+        updated[index].price = '';
+        setProductCreators(updated);
+        return;
+    }
+
+    // Ensure only one decimal point
+    const parts = cleanedValue.split('.');
+    if (parts.length > 2) {
+        // If more than one decimal, take the first part and the first two digits after the first decimal
+        updated[index].price = `${parts[0]}.${parts[1].slice(0, 2)}`;
+    } else if (parts.length === 2) {
+        // If there's a decimal, limit to two digits after it
+        updated[index].price = `${parts[0]}.${parts[1].slice(0, 2)}`;
+    } else {
+        // No decimal or single integer
+        updated[index].price = cleanedValue;
+    }
     setProductCreators(updated);
-  };
+};
+
 
   const handleProductStockChange = (index, value) => {
     const updated = [...productCreators];
-    updated[index].stock = value;
+    // Ensure stock is an integer and non-negative
+    const intValue = parseInt(value, 10);
+    updated[index].stock = isNaN(intValue) || intValue < 0 ? '' : intValue;
     setProductCreators(updated);
   };
 
@@ -229,62 +254,58 @@ const CardCreator = () => {
   };
 
   const handleProductPublish = async (index) => {
-  const { image, name, price, id, stock } = productCreators[index];
+    const { image, name, price, id, stock } = productCreators[index];
 
-  // Require all fields, including stock
-  if (!image || !name || price === '' || stock === undefined || stock === null || stock === '') {
-    triggerAnimationFail('Please provide product image, name, price, and stock.');
-    return;
-  }
-
-  // Ensure price is a non-negative number
-  const priceValue = parseFloat(price);
-  if (isNaN(priceValue) || priceValue < 0) {
-    triggerAnimationFail('Please enter a non-negative price.');
-    return;
-  }
-
-  // Ensure price format is either integer or exactly two decimal places
-  const priceFormatRegex = /^\d+(\.\d{2})?$/;
-  if (!priceFormatRegex.test(price)) {
-    triggerAnimationFail('Price must be a whole number or have exactly two decimal places (e.g., 10 or 10.99).');
-    return;
-  }
-
-  // Ensure stock is a positive integer
-  const stockValue = parseInt(stock, 10);
-  if (isNaN(stockValue) || stockValue < 0) {
-    triggerAnimationFail('Stock must be a non-negative integer.');
-    return;
-  }
-
-  try {
-    if (id) {
-      await updateProduct({ id, image, name, price: priceValue, stock: stockValue });
-      triggerProductAnimation(index);
-      triggerProductMessage(`Product ${productCreators[index].name} Updated`);
-    } else {
-      await addProduct({ image, name, price: priceValue, stock: stockValue });
-      triggerProductAnimation(index);
-      triggerProductMessage(`Product ${productCreators[index].name} Published`);
+    // Require all fields, including stock
+    if (!image || !name || price === '' || stock === undefined || stock === null || stock === '') {
+      triggerAnimationFail('Please provide product image, name, price, and stock.');
+      return;
     }
 
-    // Refresh products list
-    const prods = await getSellerProducts();
-    setProductCreators(
-      prods.map(prod => ({
-        image: prod.image,
-        imagePreview: prod.image,
-        name: prod.name,
-        price: prod.price,
-        stock: prod.stock ?? 1,
-        id: prod.id
-      }))
-    );
-  } catch (e) {
-    triggerAnimationFail('Failed to publish/update product.');
-  }
-};
+    // Ensure price is a non-negative number
+    const priceValue = parseFloat(price);
+    if (isNaN(priceValue) || priceValue < 0) {
+      triggerAnimationFail('Please enter a valid non-negative price.');
+      return;
+    }
+
+    // Ensure price is formatted to exactly two decimal places for storage
+    const formattedPriceForStorage = priceValue.toFixed(2);
+
+    // Ensure stock is a non-negative integer
+    const stockValue = parseInt(stock, 10);
+    if (isNaN(stockValue) || stockValue < 0) {
+      triggerAnimationFail('Stock must be a non-negative integer.');
+      return;
+    }
+
+    try {
+      if (id) {
+        await updateProduct({ id, image, name, price: formattedPriceForStorage, stock: stockValue });
+        triggerProductAnimation(index);
+        triggerProductMessage(`Product ${productCreators[index].name} Updated`);
+      } else {
+        await addProduct({ image, name, price: formattedPriceForStorage, stock: stockValue });
+        triggerProductAnimation(index);
+        triggerProductMessage(`Product ${productCreators[index].name} Published`);
+      }
+
+      // Refresh products list and ensure prices are formatted for display
+      const prods = await getSellerProducts();
+      setProductCreators(
+        prods.map(prod => ({
+          image: prod.image,
+          imagePreview: prod.image,
+          name: prod.name,
+          price: prod.price ? parseFloat(prod.price).toFixed(2) : '', // Format price when refreshing
+          stock: prod.stock ?? 1,
+          id: prod.id
+        }))
+      );
+    } catch (e) {
+      triggerAnimationFail('Failed to publish/update product.');
+    }
+  };
 
 
   const handleProductRemove = async (index) => {
@@ -301,7 +322,8 @@ const CardCreator = () => {
             image: prod.image,
             imagePreview: prod.image,
             name: prod.name,
-            price: prod.price,
+            price: prod.price ? parseFloat(prod.price).toFixed(2) : '', // Format price when refreshing
+            stock: prod.stock ?? 1,
             id: prod.id
           }))
         );
@@ -316,26 +338,26 @@ const CardCreator = () => {
   };
 
   // Helper to get luminance
-function luminance(hex) {
-  hex = hex.replace('#', '');
-  if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
-  const rgb = [
-    parseInt(hex.substr(0,2),16),
-    parseInt(hex.substr(2,2),16),
-    parseInt(hex.substr(4,2),16)
-  ].map(v => {
-    v /= 255;
-    return v <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4);
-  });
-  return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
-}
+  function luminance(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
+    const rgb = [
+      parseInt(hex.substr(0, 2), 16),
+      parseInt(hex.substr(2, 2), 16),
+      parseInt(hex.substr(4, 2), 16)
+    ].map(v => {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+  }
 
-// Helper to get contrast ratio
-function contrast(hex1, hex2) {
-  const lum1 = luminance(hex1);
-  const lum2 = luminance(hex2);
-  return (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
-}
+  // Helper to get contrast ratio
+  function contrast(hex1, hex2) {
+    const lum1 = luminance(hex1);
+    const lum2 = luminance(hex2);
+    return (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
+  }
 
   return (
     <section className="card-creator-wrapper" style={{ backgroundColor }}>
@@ -379,8 +401,8 @@ function contrast(hex1, hex2) {
         </section>
 
         <section className="card-controls">
-          <button 
-            className="action-button" 
+          <button
+            className="action-button"
             onClick={() => {
               setImage(null);
               setImagePreview(null);
@@ -480,18 +502,18 @@ function contrast(hex1, hex2) {
             if (file) handleProductImageChange(index, file);
           }}
         >
-          <section 
-          className={`product-image-uploader${productAnimations[index] ? ' animate-card' : ''}`}
-          onClick={() => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (e) => {
-              const file = e.target.files[0];
-              if (file) handleProductImageChange(index, file);
-            };
-            input.click();
-          }}>
+          <section
+            className={`product-image-uploader${productAnimations[index] ? ' animate-card' : ''}`}
+            onClick={() => {
+              const input = document.createElement('input');
+              input.type = 'file';
+              input.accept = 'image/*';
+              input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) handleProductImageChange(index, file);
+              };
+              input.click();
+            }}>
             {creator.imagePreview ? (
               <img src={creator.imagePreview} alt="Product Preview" className="product-preview-img" />
             ) : (
@@ -508,13 +530,13 @@ function contrast(hex1, hex2) {
           />
 
           <input
-            type="number"
+            type="text" // Changed to text to allow custom formatting
             className="product-price-input"
             placeholder="Enter price"
-            value={creator.price}
+            value={creator.price} // Display the formatted value
             onChange={(e) => handleProductPriceChange(index, e.target.value)}
-            min="0"
-            step="1"
+            // min="0" // Removed min and step as type is text now, validation is in handler
+            // step="0.01" // Removed min and step as type is text now, validation is in handler
           />
 
           <input

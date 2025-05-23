@@ -23,22 +23,23 @@ const SellerHomePage = () => {
 
   useEffect(() => {
     const fetchUserAndProducts = async () => {
-      // Get sellerId from auth
       const sellerId = auth.currentUser?.uid;
       if (!sellerId) return;
 
       const sellerProducts = await retrieveSellerProducts(sellerId);
 
-      // Only show products with at least 1 sale
       const soldProducts = sellerProducts.filter(
         (p) => (typeof p.sales === "number" ? p.sales : 0) > 0
       );
       setProducts(soldProducts);
 
-      // Calculate total income using cartTotal
-      const soldProductsForTotal = soldProducts.flatMap(product =>
-        Array(product.sales).fill({ price: product.price })
-      );
+      const soldProductsForTotal = soldProducts.flatMap(product => {
+        // Ensure price is a number before passing to cartTotal
+        let price = typeof product.price === "string"
+          ? parseFloat(product.price.replace(/[^\d.]/g, "")) || 0
+          : product.price || 0;
+        return Array(product.sales).fill({ price: price });
+      });
       setTotalIncome(cartTotal(soldProductsForTotal));
     };
     fetchUserAndProducts();
@@ -56,7 +57,6 @@ const SellerHomePage = () => {
         return;
       }
 
-      // Retrieve seller info
       let sellerCard;
       try {
         sellerCard = await getSellerCard();
@@ -80,44 +80,37 @@ const SellerHomePage = () => {
             timeStyle: "short",
           });
 
-          // Add logo
           doc.addImage(logo, "PNG", 150, 10, 40, 28);
 
-          // Heading: BlooBase
           doc.setFont("helvetica", "bold");
           doc.setTextColor(0, 86, 179);
           doc.setFontSize(22);
           doc.text("BlooBase Sales Report", 14, 20);
 
-          // Reset color
           doc.setTextColor(0, 0, 0);
           doc.setFontSize(12);
 
           let y = 40;
 
-          // Seller
           doc.setFont("helvetica", "bold");
           doc.text("Seller:", 14, y);
           doc.setFont("helvetica", "normal");
           doc.text(`${sellerCard.storeName}`, 40, y);
           y += 8;
 
-          // Email
           doc.setFont("helvetica", "bold");
           doc.text("Email:", 14, y);
           doc.setFont("helvetica", "normal");
           doc.text(`${user.email || "Not available"}`, 40, y);
           y += 8;
 
-          // Generated
           doc.setFont("helvetica", "bold");
           doc.text("Generated:", 14, y);
           doc.setFont("helvetica", "normal");
           doc.text(`${formattedDate}`, 40, y);
           y += 8;
 
-          // Total Income
-          const totalIncome = products.reduce((sum, product) => {
+          const calculatedTotalIncome = products.reduce((sum, product) => {
             let price = typeof product.price === "string"
               ? parseFloat(product.price.replace(/[^\d.]/g, "")) || 0
               : product.price || 0;
@@ -128,10 +121,9 @@ const SellerHomePage = () => {
           doc.setFont("helvetica", "bold");
           doc.text("Total Income:", 14, y);
           doc.setFont("helvetica", "normal");
-          doc.text(`R${totalIncome.toFixed(2)}`, 50, y);
+          doc.text(`R${calculatedTotalIncome.toFixed(2)}`, 50, y); // Formatted here
           y += 12;
 
-          // Sales header
           doc.setFont("helvetica", "bold");
           doc.setFontSize(11);
           doc.text("Sales:", 14, y);
@@ -142,7 +134,7 @@ const SellerHomePage = () => {
               ? parseFloat(product.price.replace(/[^\d.]/g, "")) || 0
               : product.price || 0;
             let sales = typeof product.sales === "number" ? product.sales : 0;
-            const total = price * sales;
+            const itemTotal = price * sales; // Use a different variable name
 
             const title = `${index + 1}. - ${product.title || product.name || `Product ${index + 1}`}`;
 
@@ -151,17 +143,16 @@ const SellerHomePage = () => {
             y += 6;
 
             doc.setFont("helvetica", "normal");
-            doc.text(`   Price: R${price.toFixed(2)}`, 14, y);
+            doc.text(`   Price: R${price.toFixed(2)}`, 14, y); // Formatted here
             y += 6;
             doc.text(`   Sold: ${sales}`, 14, y);
             y += 6;
-            doc.text(`   Total: R${total.toFixed(2)}`, 14, y);
+            doc.text(`   Total: R${itemTotal.toFixed(2)}`, 14, y); // Formatted here
             y += 10;
           });
 
           doc.save("sales_report.pdf");
           console.log("PDF generated successfully");
-          // Optionally: toast.success("PDF generated successfully!");
         } catch (pdfError) {
           console.error("PDF generation error:", pdfError);
           toast.error("Failed to generate PDF document");
@@ -252,12 +243,12 @@ const SellerHomePage = () => {
               />
             </section>
             <section className="total-income-label">
-              Total Income: <strong>R{totalIncome.toFixed(2)}</strong>
+              Total Income: <strong>R{totalIncome.toFixed(2)}</strong> {/* Formatted here */}
             </section>
-              <section className="orders-card-scroll">
-                {products.length === 0 ? (
-                  <p className="orders-empty">No sales yet.</p>
-                ) : (
+            <section className="orders-card-scroll">
+              {products.length === 0 ? (
+                <p className="orders-empty">No sales yet.</p>
+              ) : (
                 products.map(product => (
                   <article key={product.id} className="order-preview">
                     <figure className="order-preview-figure">
@@ -276,17 +267,18 @@ const SellerHomePage = () => {
                         <section className="order-preview-type">
                           <em>
                             Price: R
+                            {/* Formatted here */}
                             {typeof product.price === "string"
-                              ? product.price.replace(/[^\d.]/g, "")
-                              : product.price}
+                              ? parseFloat(product.price.replace(/[^\d.]/g, "")).toFixed(2)
+                              : (product.price || 0).toFixed(2)}
                           </em>
                         </section>
                       </figcaption>
                     </figure>
                   </article>
                 ))
-                )}
-              </section>
+              )}
+            </section>
           </section>
         </section>
 

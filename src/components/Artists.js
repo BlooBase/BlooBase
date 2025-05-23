@@ -6,8 +6,8 @@ import Navbar from '../components/Navbar';
 import FloatingCart from '../components/FloatingCart';
 import '../Artists.css';
 import { retrieveSellers } from '../firebase/retrieveSellers';
-import { auth } from '../firebase/firebase'; // Import Firebase auth
-import { getUserRole } from '../firebase/firebase'; // Import the function to get the user's role
+import { auth } from '../firebase/firebase';
+import { getUserRole } from '../firebase/firebase'; 
 
 const Products = () => {
   const [products, setProducts] = useState([]);

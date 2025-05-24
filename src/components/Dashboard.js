@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import "../Dashboard.css"; // Ensure this path is correct
+import "../Dashboard.css";
 import { getRoleSize, getCollectionSize, getUserName } from "../firebase/firebase";
 import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers } from "../firebase/adminDashFunctions";
-import { fetchMonthlySalesPerformance } from "../firebase/adminDashFunctions"; // Ensure this function correctly fetches data
-import { Link, useNavigate } from "react-router-dom"; // Corrected import if there was a typo previously
+import { Link, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -165,14 +164,6 @@ const Dashboard = () => {
 
   const maxCount = getMaxSellerCount();
 
-  // Determine the maximum sales value for the bar graph to scale bars
-  // This now correctly considers all items in monthlySalesData, including the average bar.
-  const maxMonthlySales = monthlySalesData.reduce((max, month) => Math.max(max, month.total), 0);
-  
-  // --- LOG 4: Check max sales for scaling ---
-  console.log("Max Monthly Sales for Chart Scaling:", maxMonthlySales);
-
-
   return (
     <section className="dashboard-container">
       <section className="seller-header">
@@ -182,6 +173,10 @@ const Dashboard = () => {
         </section>
         <nav className="seller-nav">
           <Link to="/" className="seller-nav-link">HOME</Link>
+           <button onClick={handleDownloadPDF} className="download-button">
+            <h5>Download report  </h5>
+            <img src="/download.png" alt="Download PDF" className="download-icon" />
+          </button>
         </nav>
       </section>
 

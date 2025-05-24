@@ -7,8 +7,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import '../SellerHome.css';
 import { toast } from "react-toastify";
-// FIX: Corrected import path for react-toastify CSS
-import "react-toastify/dist/ReactToastify.css"; // THIS LINE IS CHANGED
+import "react-toastify/dist/ReactToastify.css";
 
 const SellerHomePage = () => {
   const [products, setProducts] = useState([]);

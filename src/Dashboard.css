@@ -51,6 +51,26 @@ h1 {
     margin-bottom: 1rem;
 }
 
+.download-button{
+  position: absolute;
+  top: 16px;
+  left: 120px; 
+  display: flex;
+  align-items: center;
+  z-index: 5;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 10px;
+  margin-top: 55px;
+  border-radius: 15px;
+  background-color: #ffffff;
+  
+}
+.download-icon{
+  width:17px;
+  height: 17px; 
+}
+
 .stats-row {
     display: flex;
     gap: 0.8rem;
@@ -529,6 +549,26 @@ h1 {
         right: -50px;
         width: 200px;
     }
+    
+.download-button{
+  position: absolute;
+  top: 1px;
+  left: 60px; 
+  display: flex;
+  align-items: center;
+  z-index: 5;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 6px;
+  margin-top: 55px;
+  border-radius: 15px;
+  background-color: #ffffff;
+  
+}
+.download-icon{
+  width:14px;
+  height: 14px; 
+}
 
     .stats-row {
         flex-direction: column;

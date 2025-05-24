@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "../Dashboard.css";
-import { getRoleSize, getCollectionSize, getUserName } from "../firebase/firebase";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+import { getRoleSize, getCollectionSize, getUserName,auth } from "../firebase/firebase";
 import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers } from "../firebase/adminDashFunctions";
 import { Link, useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 const Dashboard = () => {
   const navigate = useNavigate();
 
@@ -118,6 +120,172 @@ const Dashboard = () => {
 
   const maxCount = getMaxSellerCount();
 
+   const handleDownloadPDF=async()=>{
+      try {
+      const user = auth.currentUser;
+      if (!user) {
+        toast.error("You must be logged in to download a PDF.");
+        return;
+      }
+
+      // Fetch data
+      const userName = await getUserName();
+      const roleSizes = await getAllRoleSizes();
+      const ordersCount = await getCollectionSize("Orders");
+      const totalSales = await getTotalSales();
+      const latestOrders = await getLatestOrders();
+      const latestSellers = await getLatestSellers();
+      const topSellers = await getTopSellers();
+
+      const logo = new Image();
+      logo.src = "/bloobase.png";
+
+      logo.onload = () => {
+        try {
+          const doc = new jsPDF();
+          const now = new Date();
+          const formattedDate = now.toLocaleString("en-ZA", {
+            dateStyle: "medium",
+            timeStyle: "short",
+          });
+
+          // Add logo
+          doc.addImage(logo, "PNG", 150, 10, 40, 28);
+
+          // Heading: BlooBase
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(0, 86, 179);
+          doc.setFontSize(22);
+          doc.text("BlooBase Dashboard Report", 14, 20);
+
+          // Reset color and font
+          doc.setTextColor(0, 0, 0);
+          doc.setFontSize(12);
+
+          let y = 40;
+
+          // User Information
+          doc.setFont("helvetica", "bold");
+          doc.text("User:", 14, y);
+          doc.setFont("helvetica", "normal");
+          doc.text(`${userName || user.displayName || "Artisan"}`, 40, y);
+          y += 8;
+
+          // Email
+          doc.setFont("helvetica", "bold");
+          doc.text("Email:", 14, y);
+          doc.setFont("helvetica", "normal");
+          doc.text(`${user.email || "Not available"}`, 40, y);
+          y += 8;
+
+          // Generated Date
+          doc.setFont("helvetica", "bold");
+          doc.text("Generated:", 14, y);
+          doc.setFont("helvetica", "normal");
+          doc.text(`${formattedDate}`, 40, y);
+          y += 12;
+
+          // Role Sizes
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(11);
+          doc.text("User Roles:", 14, y);
+          y += 8;
+          doc.setFont("helvetica", "normal");
+          doc.text(`Buyers: ${roleSizes.Buyer || 0}`, 14, y);
+          y += 6;
+          doc.text(`Sellers: ${roleSizes.Seller || 0}`, 14, y);
+          y += 6;
+          doc.text(`Admins: ${roleSizes.Admin || 0}`, 14, y);
+          y += 12;
+
+          // Total Orders
+          doc.setFont("helvetica", "bold");
+          doc.text("Total Orders:", 14, y);
+          doc.setFont("helvetica", "normal");
+          doc.text(`${ordersCount || 0}`, 40, y);
+          y += 12;
+
+          // Total Sales
+          doc.setFont("helvetica", "bold");
+          doc.text("Total Sales:", 14, y);
+          doc.setFont("helvetica", "normal");
+          doc.text(`R${parseFloat(totalSales || 0).toFixed(2)}`, 40, y);
+          y += 12;
+
+          // Latest Transactions
+          doc.setFont("helvetica", "bold");
+          doc.text("Latest Transactions:", 14, y);
+          y += 8;
+          if (latestOrders && latestOrders.length > 0) {
+            latestOrders.slice(0, 5).forEach((order, index) => {
+              const orderId = order.id || `Order ${index + 1}`;
+              const total = parseFloat(order.total || 0).toFixed(2);
+              doc.setFont("helvetica", "normal");
+              doc.text(`${index + 1}. Order ID: ${orderId} - R${total}`, 14, y);
+              y += 6;
+            });
+          } else {
+            doc.setFont("helvetica", "normal");
+            doc.text("No recent transactions.", 14, y);
+            y += 6;
+          }
+          y += 6;
+
+          // Latest Sellers
+          doc.setFont("helvetica", "bold");
+          doc.text("New Artisans:", 14, y);
+          y += 8;
+          if (latestSellers && latestSellers.length > 0) {
+            latestSellers.slice(0, 5).forEach((seller, index) => {
+              const sellerName = seller.name || `Seller ${index + 1}`;
+              doc.setFont("helvetica", "normal");
+              doc.text(`${index + 1}. ${sellerName}`, 14, y);
+              y += 6;
+            });
+          } else {
+            doc.setFont("helvetica", "normal");
+            doc.text("No new artisans.", 14, y);
+            y += 6;
+          }
+          y += 6;
+
+          // Top Performing Sellers
+          doc.setFont("helvetica", "bold");
+          doc.text("Top Performing Artisans:", 14, y);
+          y += 8;
+          if (topSellers && topSellers.length > 0) {
+            topSellers.slice(0, 5).forEach((seller, index) => {
+              const sellerName = seller.seller || `Seller ${index + 1}`;
+              const count = seller.count || 0;
+              doc.setFont("helvetica", "normal");
+              doc.text(`${index + 1}. ${sellerName} - ${count} sales`, 14, y);
+              y += 6;
+            });
+          } else {
+            doc.setFont("helvetica", "normal");
+            doc.text("No top performers data available.", 14, y);
+            y += 6;
+          }
+
+          
+          doc.save("dashboard_report.pdf");
+          console.log("PDF generated successfully");
+         
+        } catch (pdfError) {
+          console.error("PDF generation error:", pdfError);
+          toast.error("Failed to generate PDF document");
+        }
+      };
+
+      logo.onerror = () => {
+        toast.error("Failed to load BlooBase logo.");
+      };
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast.error(error.message || "Unknown error");
+    }
+  };
+   
   return (
     <section className="dashboard-container">
       <section className="seller-header">
@@ -127,6 +295,10 @@ const Dashboard = () => {
         </section>
         <nav className="seller-nav">
           <Link to="/" className="seller-nav-link">HOME</Link>
+           <button onClick={handleDownloadPDF} className="download-button">
+            <h5>Download report  </h5>
+            <img src="/download.png" alt="Download PDF" className="download-icon" />
+          </button>
         </nav>
       </section>
 

@@ -246,7 +246,7 @@ const SellerHomePage = () => {
       <section className="seller-orders-section">
         <section className="orders-grid">
           <section className="floating-orders-card">
-            <h3 className="orders-card-title">SALES</h3>
+            <h3 className="orders-card-title-1">SALES</h3>
             <section className="download-sales">
               <img
                 src="/download.png"

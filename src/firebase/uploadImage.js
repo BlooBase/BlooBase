@@ -5,8 +5,8 @@ import { ref, uploadBytes } from "firebase/storage";
 /**
  * Uploads a file to Firebase Storage and returns the storage path (not the URL).
  * @param {File} file - The file object to upload.
- * @param {string} folder - Folder path in Firebase Storage (e.g., "shop_images").
- * @returns {Promise<string>} - The full storage path (e.g., "shop_images/abc123_file.png").
+ * @param {string} folder - Folder path in Firebase Storage
+ * @returns {Promise<string>} - The full storage path 
  */
 export async function uploadImage(file, folder = "shop_images") {
   try {
@@ -16,7 +16,7 @@ export async function uploadImage(file, folder = "shop_images") {
 
     await uploadBytes(fileRef, file);
 
-    return storagePath; // This is what you'll store in Firestore
+    return storagePath;
   } catch (error) {
     console.error("Image upload failed:", error);
     throw error;

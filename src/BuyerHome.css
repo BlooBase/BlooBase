@@ -517,7 +517,7 @@ body {
 
   .orders-card-title {
     font-size: 1rem;
-
+    max-width: 85px !important;
   }
 
   .orders-card-scroll {

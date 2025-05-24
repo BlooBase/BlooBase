@@ -1,6 +1,11 @@
-import { apiRequest,auth  } from "./firebase";
+import { apiRequest,auth } from "./firebase";
 
-// Adds a product to the current user's cart in Firestore
+/**
+ * Adds a product to the current user's cart.
+ * @param {object} product - The product object to be added to the cart.
+ * @returns {Promise<void>} A promise that resolves when the product is added to the cart.
+ * @throws {Error} If the user is not authenticated.
+ */
 export async function addToCart(product) {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");

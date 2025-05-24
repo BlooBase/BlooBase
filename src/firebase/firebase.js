@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, deleteUser} from "firebase/auth";
-import { getFirestore, doc, setDoc, getDocs,  collection,deleteDoc,query,where,updateDoc,increment,getDoc} from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDocs, collection,deleteDoc,query,where,updateDoc,increment,getDoc} from "firebase/firestore";
 import { getStorage, ref,uploadBytes,getDownloadURL } from "firebase/storage";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,9 +20,18 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
 
-const apiURL = 'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net'
 //const apiURL = 'http://localhost:5000'
-//API requests fucntion
+const apiURL = 'https://bloobaseapi-cfbrbub4fzg5b8aq.southafricanorth-01.azurewebsites.net'
+
+/**
+ * Makes an API request to the backend.
+ * @param {string} url - The API endpoint URL.
+ * @param {string} method - The HTTP method (GET, POST, PUT, DELETE, PATCH).
+ * @param {object | FormData | null} body - The request body.
+ * @param {boolean} isFormData - True if the body is FormData, false otherwise.
+ * @returns {Promise<object>} A promise that resolves to the JSON response from the API.
+ * @throws {Error} If the API response is not OK.
+ */
 export const apiRequest = async (url, method = 'GET', body = null, isFormData = false) => {
   const headers = {};
 
@@ -39,8 +48,7 @@ export const apiRequest = async (url, method = 'GET', body = null, isFormData = 
 
   if (body) {
     if (isFormData) {
-      config.body = body; // leave FormData as is
-      // Do not set Content-Type for FormData, browser will set it with boundary
+      config.body = body;
     } else {
       headers['Content-Type'] = 'application/json';
       config.body = JSON.stringify(body);
@@ -61,6 +69,13 @@ export const apiRequest = async (url, method = 'GET', body = null, isFormData = 
   return await response.json();
 };
 
+/**
+ * Uploads a file to Firebase Storage via an API endpoint.
+ * @param {File} file - The file to upload.
+ * @param {string} folder - The folder in Firebase Storage to upload the file to.
+ * @returns {Promise<string>} A promise that resolves to the path of the uploaded file.
+ * @throws {Error} If the user is not authenticated or if the upload fails.
+ */
 export const uploadFile = async (file, folder) => {
   if (!auth.currentUser) throw new Error("User not authenticated");
 
@@ -69,20 +84,34 @@ export const uploadFile = async (file, folder) => {
   formData.append('folder', folder);
 
   const response = await apiRequest('/api/upload', 'POST', formData, true);
-  return response.path; // assuming backend returns { path: '...' }
+  return response.path;
 };
 
-
+/**
+ * Adds a new user's data to Firestore via an API.
+ * @param {string} userId - The Firebase Authentication user ID.
+ * @param {string} email - The user's email.
+ * @param {string} name - The user's name.
+ * @param {string} role - The user's role.
+ * @param {string} authProvider - The authentication provider  "Firebase Auth" or "Google"
+ * @returns {Promise<void>} A promise that resolves when the user is added.
+ * @throws {Error} If there's an error adding the user.
+ */
 export async function addUserToFirestore(userId, email, name, role, authProvider) {
   try {
     await apiRequest('/api/users', 'POST', { userId, email, name, role, authProvider });
     console.log("User added via API!");
   } catch (error) {
     console.error("Error adding user via API:", error);
-    throw error; // Re-throw the error for the calling component to handle
+    throw error;
   }
 }
 
+/**
+ * Fetches the current user's data from the backend.
+ * @returns {Promise<object>} A promise that resolves to the user's data.
+ * @throws {Error} If the user is not authenticated or if fetching fails.
+ */
 export async function getUserData() {
   const user = auth.currentUser;
   if (!user) {
@@ -98,6 +127,10 @@ export async function getUserData() {
   }
 }
 
+/**
+ * Fetches the current user's name.
+ * @returns {Promise<string | null>} A promise that resolves to the user's name, or null if an error occurs.
+ */
 export async function getUserName() {
   try {
     const userData = await getUserData();
@@ -108,6 +141,10 @@ export async function getUserName() {
   }
 }
 
+/**
+ * Fetches the current user's role.
+ * @returns {Promise<string | null>} A promise that resolves to the user's role, or null if an error occurs.
+ */
 export async function getUserRole() {
   try {
     const userData = await getUserData();
@@ -118,6 +155,10 @@ export async function getUserRole() {
   }
 }
 
+/**
+ * Fetches the current user's authentication provider.
+ * @returns {Promise<string | null>} A promise that resolves to the user's authentication provider, or null if an error occurs.
+ */
 export async function getUserAuthProvider() {
   try {
     const userData = await getUserData();
@@ -128,7 +169,10 @@ export async function getUserAuthProvider() {
   }
 }
 
-//Logout User 
+/**
+ * Logs out the current user from Firebase Authentication.
+ * @returns {Promise<void>} A promise that resolves when the user is signed out.
+ */
 export const logout = async () => {
   try {
     await auth.signOut();
@@ -138,10 +182,14 @@ export const logout = async () => {
   }
 };
 
-//General function gets the numbe of user with a certain role
+/**
+ * Gets the number of users with a specific role.
+ * @param {string} name - The name of the role.
+ * @returns {Promise<number>} A promise that resolves to the count of users with the specified role.
+ */
 export const getRoleSize = async (name) => {
   try {
-    const result = await apiRequest(`/api/roles/${name}/size`); // Define this API endpoint
+    const result = await apiRequest(`/api/roles/${name}/size`);
     
     return result.count;
   } catch (error) {
@@ -150,10 +198,14 @@ export const getRoleSize = async (name) => {
   }
 };
 
-//General function for getting the size of a collction in database
+/**
+ * Gets the size (number of documents) of a collection in the database.
+ * @param {string} name - The name of the collection.
+ * @returns {Promise<number>} A promise that resolves to the count of documents in the collection.
+ */
 export const getCollectionSize = async (name) => {
   try {
-    const result = await apiRequest(`/api/collections/${name}/size`); // Define this API endpoint
+    const result = await apiRequest(`/api/collections/${name}/size`);
     return result.count;
   } catch (error) {
     console.error(`Error fetching size of collection ${name} via API:`, error);
@@ -161,7 +213,11 @@ export const getCollectionSize = async (name) => {
   }
 };
 
-//Sign up a normal user with a normal email
+/**
+ * Signs up a new user with email and password, and sends an email verification.
+ * @param {object} userData - The user's signup data, including name, email, password, confirmPassword, and role.
+ * @returns {Promise<boolean>} A promise that resolves to true on successful signup, false otherwise.
+ */
 export const signupNormUser = async ({ name, email, password, confirmPassword, role }) => {
   if (password !== confirmPassword) {
     toast.error("Passwords do not match");
@@ -181,7 +237,6 @@ export const signupNormUser = async ({ name, email, password, confirmPassword, r
     toast.success("Account created! Please check your email for verification.");
     return true;
   } catch (error) {
-    // Check if email is already in use
     if (error.code === "auth/email-already-in-use") {
       toast.error("Email already in use");
     } else {
@@ -191,17 +246,19 @@ export const signupNormUser = async ({ name, email, password, confirmPassword, r
   }
 };
 
-// Signup user with google auth service
+/**
+ * Signs up a user using Google authentication.
+ * @param {string} role - The role to assign to the user.
+ * @returns {Promise<boolean>} A promise that resolves to true on successful signup/login, false otherwise.
+ */
 export const GoogleSignup = async (role) => {
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    // Try to fetch the user from your backend
     let existingUser = await apiRequest(`/api/users/${user.uid}`).catch(() => null);
 
-    // If not found, create the user record (signup) automatically
     if (!existingUser) {
       await apiRequest('/api/users', 'POST', {
         userId: user.uid,
@@ -210,16 +267,12 @@ export const GoogleSignup = async (role) => {
         role: role,
         authProvider: "Google",
       });
-      // Optionally fetch the newly created user, if needed:
       existingUser = await apiRequest(`/api/users/${user.uid}`);
     }
 
-    // After successfully signing up (or if the user already existed),
-    // consider the process a success and log the user in.
-    return true; // Success
+    return true;
   } catch (error) {
     if (error.code === "auth/popup-closed-by-user") {
-      // User closed the popup, do nothing
       return false;
     }
     console.error("Google Sign-up failed:", error);
@@ -228,7 +281,12 @@ export const GoogleSignup = async (role) => {
   }
 };
 
-//Login users with firebase auth
+/**
+ * Logs in a user with email and password.
+ * @param {object} credentials - The user's login credentials, including email and password.
+ * @returns {Promise<object>} A promise that resolves to the authenticated user object.
+ * @throws {Error} If login fails or email is not verified.
+ */
 export const loginNormUser = async ({ email, password }) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -236,7 +294,6 @@ export const loginNormUser = async ({ email, password }) => {
 
     if (!user.emailVerified) {
       await auth.signOut();
-      // Throw a new error so downstream catches show the same message
       throw new Error("Please verify your email before logging in.");
     }
 
@@ -250,12 +307,16 @@ export const loginNormUser = async ({ email, password }) => {
     } else {
       message = error.message;
     }
-    // Throw a new error with the custom message so that any UI error field shows the same message.
     throw new Error(message);
   }
 };
 
-//Updates user's general details name, email and password
+/**
+ * Updates a user's credentials (name, email, password).
+ * @param {object} updates - An object containing the fields to update, including name, email, password, and newpassword.
+ * @returns {Promise<void>} A promise that resolves when the credentials are updated.
+ * @throws {Error} If the user is not authenticated or if the update fails.
+ */
 export const updateCredentials = async ({ name, email, password, newpassword }) => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
@@ -265,7 +326,7 @@ export const updateCredentials = async ({ name, email, password, newpassword }) 
     if (name) updates.name = name;
     if (email) updates.email = email;
     if (newpassword) updates.newpassword = newpassword;
-    if (password && (email || newpassword)) updates.password = password; // Need current password for email/password update
+    if (password && (email || newpassword)) updates.password = password;
 
     await apiRequest(`/api/users/${user.uid}`, 'PATCH', updates);
   } catch (error) {
@@ -274,7 +335,12 @@ export const updateCredentials = async ({ name, email, password, newpassword }) 
   }
 };
 
-//Deletes user's account
+/**
+ * Deletes the current user's account.
+ * @param {string} currentPassword - The current password of the user for re-authentication.
+ * @returns {Promise<void>} A promise that resolves when the account is deleted.
+ * @throws {Error} If the user is not authenticated or if the deletion fails.
+ */
 export const deleteAccount = async (currentPassword) => {
   const user = auth.currentUser;
   if (!user || !user.email) throw new Error("User not authenticated");
@@ -289,7 +355,10 @@ export const deleteAccount = async (currentPassword) => {
   }
 };
 
-//Login a user with google auth
+/**
+ * Logs in a user using Google authentication.
+ * @returns {Promise<boolean>} A promise that resolves to true on successful login, false otherwise.
+ */
 export const GoogleLogin = async () => {
   const provider = new GoogleAuthProvider();
 
@@ -297,11 +366,9 @@ export const GoogleLogin = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    // Check if the user exists in your backend
     const existingUser = await apiRequest(`/api/users/${user.uid}`).catch(() => null);
 
     if (!existingUser) {
-      // If the user doesn't exist, show a toast and return
       toast.error("Sign up first");
       return false;
     }
@@ -309,7 +376,6 @@ export const GoogleLogin = async () => {
     return true;
   } catch (error) {
     if (error.code === "auth/popup-closed-by-user") {
-      // User closed the popup, do nothing
       return false;
     }
     console.error("Google Login Error:", error);
@@ -318,14 +384,12 @@ export const GoogleLogin = async () => {
   }
 };
 
-//New functions
-
-
 /**
  * Uploads a file to Firebase Storage and returns the storage path (not the URL).
  * @param {File} file - The file object to upload.
- * @param {string} folder - Folder path in Firebase Storage (e.g., "shop_images").
- * @returns {Promise<string>} - The full storage path (e.g., "shop_images/abc123_file.png").
+ * @param {string} folder - Folder path in Firebase Storage
+ * @returns {Promise<string>} - The full storage path 
+ * @throws {Error} If the image upload fails.
  */
 export async function uploadImage(file, folder = "shop_images") {
   try {
@@ -335,24 +399,29 @@ export async function uploadImage(file, folder = "shop_images") {
 
     await uploadBytes(fileRef, file);
 
-    return storagePath; // This is what you'll store in Firestore
+    return storagePath;
   } catch (error) {
     console.error("Image upload failed:", error);
     throw error;
   }
 }
+
+/**
+ * Creates or updates a seller's shop card.
+ * @param {object} cardData - The data for the seller card, including image, color, description, genre, textColor, and title.
+ * @returns {Promise<void>} A promise that resolves when the seller card is upserted.
+ * @throws {Error} If the user is not authenticated.
+ */
 export const upsertSellerCard = async (cardData) => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
 
   let imagePath = cardData.image;
 
-  // Preserve image upload logic
   if (cardData.image instanceof File) {
     imagePath = await uploadImage(cardData.image, "shop_images");
   }
 
-  // Use apiRequest to send the data to the backend
   await apiRequest(`/api/seller/card`, "POST", {
     image: imagePath,
     color: cardData.color,
@@ -362,12 +431,25 @@ export const upsertSellerCard = async (cardData) => {
     title: cardData.title,
   });
 };
+
+/**
+ * Deletes the current user's seller card.
+ * @returns {Promise<void>} A promise that resolves when the seller card is deleted.
+ * @throws {Error} If the user is not authenticated.
+ */
 export const deleteSellerCard = async () => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
 
   await apiRequest(`/api/seller/card`, "DELETE");
 };
+
+/**
+ * Adds a new product for the current seller.
+ * @param {object} productData - The product data, including image, name, price, and stock.
+ * @returns {Promise<void>} A promise that resolves when the product is added.
+ * @throws {Error} If the user is not authenticated.
+ */
 export const addProduct = async ({ image, name, price, stock }) => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
@@ -377,7 +459,6 @@ export const addProduct = async ({ image, name, price, stock }) => {
     imageUrl = await uploadImage(image, "product_images");
   }
 
-  // Always store as "R" + number
   let randPrice = price;
   if (typeof randPrice === "number") {
     randPrice = `R${randPrice}`;
@@ -392,9 +473,15 @@ export const addProduct = async ({ image, name, price, stock }) => {
     image: imageUrl,
     name,
     price: randPrice,
-    stock, // <-- Add this line
+    stock,
   });
 };
+
+/**
+ * Fetches all products associated with the current seller.
+ * @returns {Promise<Array<object>>} A promise that resolves to an array of seller's products, with image URLs and formatted prices.
+ * @throws {Error} If the user is not authenticated.
+ */
 export const getSellerProducts = async () => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
@@ -403,7 +490,6 @@ export const getSellerProducts = async () => {
 
   const products = [];
   for (const data of rawProducts) {
-    // Convert image path to download URL if needed
     if (data.image && typeof data.image === "string" && !data.image.startsWith("http")) {
       try {
         data.image = await getDownloadURL(ref(storage, data.image));
@@ -412,7 +498,6 @@ export const getSellerProducts = async () => {
       }
     }
 
-    // Convert price from "R123" to 123 (number)
     let price = data.price;
     if (typeof price === "string" && price.startsWith("R")) {
       price = Number(price.slice(1));
@@ -423,6 +508,13 @@ export const getSellerProducts = async () => {
 
   return products;
 };
+
+/**
+ * Updates an existing product for the current seller.
+ * @param {object} productData - The product data to update, including id, image, name, price, and stock.
+ * @returns {Promise<void>} A promise that resolves when the product is updated.
+ * @throws {Error} If the user is not authenticated.
+ */
 export const updateProduct = async ({ id, image, name, price, stock }) => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
@@ -432,7 +524,6 @@ export const updateProduct = async ({ id, image, name, price, stock }) => {
     imageUrl = await uploadImage(image, "product_images");
   }
 
-  // Format price as "R123"
   let formattedPrice = price;
   if (typeof formattedPrice === "number") {
     formattedPrice = `R${formattedPrice}`;
@@ -450,19 +541,31 @@ export const updateProduct = async ({ id, image, name, price, stock }) => {
     stock, 
   });
 };
+
+/**
+ * Deletes a product associated with the current seller.
+ * @param {string} id - The ID of the product to delete.
+ * @returns {Promise<void>} A promise that resolves when the product is deleted.
+ * @throws {Error} If the user is not authenticated.
+ */
 export const deleteProduct = async (id) => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
 
   await apiRequest(`/api/products/${id}`, "DELETE");
 };
+
+/**
+ * Fetches the current seller's shop card details.
+ * @returns {Promise<object | null>} A promise that resolves to the seller's card data, with image URL, or null if not found.
+ * @throws {Error} If the user is not authenticated.
+ */
 export const getSellerCard = async () => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated");
 
   const data = await apiRequest("/api/seller/card");
 
-  // Convert image path to download URL if necessary
   if (data?.image) {
     try {
       data.image = await getDownloadURL(ref(storage, data.image));
@@ -474,8 +577,14 @@ export const getSellerCard = async () => {
 
   return data;
 };
+
+/**
+ * Updates the total sales amount for a specific product.
+ * @param {string} productId - The ID of the product to update.
+ * @param {number} amount - The amount to add to the product's total.
+ * @returns {Promise<void>} A promise that resolves when the product total is updated.
+ */
 export const addToProductTotal = async (productId, amount) => {
-  // PATCH request to update or create the total field
   await apiRequest(`/api/products/${productId}/total`, 'PATCH', { amount });
 };
 

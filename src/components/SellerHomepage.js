@@ -6,7 +6,6 @@ import { auth, getSellerCard } from "../firebase/firebase";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import '../SellerHome.css';
-import cartTotal from './cartTotal';
 import { toast } from "react-toastify";
 // FIX: Corrected import path for react-toastify CSS
 import "react-toastify/dist/ReactToastify.css"; // THIS LINE IS CHANGED
@@ -48,12 +47,12 @@ const SellerHomePage = () => {
       );
       setProducts(soldProducts);
 
-      // Calculate total income using cartTotal, ensuring prices are numeric
-      const soldProductsForTotal = soldProducts.flatMap(product => {
-        const cleanedPrice = parseFloat(product.price.replace(/[^\d.]/g, '') || 0); // Clean and parse price
-        return Array(product.sales).fill({ price: cleanedPrice });
-      });
-      setTotalIncome(cartTotal(soldProductsForTotal));
+      // Calculate total income by summing the 'total' field of each product (default to 0 if missing)
+      const totalIncomeSum = soldProducts.reduce(
+        (sum, product) => sum + (typeof product.total === "number" ? product.total : 0),
+        0
+      );
+      setTotalIncome(totalIncomeSum);
     };
     fetchUserAndProducts();
   }, []);
@@ -131,12 +130,10 @@ const SellerHomePage = () => {
           y += 8;
 
           // Total Income
-          const totalIncomeValue = products.reduce((sum, product) => {
-            // Use the formatPrice helper to ensure price is clean before calculation
-            const price = parseFloat(formatPrice(product.price));
-            const sales = typeof product.sales === "number" ? product.sales : 0;
-            return sum + price * sales;
-          }, 0);
+          const totalIncomeValue = products.reduce(
+            (sum, product) => sum + (typeof product.total === "number" ? product.total : parseFloat(formatPrice(product.total))),
+            0
+          );
 
           doc.setFont("helvetica", "bold");
           doc.text("Total Income:", 14, y);
@@ -151,23 +148,20 @@ const SellerHomePage = () => {
           y += 8;
 
           products.forEach((product, index) => {
-            // Use the formatPrice helper for individual product price
-            const price = parseFloat(formatPrice(product.price));
-            const sales = typeof product.sales === "number" ? product.sales : 0;
-            const total = price * sales;
-
             const title = `${index + 1}. - ${product.title || product.name || `Product ${index + 1}`}`;
+            const sales = typeof product.sales === "number" ? product.sales : 0;
+            const income = typeof product.total === "number"
+              ? product.total
+              : parseFloat(formatPrice(product.total));
 
             doc.setFont("helvetica", "bold");
             doc.text(title, 14, y);
             y += 6;
 
             doc.setFont("helvetica", "normal");
-            doc.text(`   Price: R${price.toFixed(2)}`, 14, y);
-            y += 6;
             doc.text(`   Sold: ${sales}`, 14, y);
             y += 6;
-            doc.text(`   Total: R${total.toFixed(2)}`, 14, y);
+            doc.text(`   Income: R${income.toFixed(2)}`, 14, y);
             y += 10;
           });
 
@@ -288,9 +282,8 @@ const SellerHomePage = () => {
                         </section>
                         <section className="order-preview-type">
                           <em>
-                            Price: R
-                            {/* Use formatPrice for display */}
-                            {formatPrice(product.price)}
+                            Income: R
+                            {formatPrice(product.total)}
                           </em>
                         </section>
                       </figcaption>

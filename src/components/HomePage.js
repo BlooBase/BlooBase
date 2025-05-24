@@ -289,14 +289,14 @@ const HomePage = () => {
                                                 const alreadyInCart = cart.some(item => item.id === product.id);
 
                                                 if (alreadyInCart) {
-                                                    toast.info(`${product.name} is already in cart`);
+                                                    toast.info(`${product.name} is already in cart`, { autoClose: 1000 });
                                                     return;
                                                 }
 
                                                 await addToCart(product);
-                                                toast.success(`Added ${product.name} to cart`);
+                                                toast.success(`Added ${product.name} to cart`, { autoClose: 1000 });
                                             } catch (error) {
-                                                toast.error("Failed to add to cart: " + error.message);
+                                                toast.error("Failed to add to cart: " + error.message, { autoClose: 1000 });
                                             }
                                         }}
                                     >

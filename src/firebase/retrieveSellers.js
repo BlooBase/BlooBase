@@ -4,6 +4,11 @@ import { hardcodedSellers } from "./retrieveSellersCached"; // optional separate
 
 export let cachedSellers = null;
 
+/**
+ * Retrieves a list of sellers, fetching their data from the backend and converting image storage paths to download URLs.
+ * Caches the retrieved sellers. If an error occurs, falls back to a cached version or hardcoded sellers.
+ * @returns {Promise<Array<object>>} A promise that resolves to an array of seller objects, each with an image property as a URL.
+ */
 export async function retrieveSellers() {
   try {
     const sellers = await apiRequest("/api/sellers", "GET");

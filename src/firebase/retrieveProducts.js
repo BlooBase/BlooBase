@@ -1,12 +1,14 @@
 import { ref, getDownloadURL } from "firebase/storage";
 import { storage,apiRequest } from "./firebase";
 
+/**
+ * Retrieves all products, fetching their data from the backend and converting image storage paths to download URLs.
+ * @returns {Promise<Array<object>>} A promise that resolves to an array of product objects, each with a `imageUrl` property.
+ */
 export async function retrieveProducts() {
   try {
-    // Fetch product data from your backend
     const products = await apiRequest("/api/products", "GET");
 
-    // Convert image storage paths to download URLs
     const productsWithUrls = await Promise.all(
       products.map(async (product) => {
         let imageUrl = null;

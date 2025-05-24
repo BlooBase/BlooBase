@@ -1,6 +1,12 @@
 import { uploadImage } from "./uploadImage";
 import { apiRequest } from "./firebase"; // Make sure you have this utility function
 
+/**
+ * Adds a new seller to the system, including uploading their shop image.
+ * @param {object} sellerData - The data for the seller, including shop details and an image file.
+ * @returns {Promise<void>} A promise that resolves when the seller is added, or rejects on error.
+ * @throws {Error} If required seller data fields are missing.
+ */
 export async function addSeller(sellerData) {
   try {
     const {
@@ -16,10 +22,8 @@ export async function addSeller(sellerData) {
       throw new Error("Missing required seller data fields.");
     }
 
-    // Upload the image to Firebase Storage
     const imagePath = await uploadImage(image, "shop_images");
 
-    // Send the rest of the data to the backend
     await apiRequest("/api/sellers", "POST", {
       color,
       description,

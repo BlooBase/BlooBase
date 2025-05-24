@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import "../Dashboard.css";
+import "../Dashboard.css"; // Ensure this path is correct
 import { getRoleSize, getCollectionSize, getUserName } from "../firebase/firebase";
 import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers } from "../firebase/adminDashFunctions";
-import { Link, useNavigate } from "react-router-dom";
+import { fetchMonthlySalesPerformance } from "../firebase/adminDashFunctions"; // Ensure this function correctly fetches data
+import { Link, useNavigate } from "react-router-dom"; // Corrected import if there was a typo previously
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -40,6 +41,9 @@ const Dashboard = () => {
   const [topPerformingSellers, setTopPerformingSellers] = useState([]);
   const [topSellersLoading, setTopSellersLoading] = useState(true);
   const [topSellersError, setTopSellersError] = useState(null);
+  const [monthlySalesData, setMonthlySalesData] = useState([]);
+  const [monthlySalesLoading, setMonthlySalesLoading] = useState(true);
+  const [monthlySalesError, setMonthlySalesError] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -50,10 +54,9 @@ const Dashboard = () => {
       setOrdersCount(orders);
 
       const transactions = await getLatestOrders();
-      // Ensure transaction totals are numbers and formatted to 2 decimals
       const formattedTransactions = transactions.map(t => ({
         ...t,
-        total: parseFloat(t.total || 0).toFixed(2) // Format total here
+        total: parseFloat(t.total || 0).toFixed(2)
       }));
       setLatestTransactions(formattedTransactions);
 
@@ -72,7 +75,7 @@ const Dashboard = () => {
 
       try {
         const sales = await getTotalSales();
-        setTotalSales(sales); // totalSales will be formatted in the JSX
+        setTotalSales(sales);
       } catch (err) {
         console.error("Error fetching overall sales:", err);
         setTotalSales(0);
@@ -83,8 +86,6 @@ const Dashboard = () => {
       try {
         const topSellersData = await getTopSellers();
         setTopPerformingSellers(topSellersData);
-        console.log("top sellers");
-        console.log(topSellersData);
       } catch (err) {
         console.error("Error fetching top performing sellers:", err);
         setTopSellersError("Failed to load top performing artisans.");
@@ -92,10 +93,55 @@ const Dashboard = () => {
       } finally {
         setTopSellersLoading(false);
       }
+
+      setMonthlySalesLoading(true);
+      setMonthlySalesError(null);
+      try {
+        const data = await fetchMonthlySalesPerformance(); // This is the crucial data source
+        
+        // --- LOG 1: Check raw data from Firebase ---
+        console.log("Raw monthly sales data from Firebase:", data);
+
+        // Ensure 'data' contains objects with a 'total' property that can be summed.
+        // It's good practice to ensure 'total' is a number before summing.
+        const numericData = data.map(item => ({
+            ...item,
+            total: parseFloat(item.total || 0) // Ensure total is a float, default to 0 if null/undefined
+        }));
+
+        const totalSum = numericData.reduce((sum, item) => sum + item.total, 0);
+        const averageSales = numericData.length > 0 ? totalSum / numericData.length : 0;
+
+        // --- LOG 2: Check calculated average sales ---
+        console.log("Calculated Average Sales (before toFixed):", averageSales);
+
+        // Create an object for the average bar
+        const averageBarData = {
+          month: 'Avg', // Label for the average bar
+          year: null, // No specific year for average
+          total: averageSales, // The calculated average
+          isAverage: true // Flag to identify this bar for styling
+        };
+
+        // Append the average data to the existing monthly sales data
+        const combinedData = [...numericData, averageBarData];
+        setMonthlySalesData(combinedData);
+
+        // --- LOG 3: Check the final array sent to state ---
+        console.log("Monthly Sales Data (including Avg, after setMonthlySalesData):", combinedData);
+        
+
+      } catch (err) {
+        console.error("Error fetching monthly sales performance:", err);
+        setMonthlySalesError("Failed to load monthly sales data. Make sure 'total' fields are numbers.");
+        setMonthlySalesData([]);
+      } finally {
+        setMonthlySalesLoading(false);
+      }
     }
 
     fetchData();
-  }, []);
+  }, []); // Empty dependency array means this useEffect runs once on mount
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -111,12 +157,21 @@ const Dashboard = () => {
 
   const getMaxSellerCount = () => {
     if (topPerformingSellers.length > 0) {
-      return topPerformingSellers[0].count;
+      // Assuming 'count' is the property to determine performance
+      return topPerformingSellers.reduce((max, seller) => Math.max(max, seller.count), 1);
     }
     return 1;
   };
 
   const maxCount = getMaxSellerCount();
+
+  // Determine the maximum sales value for the bar graph to scale bars
+  // This now correctly considers all items in monthlySalesData, including the average bar.
+  const maxMonthlySales = monthlySalesData.reduce((max, month) => Math.max(max, month.total), 0);
+  
+  // --- LOG 4: Check max sales for scaling ---
+  console.log("Max Monthly Sales for Chart Scaling:", maxMonthlySales);
+
 
   return (
     <section className="dashboard-container">
@@ -142,7 +197,6 @@ const Dashboard = () => {
             <p>
               Sales <img src="sales.png" alt="sales-img" className="icons" />
             </p>
-            {/* Format totalSales here */}
             <p className="stat-value sales">R {parseFloat(totalSales).toFixed(2)}</p>
           </article>
           <article className="stat-card">
@@ -214,7 +268,6 @@ const Dashboard = () => {
                       onClick={() => handleTransactionClick(transaction.id)}
                     >
                       <p className="transaction-id">Order ID: {transaction.id}</p>
-                      {/* transaction.total is already formatted in useEffect */}
                       <p className="amount">R {transaction.total}</p>
                     </button>
                   </li>
@@ -228,59 +281,47 @@ const Dashboard = () => {
 
         <section className="details-row">
           <article className="graph-section">
-            <h3>Monthly Sales Performance</h3>
-            <section className="graph-container">
-              <section className="graph-y-axis">
-                {/* These are static, illustrative values. If they were dynamic, they'd need formatting. */}
-                <p>5k</p>
-                <p>4k</p>
-                <p>3k</p>
-                <p>2k</p>
-                <p>1k</p>
-                <p>0</p>
-              </section>
-              <section className="graph-content">
-                {/* Static graph data with manual formatting. If dynamic, ensure values are formatted. */}
-                <section className="graph-bar" style={{ height: "30%" }}>
-                  <p className="graph-tooltip">Jan: R1,500.00</p>
+            <h3>Monthly Sales Performance (Last 12 Months)</h3>
+            {monthlySalesLoading ? (
+              <p>Loading monthly sales data...</p>
+            ) : monthlySalesError ? (
+              <p className="error-message">{monthlySalesError}</p>
+            ) : monthlySalesData.length > 0 ? (
+              <>
+                <section className="sales-bar-chart">
+                  {monthlySalesData.map((monthData, index) => (
+                    <section key={index} className="bar-container">
+                      <span className="bar-value">
+                        R {monthData.total.toFixed(2)}
+                      </span>
+                      <section
+                        // Using template literal for class names is standard React practice
+                        className={`bar ${monthData.isAverage ? 'average-bar' : ''}`}
+                        style={{ height: `${(monthData.total / maxMonthlySales) * 100}%` }}
+                        title={`R ${monthData.total.toFixed(2)}`}
+                      ></section>
+                      <span className="month-label">{monthData.month}</span>
+                    </section>
+                  ))}
                 </section>
-                <section className="graph-bar" style={{ height: "40%" }}>
-                  <p className="graph-tooltip">Feb: R2,000.00</p>
+                {/* Key/Legend */}
+                <section className="graph-key">
+                  <section className="key-item">
+                    <span className="key-color normal-sales"></span>
+                    <span>Monthly Sales</span>
+                  </section>
+                  <section className="key-item">
+                    <span className="key-color average-sales"></span>
+                    <span>12-Month Average</span>
+                  </section>
                 </section>
-                <section className="graph-bar" style={{ height: "35%" }}>
-                  <p className="graph-tooltip">Mar: R1,750.00</p>
-                </section>
-                <section className="graph-bar" style={{ height: "60%" }}>
-                  <p className="graph-tooltip">Apr: R3,000.00</p>
-                </section>
-                <section className="graph-bar active" style={{ height: "80%" }}>
-                  <p className="graph-tooltip">May: R4,000.00</p>
-                </section>
-                <section className="graph-bar forecast" style={{ height: "70%" }}>
-                  <p className="graph-tooltip">Jun: R3,500.00 (forecast)</p>
-                </section>
-              </section>
-              <section className="graph-x-axis">
-                <p>May</p>
-                <p>June</p>
-                <p>July</p>
-                <p>Aug</p>
-                <p>Sep</p>
-                <p>Oct</p>
-              </section>
-            </section>
-            <section className="graph-legend">
-              <section className="legend-item">
-                <p className="legend-color"></p>
-                <p>Monthly Sales</p>
-              </section>
-              <section className="legend-item">
-                <p className="legend-color forecast"></p>
-                <p>Forecast</p>
-              </section>
-            </section>
+              </>
+            ) : (
+              <p>No monthly sales data available.</p>
+            )}
           </article>
         </section>
+
       </main>
     </section>
   );

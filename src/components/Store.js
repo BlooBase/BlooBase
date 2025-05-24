@@ -91,11 +91,11 @@ const Store = () => {
 
   const artist = stores.find((p) => p.id === id);
 
-  if (!artist) return <p>Artist not found.</p>;
+  if (!artist) return <p>Artisan not found.</p>;
 
   return (
     <section className="store-page-2" style={{ backgroundColor: artist.color }}>
-      <Navbar pageTitle="Artist" user={user} bgColor="transparent" textColor="#165a9c" />
+      <Navbar pageTitle="Artisan" user={user} bgColor="transparent" textColor="#165a9c" />
 
       <section className="store-header-2">
         <img src={artist.image} alt={artist.title} className="store-image-2" />

@@ -180,8 +180,14 @@ const Dashboard = () => {
             ) : topPerformingSellers.length > 0 ? (
               <ul className="store-list">
                 {topPerformingSellers.map((sellerData, index) => (
-                  <li key={index} className="store-item">
-                    <p className="store-name">{sellerData.seller}</p>
+                  <li key={sellerData.id || index} className="store-item">
+                    <Link
+                      to={`/Artists/${sellerData.id}`}
+                      className="store-name"
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      {sellerData.seller}
+                    </Link>
                     <section className="store-bar">
                       <section
                         className="store-progress"

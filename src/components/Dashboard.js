@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "../Dashboard.css";
-import { getRoleSize, getCollectionSize, getUserName } from "../firebase/firebase";
+import { getRoleSize, getCollectionSize, getUserName, auth } from "../firebase/firebase";
 import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers } from "../firebase/adminDashFunctions";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -26,6 +29,36 @@ const Dashboard = () => {
         Seller: 0,
         Admin: 0,
       };
+    }
+  }
+
+  // Placeholder function for fetching monthly sales data
+  async function fetchMonthlySalesPerformance() {
+    try {
+      // Simulate fetching monthly sales data for the last 12 months
+      // Replace this with your actual Firebase query
+      const months = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      ];
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth();
+      const salesData = months.map((month, index) => {
+        const monthIndex = (currentMonth - 11 + index + 12) % 12; // Last 12 months
+        const year = currentMonth - 11 + index < 0 ? currentYear - 1 : currentYear;
+        // Simulate sales totals (replace with actual Firebase data)
+        const total = Math.random() * 5000; // Random sales between 0 and 5000
+        return {
+          month: months[monthIndex],
+          year,
+          total,
+        };
+      });
+      return salesData;
+    } catch (error) {
+      console.error("Error in fetchMonthlySalesPerformance:", error);
+      throw error;
     }
   }
 
@@ -96,40 +129,30 @@ const Dashboard = () => {
       setMonthlySalesLoading(true);
       setMonthlySalesError(null);
       try {
-        const data = await fetchMonthlySalesPerformance(); // This is the crucial data source
-        
-        // --- LOG 1: Check raw data from Firebase ---
+        const data = await fetchMonthlySalesPerformance();
         console.log("Raw monthly sales data from Firebase:", data);
 
-        // Ensure 'data' contains objects with a 'total' property that can be summed.
-        // It's good practice to ensure 'total' is a number before summing.
         const numericData = data.map(item => ({
-            ...item,
-            total: parseFloat(item.total || 0) // Ensure total is a float, default to 0 if null/undefined
+          ...item,
+          total: parseFloat(item.total || 0)
         }));
 
         const totalSum = numericData.reduce((sum, item) => sum + item.total, 0);
         const averageSales = numericData.length > 0 ? totalSum / numericData.length : 0;
 
-        // --- LOG 2: Check calculated average sales ---
         console.log("Calculated Average Sales (before toFixed):", averageSales);
 
-        // Create an object for the average bar
         const averageBarData = {
-          month: 'Avg', // Label for the average bar
-          year: null, // No specific year for average
-          total: averageSales, // The calculated average
-          isAverage: true // Flag to identify this bar for styling
+          month: 'Avg',
+          year: null,
+          total: averageSales,
+          isAverage: true
         };
 
-        // Append the average data to the existing monthly sales data
         const combinedData = [...numericData, averageBarData];
         setMonthlySalesData(combinedData);
 
-        // --- LOG 3: Check the final array sent to state ---
         console.log("Monthly Sales Data (including Avg, after setMonthlySalesData):", combinedData);
-        
-
       } catch (err) {
         console.error("Error fetching monthly sales performance:", err);
         setMonthlySalesError("Failed to load monthly sales data. Make sure 'total' fields are numbers.");
@@ -140,7 +163,7 @@ const Dashboard = () => {
     }
 
     fetchData();
-  }, []); // Empty dependency array means this useEffect runs once on mount
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -156,13 +179,196 @@ const Dashboard = () => {
 
   const getMaxSellerCount = () => {
     if (topPerformingSellers.length > 0) {
-      // Assuming 'count' is the property to determine performance
       return topPerformingSellers.reduce((max, seller) => Math.max(max, seller.count), 1);
     }
     return 1;
   };
 
   const maxCount = getMaxSellerCount();
+
+  // Calculate maxMonthlySales for scaling the bar chart
+  const maxMonthlySales = monthlySalesData.length > 0
+    ? Math.max(...monthlySalesData.map(item => item.total), 1)
+    : 1;
+  const handleDownloadPDF = async () => {
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      toast.error("You must be logged in to download a PDF.");
+      return;
+    }
+
+    const userName = await getUserName();
+    const roleSizes = await getAllRoleSizes();
+    const ordersCount = await getCollectionSize("Orders");
+    const totalSales = await getTotalSales();
+    const latestOrders = await getLatestOrders();
+    const latestSellers = await getLatestSellers();
+    const topSellers = await getTopSellers();
+
+    const logo = new Image();
+    logo.src = "/bloobase.png";
+
+    logo.onload = () => {
+      try {
+        const doc = new jsPDF();
+        const now = new Date();
+        const formattedDate = now.toLocaleString("en-ZA", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        });
+
+        doc.addImage(logo, "PNG", 150, 10, 40, 28);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0, 86, 179);
+        doc.setFontSize(22);
+        doc.text("BlooBase Dashboard Report", 14, 20);
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(12);
+
+        let y = 40;
+
+        doc.setFont("helvetica", "bold");
+        doc.text("User:", 14, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(`${userName || user.displayName || "Artisan"}`, 40, y);
+        y += 8;
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Email:", 14, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(`${user.email || "Not available"}`, 40, y);
+        y += 8;
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Generated:", 14, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(`${formattedDate}`, 40, y);
+        y += 12;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.text("User Roles:", 14, y);
+        y += 8;
+        doc.setFont("helvetica", "normal");
+        doc.text(`Buyers: ${roleSizes.Buyer || 0}`, 14, y);
+        y += 6;
+        doc.text(`Sellers: ${roleSizes.Seller || 0}`, 14, y);
+        y += 6;
+        doc.text(`Admins: ${roleSizes.Admin || 0}`, 14, y);
+        y += 12;
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Total Orders:", 14, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(`${ordersCount || 0}`, 40, y);
+        y += 12;
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Total Sales:", 14, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(`R${parseFloat(totalSales || 0).toFixed(2)}`, 40, y);
+        y += 12;
+
+        // === Monthly Sales Performance (aligned text columns) ===
+        doc.setFont("courier", "bold");
+        doc.text("Monthly Sales Performance (Last 12 Months):", 14, y);
+        y += 8;
+
+        if (monthlySalesData && monthlySalesData.length > 0) {
+          doc.setFont("courier", "normal");
+          doc.setFontSize(10);
+
+          const header = `${"Month".padEnd(10)}  ${"Total (R)".padEnd(12)}  ${"Type"}`;
+          doc.text(header, 14, y);
+          y += 6;
+          doc.text("-".repeat(36), 14, y);
+          y += 6;
+
+          monthlySalesData.forEach((item) => {
+            const month = (item.month || "").padEnd(10);
+            const total = `R${item.total.toFixed(2)}`.padEnd(12);
+            const type = item.isAverage ? "Average" : "Monthly";
+            const line = `${month}  ${total}  ${type}`;
+            doc.text(line, 14, y);
+            y += 6;
+
+            if (y > 270) {
+              doc.addPage();
+              y = 20;
+            }
+          });
+        } else {
+          doc.setFont("helvetica", "normal");
+          doc.text("No monthly sales data available.", 14, y);
+          y += 6;
+        }
+
+        y += 12;
+        doc.setFont("helvetica", "bold");
+        doc.text("Latest Transactions:", 14, y);
+        y += 8;
+
+        if (latestOrders && latestOrders.length > 0) {
+          latestOrders.slice(0, 5).forEach((order, index) => {
+            const orderId = order.id || `Order ${index + 1}`;
+            const total = parseFloat(order.total || 0).toFixed(2);
+            doc.setFont("helvetica", "normal");
+            doc.text(`${index + 1}. Order ID: ${orderId} - R${total}`, 14, y);
+            y += 6;
+          });
+        } else {
+          doc.text("No recent transactions.", 14, y);
+          y += 6;
+        }
+
+        y += 6;
+        doc.setFont("helvetica", "bold");
+        doc.text("New Artisans:", 14, y);
+        y += 8;
+        if (latestSellers && latestSellers.length > 0) {
+          latestSellers.slice(0, 5).forEach((seller, index) => {
+            doc.setFont("helvetica", "normal");
+            doc.text(`${index + 1}. ${seller.name || `Seller ${index + 1}`}`, 14, y);
+            y += 6;
+          });
+        } else {
+          doc.text("No new artisans.", 14, y);
+          y += 6;
+        }
+
+        y += 6;
+        doc.setFont("helvetica", "bold");
+        doc.text("Top Performing Artisans:", 14, y);
+        y += 8;
+        if (topSellers && topSellers.length > 0) {
+          topSellers.slice(0, 5).forEach((seller, index) => {
+            doc.setFont("helvetica", "normal");
+            doc.text(`${index + 1}. ${seller.seller} - ${seller.count} sale(s)`, 14, y);
+            y += 6;
+          });
+        } else {
+          doc.text("No top performers data available.", 14, y);
+          y += 6;
+        }
+
+        doc.save("dashboard_report.pdf");
+        console.log("PDF generated successfully");
+      } catch (pdfError) {
+        console.error("PDF generation error:", pdfError);
+        toast.error("Failed to generate PDF document");
+      }
+    };
+
+    logo.onerror = () => {
+      toast.error("Failed to load BlooBase logo.");
+    };
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    toast.error(error.message || "Unknown error");
+  }
+};
+
 
   return (
     <section className="dashboard-container">
@@ -173,8 +379,8 @@ const Dashboard = () => {
         </section>
         <nav className="seller-nav">
           <Link to="/" className="seller-nav-link">HOME</Link>
-           <button onClick={handleDownloadPDF} className="download-button">
-            <h5>Download report  </h5>
+          <button onClick={handleDownloadPDF} className="download-button">
+            <h5>Download report</h5>
             <img src="/download.png" alt="Download PDF" className="download-icon" />
           </button>
         </nav>
@@ -212,7 +418,7 @@ const Dashboard = () => {
             ) : latestSellers.length > 0 ? (
               latestSellers.map((seller, index) => (
                 <Link key={seller.id || index} to={`/Artists/${seller.id}`} className="seller-link">
-                  <p>{seller.name} </p>
+                  <p>{seller.name}</p>
                 </Link>
               ))
             ) : (
@@ -225,7 +431,7 @@ const Dashboard = () => {
             {topSellersLoading ? (
               <p>Loading top performing artisans...</p>
             ) : topSellersError ? (
-              <p className="error-message">{topSellersError}</p>
+              <p className="error-message">{sellersError}</p>
             ) : topPerformingSellers.length > 0 ? (
               <ul className="store-list">
                 {topPerformingSellers.map((sellerData, index) => (
@@ -290,7 +496,6 @@ const Dashboard = () => {
                         R {monthData.total.toFixed(2)}
                       </span>
                       <section
-                        // Using template literal for class names is standard React practice
                         className={`bar ${monthData.isAverage ? 'average-bar' : ''}`}
                         style={{ height: `${(monthData.total / maxMonthlySales) * 100}%` }}
                         title={`R ${monthData.total.toFixed(2)}`}
@@ -299,7 +504,6 @@ const Dashboard = () => {
                     </section>
                   ))}
                 </section>
-                {/* Key/Legend */}
                 <section className="graph-key">
                   <section className="key-item">
                     <span className="key-color normal-sales"></span>
@@ -316,7 +520,6 @@ const Dashboard = () => {
             )}
           </article>
         </section>
-
       </main>
     </section>
   );

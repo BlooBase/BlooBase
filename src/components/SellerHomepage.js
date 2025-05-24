@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { updateCredentials, getUserData, logout, } from "../firebase/firebase";
+import { updateCredentials, getUserData, logout, getUserAuthProvider, deleteAccount } from "../firebase/firebase";
 import { retrieveSellerProducts } from "../firebase/retrieveSellerProducts";
 import { auth, getSellerCard } from "../firebase/firebase";
 import { jsPDF } from "jspdf";
@@ -231,6 +231,31 @@ const SellerHomePage = () => {
     }
   };
 
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
+
+  useEffect(() => {
+    const checkProvider = async () => {
+      const provider = await getUserAuthProvider();
+      console.log("Auth provider fetched:", provider);
+      setIsGoogleUser(provider === "Google");
+    };
+    checkProvider();
+  }, []);
+
+  useEffect(() => {
+    console.log("isGoogleUser state changed:", isGoogleUser);
+  }, [isGoogleUser]);
+
+  const handleDeleteAccount = async () => {
+    try {
+      await deleteAccount();
+      toast.success("Account deleted successfully!");
+      navigate("/");
+    } catch (error) {
+      toast.error("Failed to delete account: " + error.message);
+    }
+  };
+
   return (
     <section className="seller-home">
       <section className="seller-header">
@@ -310,11 +335,52 @@ const SellerHomePage = () => {
                   className="form-input-1"
                 />
               </section>
+              <section className="form-field-1" style={{ display: isGoogleUser ? 'none' : 'flex' }}>
+                <label htmlFor="email" className="form-label">Email:</label>
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="form-input-1"
+                  disabled={isGoogleUser}
+                />
+              </section>
+              {!isGoogleUser && (
+                <>
+                  <section className="form-field-1">
+                    <label htmlFor="password" className="form-label">Current Password:</label>
+                    <input
+                      type="password"
+                      name="password"
+                      id="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="form-input-1"
+                    />
+                  </section>
+                  <section className="form-field-1">
+                    <label htmlFor="newpassword" className="form-label">New Password:</label>
+                    <input
+                      type="password"
+                      name="newpassword"
+                      id="newpassword"
+                      value={formData.newpassword}
+                      onChange={handleChange}
+                      className="form-input-1"
+                    />
+                  </section>
+                </>
+              )}
               <section className="settings-buttons-1">
                 <button type="button" onClick={handleSave} className="nav-button-1">Save Changes</button>
                 <button type="button" onClick={handleCancel} className="nav-button-1">Clear</button>
                 <section className="red-buttons-1">
                   <button type="button" onClick={handleLogout} className="delete-button-1">Log Out</button>
+                  {!isGoogleUser && (
+                    <button type="button" onClick={handleDeleteAccount} className="delete-button-1">Delete Account</button>
+                  )}
                 </section>
               </section>
             </fieldset>

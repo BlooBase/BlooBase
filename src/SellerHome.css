@@ -147,7 +147,7 @@ body {
   overflow: hidden;
 }
 
-.orders-card-title {
+.orders-card-title-1 {
   position: absolute;
   top: 12px;
   left: 20px;
@@ -472,7 +472,7 @@ body {
   }
 
   .download-sales{
-    margin-left: -20px;
+    margin-left: -10px;
   }
 
   .seller-header {
@@ -538,9 +538,10 @@ body {
     padding: 1rem;
   }
 
-  .orders-card-title {
+  .orders-card-title-1 {
     font-size: 1rem;
-    max-width: 90px !important;
+    max-width: 75px !important;
+    
   }
 
   .orders-card-scroll {

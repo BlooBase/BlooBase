@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "../Dashboard.css";
 import { getRoleSize, getCollectionSize, getUserName, auth } from "../firebase/firebase";
 import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers, fetchMonthlySalesPerformance } from "../firebase/adminDashFunctions";
-import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers, fetchMonthlySalesPerformance } from "../firebase/adminDashFunctions";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jsPDF } from "jspdf";
@@ -50,21 +49,6 @@ const Dashboard = () => {
       };
     }
   }
-
-  const [roleCounts, setRoleCounts] = useState(null);
-  const [ordersCount, setOrdersCount] = useState(null);
-  const [user, setUser] = useState({ name: '' });
-  const [latestTransactions, setLatestTransactions] = useState([]);
-  const [latestSellers, setLatestSellers] = useState([]);
-  const [sellersLoading, setSellersLoading] = useState(true);
-  const [sellersError, setSellersError] = useState(null);
-  const [totalSales, setTotalSales] = useState(0);
-  const [topPerformingSellers, setTopPerformingSellers] = useState([]);
-  const [topSellersLoading, setTopSellersLoading] = useState(true);
-  const [topSellersError, setTopSellersError] = useState(null);
-  const [monthlySalesData, setMonthlySalesData] = useState([]);
-  const [monthlySalesLoading, setMonthlySalesLoading] = useState(true);
-  const [monthlySalesError, setMonthlySalesError] = useState(null);
 
   useEffect(() => {
     async function fetchData() {

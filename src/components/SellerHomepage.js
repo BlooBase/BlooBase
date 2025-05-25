@@ -343,6 +343,7 @@ const SellerHomePage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className="form-input-1"
+                  disabled={isGoogleUser}
                 />
               </section>
               <section className="settings-buttons-1">

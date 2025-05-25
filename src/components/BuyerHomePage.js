@@ -206,6 +206,7 @@ const BuyerHomePage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className="form-input"
+                  disabled={isGoogleUser}
                 />
               </section>
               <section className="settings-buttons-1">

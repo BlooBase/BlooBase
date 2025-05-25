@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../Dashboard.css";
 import { getRoleSize, getCollectionSize, getUserName, auth } from "../firebase/firebase";
 import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers, fetchMonthlySalesPerformance } from "../firebase/adminDashFunctions";
+import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers, fetchMonthlySalesPerformance } from "../firebase/adminDashFunctions";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jsPDF } from "jspdf";
@@ -10,6 +11,23 @@ import "jspdf-autotable";
 const Dashboard = () => {
   const navigate = useNavigate();
 
+  // State variables for dashboard data
+  const [roleCounts, setRoleCounts] = useState(null);
+  const [ordersCount, setOrdersCount] = useState(null);
+  const [user, setUser] = useState({ name: '' });
+  const [latestTransactions, setLatestTransactions] = useState([]);
+  const [latestSellers, setLatestSellers] = useState([]);
+  const [sellersLoading, setSellersLoading] = useState(true);
+  const [sellersError, setSellersError] = useState(null);
+  const [totalSales, setTotalSales] = useState(0);
+  const [topPerformingSellers, setTopPerformingSellers] = useState([]);
+  const [topSellersLoading, setTopSellersLoading] = useState(true);
+  const [topSellersError, setTopSellersError] = useState(null);
+  const [monthlySalesData, setMonthlySalesData] = useState([]);
+  const [monthlySalesLoading, setMonthlySalesLoading] = useState(true);
+  const [monthlySalesError, setMonthlySalesError] = useState(null);
+
+  // Function to get all role sizes
   async function getAllRoleSizes() {
     try {
       const [buyerCount, sellerCount, adminCount] = await Promise.all([
@@ -24,6 +42,7 @@ const Dashboard = () => {
       };
     } catch (error) {
       console.error("Error getting role sizes:", error);
+      toast.error("Failed to fetch role sizes."); // Added toast notification for error
       return {
         Buyer: 0,
         Seller: 0,
@@ -49,19 +68,29 @@ const Dashboard = () => {
 
   useEffect(() => {
     async function fetchData() {
+      // Fetch role counts
       const roles = await getAllRoleSizes();
       setRoleCounts(roles);
 
+      // Fetch orders count
       const orders = await getCollectionSize("Orders");
       setOrdersCount(orders);
 
-      const transactions = await getLatestOrders();
-      const formattedTransactions = transactions.map(t => ({
-        ...t,
-        total: parseFloat(t.total || 0).toFixed(2)
-      }));
-      setLatestTransactions(formattedTransactions);
+      // Fetch latest transactions
+      try {
+        const transactions = await getLatestOrders();
+        const formattedTransactions = transactions.map(t => ({
+          ...t,
+          total: parseFloat(t.total || 0).toFixed(2)
+        }));
+        setLatestTransactions(formattedTransactions);
+      } catch (err) {
+        console.error("Error fetching latest orders:", err);
+        toast.error("Failed to load latest transactions.");
+        setLatestTransactions([]);
+      }
 
+      // Fetch latest sellers
       setSellersLoading(true);
       setSellersError(null);
       try {
@@ -75,14 +104,17 @@ const Dashboard = () => {
         setSellersLoading(false);
       }
 
+      // Fetch total sales
       try {
         const sales = await getTotalSales();
         setTotalSales(sales);
       } catch (err) {
         console.error("Error fetching overall sales:", err);
+        toast.error("Failed to load total sales.");
         setTotalSales(0);
       }
 
+      // Fetch top performing sellers
       setTopSellersLoading(true);
       setTopSellersError(null);
       try {
@@ -96,12 +128,12 @@ const Dashboard = () => {
         setTopSellersLoading(false);
       }
 
+      // Fetch monthly sales performance
       setMonthlySalesLoading(true);
       setMonthlySalesError(null);
       try {
         const data = await fetchMonthlySalesPerformance();
-        console.log("Raw monthly sales data from Firebase:", data);
-
+        
         const numericData = data.map(item => ({
           ...item,
           total: parseFloat(item.total || 0)
@@ -109,8 +141,6 @@ const Dashboard = () => {
 
         const totalSum = numericData.reduce((sum, item) => sum + item.total, 0);
         const averageSales = numericData.length > 0 ? totalSum / numericData.length : 0;
-
-        console.log("Calculated Average Sales (before toFixed):", averageSales);
 
         const averageBarData = {
           month: 'Avg',
@@ -121,8 +151,6 @@ const Dashboard = () => {
 
         const combinedData = [...numericData, averageBarData];
         setMonthlySalesData(combinedData);
-
-        console.log("Monthly Sales Data (including Avg, after setMonthlySalesData):", combinedData);
       } catch (err) {
         console.error("Error fetching monthly sales performance:", err);
         setMonthlySalesError("Failed to load monthly sales data. Make sure 'total' fields are numbers.");
@@ -135,10 +163,17 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
+  // Fetch user name on component mount
   useEffect(() => {
     const fetchUser = async () => {
-      const name = await getUserName();
-      setUser({ name });
+      try {
+        const name = await getUserName();
+        setUser({ name });
+      } catch (error) {
+        console.error("Error fetching user name:", error);
+        toast.error("Failed to load user name.");
+        setUser({ name: "Guest" }); // Fallback to Guest if name cannot be fetched
+      }
     };
     fetchUser();
   }, []);
@@ -156,156 +191,182 @@ const Dashboard = () => {
 
   const maxCount = getMaxSellerCount();
 
-  // Calculate maxMonthlySales for scaling the bar chart
   const maxMonthlySales = monthlySalesData.length > 0
     ? Math.max(...monthlySalesData.map(item => item.total), 1)
     : 1;
+
   const handleDownloadPDF = async () => {
-  try {
-    const user = auth.currentUser;
-    if (!user) {
-      toast.error("You must be logged in to download a PDF.");
-      return;
-    }
+    try {
+      const currentUser = auth.currentUser; // Renamed to avoid conflict with `user` state
+      if (!currentUser) {
+        toast.error("You must be logged in to download a PDF.");
+        return;
+      }
 
-    const userName = await getUserName();
-    const roleSizes = await getAllRoleSizes();
-    const ordersCount = await getCollectionSize("Orders");
-    const totalSales = await getTotalSales();
-    const latestOrders = await getLatestOrders();
-    const latestSellers = await getLatestSellers();
-    const topSellers = await getTopSellers();
+      // Ensure all data is fetched before generating PDF
+      const [
+        userName,
+        roleSizes,
+        ordersCount,
+        totalSales,
+        latestOrders,
+        latestSellers,
+        topSellers,
+        monthlySalesDataForPdf // Fetch monthly sales for PDF separately if not already in state or if stale
+      ] = await Promise.all([
+        getUserName(),
+        getAllRoleSizes(), // Re-fetch to ensure latest data or use current state if reliable
+        getCollectionSize("Orders"),
+        getTotalSales(),
+        getLatestOrders(),
+        getLatestSellers(),
+        getTopSellers(),
+        fetchMonthlySalesPerformance() // Ensures fresh monthly sales data for the PDF
+      ]);
 
-    const logo = new Image();
-    logo.src = "/bloobase.png";
+      const logo = new Image();
+      logo.src = "/bloobase.png"; // Ensure this path is correct
 
-    logo.onload = () => {
-      try {
-        const doc = new jsPDF();
-        const now = new Date();
-        const formattedDate = now.toLocaleString("en-ZA", {
-          dateStyle: "medium",
-          timeStyle: "short",
-        });
-
-        doc.addImage(logo, "PNG", 150, 10, 40, 28);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(0, 86, 179);
-        doc.setFontSize(22);
-        doc.text("BlooBase Dashboard Report", 14, 20);
-        doc.setTextColor(0, 0, 0);
-        doc.setFontSize(12);
-
-        let y = 40;
-
-        doc.setFont("helvetica", "bold");
-        doc.text("User:", 14, y);
-        doc.setFont("helvetica", "normal");
-        doc.text(`${userName || user.displayName || "Artisan"}`, 40, y);
-        y += 8;
-
-        doc.setFont("helvetica", "bold");
-        doc.text("Email:", 14, y);
-        doc.setFont("helvetica", "normal");
-        doc.text(`${user.email || "Not available"}`, 40, y);
-        y += 8;
-
-        doc.setFont("helvetica", "bold");
-        doc.text("Generated:", 14, y);
-        doc.setFont("helvetica", "normal");
-        doc.text(`${formattedDate}`, 40, y);
-        y += 12;
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(11);
-        doc.text("User Roles:", 14, y);
-        y += 8;
-        doc.setFont("helvetica", "normal");
-        doc.text(`Buyers: ${roleSizes.Buyer || 0}`, 14, y);
-        y += 6;
-        doc.text(`Sellers: ${roleSizes.Seller || 0}`, 14, y);
-        y += 6;
-        doc.text(`Admins: ${roleSizes.Admin || 0}`, 14, y);
-        y += 12;
-
-        doc.setFont("helvetica", "bold");
-        doc.text("Total Orders:", 14, y);
-        doc.setFont("helvetica", "normal");
-        doc.text(`${ordersCount || 0}`, 40, y);
-        y += 12;
-
-        doc.setFont("helvetica", "bold");
-        doc.text("Total Sales:", 14, y);
-        doc.setFont("helvetica", "normal");
-        doc.text(`R${parseFloat(totalSales || 0).toFixed(2)}`, 40, y);
-        y += 12;
-
-        // === Monthly Sales Performance (aligned text columns) ===
-        doc.setFont("courier", "bold");
-        doc.text("Monthly Sales Performance (Last 12 Months):", 14, y);
-        y += 8;
-
-        if (monthlySalesData && monthlySalesData.length > 0) {
-          doc.setFont("courier", "normal");
-          doc.setFontSize(10);
-
-          const header = `${"Month".padEnd(10)}  ${"Total (R)".padEnd(12)}  ${"Type"}`;
-          doc.text(header, 14, y);
-          y += 6;
-          doc.text("-".repeat(36), 14, y);
-          y += 6;
-
-          monthlySalesData.forEach((item) => {
-            const month = (item.month || "").padEnd(10);
-            const total = `R${item.total.toFixed(2)}`.padEnd(12);
-            const type = item.isAverage ? "Average" : "Monthly";
-            const line = `${month}  ${total}  ${type}`;
-            doc.text(line, 14, y);
-            y += 6;
-
-            if (y > 270) {
-              doc.addPage();
-              y = 20;
-            }
+      logo.onload = () => {
+        try {
+          const doc = new jsPDF();
+          const now = new Date();
+          const formattedDate = now.toLocaleString("en-ZA", {
+            dateStyle: "medium",
+            timeStyle: "short",
           });
-        } else {
+
+          doc.addImage(logo, "PNG", 150, 10, 40, 28);
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(0, 86, 179);
+          doc.setFontSize(22);
+          doc.text("BlooBase Dashboard Report", 14, 20);
+          doc.setTextColor(0, 0, 0);
+          doc.setFontSize(12);
+
+          let y = 40;
+
+          doc.setFont("helvetica", "bold");
+          doc.text("User:", 14, y);
           doc.setFont("helvetica", "normal");
-          doc.text("No monthly sales data available.", 14, y);
+          doc.text(`${userName || currentUser.displayName || "Artisan"}`, 40, y);
+          y += 8;
+
+          doc.setFont("helvetica", "bold");
+          doc.text("Email:", 14, y);
+          doc.setFont("helvetica", "normal");
+          doc.text(`${currentUser.email || "Not available"}`, 40, y);
+          y += 8;
+
+          doc.setFont("helvetica", "bold");
+          doc.text("Generated:", 14, y);
+          doc.setFont("helvetica", "normal");
+          doc.text(`${formattedDate}`, 40, y);
+          y += 12;
+
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(11);
+          doc.text("User Roles:", 14, y);
+          y += 8;
+          doc.setFont("helvetica", "normal");
+          doc.text(`Buyers: ${roleSizes.Buyer || 0}`, 14, y);
           y += 6;
-        }
+          doc.text(`Sellers: ${roleSizes.Seller || 0}`, 14, y);
+          y += 6;
+          doc.text(`Admins: ${roleSizes.Admin || 0}`, 14, y);
+          y += 12;
 
-        y += 12;
-        doc.setFont("helvetica", "bold");
-        doc.text("Latest Transactions:", 14, y);
-        y += 8;
+          doc.setFont("helvetica", "bold");
+          doc.text("Total Orders:", 14, y);
+          doc.setFont("helvetica", "normal");
+          doc.text(`${ordersCount || 0}`, 40, y);
+          y += 12;
 
-        if (latestOrders && latestOrders.length > 0) {
-          latestOrders.slice(0, 5).forEach((order, index) => {
-            const orderId = order.id || `Order ${index + 1}`;
-            const total = parseFloat(order.total || 0).toFixed(2);
-            doc.setFont("helvetica", "normal");
-            doc.text(`${index + 1}. Order ID: ${orderId} - R${total}`, 14, y);
+          doc.setFont("helvetica", "bold");
+          doc.text("Total Sales:", 14, y);
+          doc.setFont("helvetica", "normal");
+          doc.text(`R${parseFloat(totalSales || 0).toFixed(2)}`, 40, y);
+          y += 12;
+
+          // === Monthly Sales Performance (aligned text columns) ===
+          doc.setFont("courier", "bold");
+          doc.text("Monthly Sales Performance (Last 12 Months):", 14, y);
+          y += 8;
+
+          if (monthlySalesDataForPdf && monthlySalesDataForPdf.length > 0) { // Use monthlySalesDataForPdf here
+            doc.setFont("courier", "normal");
+            doc.setFontSize(10);
+
+            const header = `${"Month".padEnd(10)}  ${"Total (R)".padEnd(12)}  ${"Type"}`;
+            doc.text(header, 14, y);
             y += 6;
-          });
-        } else {
-          doc.text("No recent transactions.", 14, y);
-          y += 6;
-        }
-
-        y += 6;
-        doc.setFont("helvetica", "bold");
-        doc.text("New Artisans:", 14, y);
-        y += 8;
-        if (latestSellers && latestSellers.length > 0) {
-          latestSellers.slice(0, 5).forEach((seller, index) => {
-            doc.setFont("helvetica", "normal");
-            doc.text(`${index + 1}. ${seller.name || `Seller ${index + 1}`}`, 14, y);
+            doc.text("-".repeat(36), 14, y);
             y += 6;
-          });
-        } else {
-          doc.text("No new artisans.", 14, y);
+
+            // Calculate average for PDF report
+            const numericMonthlySalesDataForPdf = monthlySalesDataForPdf.map(item => ({
+              ...item,
+              total: parseFloat(item.total || 0)
+            }));
+            const totalSumPdf = numericMonthlySalesDataForPdf.reduce((sum, item) => sum + item.total, 0);
+            const averageSalesPdf = numericMonthlySalesDataForPdf.length > 0 ? totalSumPdf / numericMonthlySalesDataForPdf.length : 0;
+
+            const combinedDataForPdf = [
+              ...numericMonthlySalesDataForPdf,
+              { month: 'Avg', year: null, total: averageSalesPdf, isAverage: true }
+            ];
+
+            combinedDataForPdf.forEach((item) => {
+              const month = (item.month || "").padEnd(10);
+              const total = `R${item.total.toFixed(2)}`.padEnd(12);
+              const type = item.isAverage ? "Average" : "Monthly";
+              const line = `${month}  ${total}  ${type}`;
+              doc.text(line, 14, y);
+              y += 6;
+
+              if (y > 270) {
+                doc.addPage();
+                y = 20;
+              }
+            });
+          } else {
+            doc.setFont("helvetica", "normal");
+            doc.text("No monthly sales data available.", 14, y);
+            y += 6;
+          }
+
+          y += 12;
+          doc.setFont("helvetica", "bold");
+          doc.text("Latest Transactions:", 14, y);
+          y += 8;
+
+          if (latestOrders && latestOrders.length > 0) {
+            latestOrders.slice(0, 5).forEach((order, index) => {
+              const orderId = order.id || `Order ${index + 1}`;
+              const total = parseFloat(order.total || 0).toFixed(2);
+              doc.setFont("helvetica", "normal");
+              doc.text(`${index + 1}. Order ID: ${orderId} - R${total}`, 14, y);
+              y += 6;
+            });
+          } else {
+            doc.text("No recent transactions.", 14, y);
+            y += 6;
+          }
+
           y += 6;
-        }
+          doc.setFont("helvetica", "bold");
+          doc.text("New Artisans:", 14, y);
+          y += 8;
+          if (latestSellers && latestSellers.length > 0) {
+            latestSellers.slice(0, 5).forEach((seller, index) => {
+              doc.setFont("helvetica", "normal");
+              doc.text(`${index + 1}. ${seller.name || `Seller ${index + 1}`}`, 14, y);
+              y += 6;
+            });
+          } else {
+            doc.text("No new artisans.", 14, y);
+            y += 6;
+          }
 
         y += 6;
         // Before writing the heading, check if there's enough space for the heading and at least one entry
@@ -332,23 +393,22 @@ const Dashboard = () => {
           y += 6;
         }
 
-        doc.save("dashboard_report.pdf");
-        console.log("PDF generated successfully");
-      } catch (pdfError) {
-        console.error("PDF generation error:", pdfError);
-        toast.error("Failed to generate PDF document");
-      }
-    };
+          doc.save("dashboard_report.pdf");
+          toast.success("PDF report generated successfully!");
+        } catch (pdfError) {
+          console.error("PDF generation error:", pdfError);
+          toast.error("Failed to generate PDF document. " + pdfError.message);
+        }
+      };
 
-    logo.onerror = () => {
-      toast.error("Failed to load BlooBase logo.");
-    };
-  } catch (error) {
-    console.error("Error generating PDF:", error);
-    toast.error(error.message || "Unknown error");
-  }
-};
-
+      logo.onerror = () => {
+        toast.error("Failed to load BlooBase logo for PDF.");
+      };
+    } catch (error) {
+      console.error("Error initiating PDF download:", error);
+      toast.error(error.message || "An unexpected error occurred during PDF generation.");
+    }
+  };
 
   return (
     <section className="dashboard-container">
@@ -407,11 +467,11 @@ const Dashboard = () => {
           </aside>
 
           <article className="progress-card">
-            <h3>Most performing artisans</h3>
+            <h3>Most Performing Artisans</h3>
             {topSellersLoading ? (
               <p>Loading top performing artisans...</p>
             ) : topSellersError ? (
-              <p className="error-message">{sellersError}</p>
+              <p className="error-message">{topSellersError}</p>
             ) : topPerformingSellers.length > 0 ? (
               <ul className="store-list">
                 {topPerformingSellers.map((sellerData, index) => (

@@ -346,8 +346,16 @@ export const deleteAccount = async (currentPassword) => {
   if (!user || !user.email) throw new Error("User not authenticated");
 
   try {
+    // This endpoint should handle deleting the user, seller card, and products
     await apiRequest(`/api/users/${user.uid}`, 'DELETE', currentPassword ? { currentPassword } : undefined);
-    await deleteUser(user);
+
+    try {
+      await deleteUser(user);
+    } catch (firebaseError) {
+      
+    }
+
+    // No need to call /api/seller/card here!
   } catch (error) {
     console.error("Error deleting account via API:", error);
     toast.error(`Error deleting account: ${error.message}`);

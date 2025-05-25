@@ -128,9 +128,9 @@ const Orders = () => {
           <p>Total: <data value={calculateTotal()}>R{calculateTotal()}</data></p>
           {order.orderType && (
             <p className="order-type-display">
-              Order Type: <span className={`order-preview-type ${order.orderType.toLowerCase()}`}>
+              Order Type: <strong className={`order-preview-type ${order.orderType.toLowerCase()}`}>
                 <em>{order.orderType}</em>
-              </span>
+              </strong>
             </p>
           )}
         </footer>
@@ -141,12 +141,12 @@ const Orders = () => {
   // This outer return block handles the initial error state display
   if (error && !order && !loading) {
     return (
-      <div className="full-page-message">
+      <nav className="full-page-message">
         <p className="error-message">{error}</p>
         <button onClick={handleBackToOrders} className="back-button-full-page">
-          &larr; <span>BACK TO HOME</span>
+          &larr; <strong>BACK TO HOME</strong>
         </button>
-      </div>
+      </nav>
     );
   }
 
@@ -158,7 +158,7 @@ const Orders = () => {
             <h2 className="orders-card-title">{orderTitle}</h2>
             <button onClick={handleBackToOrders} className="back-button">
               &larr;
-              <span>BACK</span>
+              <strong>BACK</strong>
             </button>
           </header>
           {orderContent}

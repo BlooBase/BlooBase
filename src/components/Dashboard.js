@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../Dashboard.css";
 import { getRoleSize, getCollectionSize, getUserName, auth } from "../firebase/firebase";
-import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers } from "../firebase/adminDashFunctions";
+import { getLatestOrders, getLatestSellers, getTotalSales, getTopSellers, fetchMonthlySalesPerformance } from "../firebase/adminDashFunctions";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jsPDF } from "jspdf";
@@ -29,36 +29,6 @@ const Dashboard = () => {
         Seller: 0,
         Admin: 0,
       };
-    }
-  }
-
-  // Placeholder function for fetching monthly sales data
-  async function fetchMonthlySalesPerformance() {
-    try {
-      // Simulate fetching monthly sales data for the last 12 months
-      // Replace this with your actual Firebase query
-      const months = [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-      ];
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth();
-      const salesData = months.map((month, index) => {
-        const monthIndex = (currentMonth - 11 + index + 12) % 12; // Last 12 months
-        const year = currentMonth - 11 + index < 0 ? currentYear - 1 : currentYear;
-        // Simulate sales totals (replace with actual Firebase data)
-        const total = Math.random() * 5000; // Random sales between 0 and 5000
-        return {
-          month: months[monthIndex],
-          year,
-          total,
-        };
-      });
-      return salesData;
-    } catch (error) {
-      console.error("Error in fetchMonthlySalesPerformance:", error);
-      throw error;
     }
   }
 
@@ -338,12 +308,22 @@ const Dashboard = () => {
         }
 
         y += 6;
+        // Before writing the heading, check if there's enough space for the heading and at least one entry
+        if (y > 265) { // 265 leaves room for heading + first entry
+          doc.addPage();
+          y = 20;
+        }
         doc.setFont("helvetica", "bold");
         doc.text("Top Performing Artisans:", 14, y);
         y += 8;
         if (topSellers && topSellers.length > 0) {
           topSellers.slice(0, 5).forEach((seller, index) => {
             doc.setFont("helvetica", "normal");
+            // Check if there's enough space for each entry
+            if (y > 270) {
+              doc.addPage();
+              y = 20;
+            }
             doc.text(`${index + 1}. ${seller.seller} - ${seller.count} sale(s)`, 14, y);
             y += 6;
           });
@@ -492,26 +472,26 @@ const Dashboard = () => {
                 <section className="sales-bar-chart">
                   {monthlySalesData.map((monthData, index) => (
                     <section key={index} className="bar-container">
-                      <span className="bar-value">
+                      <strong className="bar-value">
                         R {monthData.total.toFixed(2)}
-                      </span>
+                      </strong>
                       <section
                         className={`bar ${monthData.isAverage ? 'average-bar' : ''}`}
                         style={{ height: `${(monthData.total / maxMonthlySales) * 100}%` }}
                         title={`R ${monthData.total.toFixed(2)}`}
                       ></section>
-                      <span className="month-label">{monthData.month}</span>
+                      <strong className="month-label">{monthData.month}</strong>
                     </section>
                   ))}
                 </section>
                 <section className="graph-key">
                   <section className="key-item">
-                    <span className="key-color normal-sales"></span>
-                    <span>Monthly Sales</span>
+                    <strong className="key-color normal-sales"></strong>
+                    <strong>Monthly Sales</strong>
                   </section>
                   <section className="key-item">
-                    <span className="key-color average-sales"></span>
-                    <span>12-Month Average</span>
+                    <strong className="key-color average-sales"></strong>
+                    <strong>12-Month Average</strong>
                   </section>
                 </section>
               </>

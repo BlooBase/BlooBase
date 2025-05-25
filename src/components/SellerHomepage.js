@@ -343,35 +343,8 @@ const SellerHomePage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className="form-input-1"
-                  disabled={isGoogleUser}
                 />
               </section>
-              {!isGoogleUser && (
-                <>
-                  <section className="form-field-1">
-                    <label htmlFor="password" className="form-label">Current Password:</label>
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      className="form-input-1"
-                    />
-                  </section>
-                  <section className="form-field-1">
-                    <label htmlFor="newpassword" className="form-label">New Password:</label>
-                    <input
-                      type="password"
-                      name="newpassword"
-                      id="newpassword"
-                      value={formData.newpassword}
-                      onChange={handleChange}
-                      className="form-input-1"
-                    />
-                  </section>
-                </>
-              )}
               <section className="settings-buttons-1">
                 <button type="button" onClick={handleSave} className="nav-button-1">Save Changes</button>
                 <button type="button" onClick={handleCancel} className="nav-button-1">Clear</button>

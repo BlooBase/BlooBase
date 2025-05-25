@@ -25,7 +25,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   const { currentUser, userRole, loading } = useAuth(); 
 
   if (loading) {
-    return <div>Loading authentication...</div>;
+    return <header>Loading authentication...</header>;
   }
 
   // --- Authentication Check ---

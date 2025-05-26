@@ -108,7 +108,6 @@ body {
   padding: 10px;
   margin-top: -10px;
   border-radius: 15px;
-  background-color: #ffffff;
   
 }
 .download-icon{
@@ -467,57 +466,105 @@ body {
 }
 
 @media (max-width: 768px) {
+  .seller-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 18px 8px 18px 8px;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    border: #000 2px solid;
+    background: linear-gradient(to right, #dff3ff, #f4faff);
+    width: 100%;
+    height: auto;
+    min-height: unset;
+    gap: 0;
+    position: relative;
+  }
+
+  .seller-logo {
+    height: 48px;
+    margin: 0 0 10px 0;
+    display: block;
+  }
+
+  .welcome-bg-seller {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto 12px auto;
+    padding: 8px 16px;
+    border-radius: 40px;
+    border: #000 2px solid;
+    background: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #165a9c;
+    white-space: nowrap;
+  }
+
+  .seller-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #165a9c;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .seller-nav {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    padding: 0;
+    position: static;
+  }
+
+  .seller-nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #000;
+    font-weight: 900;
+    width: 48%;
+    min-width: 110px;
+    max-width: 150px;
+    height: 38px;
+    border: #1a1a1a 2px solid;
+    border-radius: 22px;
+    background: #f9f9f9;
+    transition: all 0.3s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    font-size: 1rem;
+    padding: 0;
+    text-align: center;
+  }
+
+  .seller-nav-link:hover {
+    background-color: #eaf4ff;
+    color: #0d3c6d;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  }
+
   .total-income-label {
     font-size: 0.85rem;
   }
 
-  .download-sales{
+  .download-sales {
     margin-left: -10px;
-  }
-
-  .seller-header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 10px;
-    border-bottom-left-radius: 40px;
-    border-bottom-right-radius: 40px;
-    height: auto;
-  }
-
-  .seller-logo {
-    height: 60px;
-    margin-bottom: 5px;
-    margin-right: 0;
-    margin-left: 0;
-  }
-
-  .welcome-bg-seller {
-    width: auto;
-    padding: 5px 10px;
-    margin: 5px auto;
-    border-radius: 40px;
-    height: auto;
-    min-height: 40px;
-  }
-
-  .seller-title {
-    font-size: 1.2rem;
-    margin: 0;
-  }
-
-  .seller-nav {
-    margin-top: 10px;
-    margin-left: 0;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .seller-nav-link {
-    font-size: 0.7rem;
-    padding: 5px 10px;
-    width: auto;
-    height: auto;
   }
 
   .seller-orders-section {
@@ -536,6 +583,10 @@ body {
     width: 100%;
     height: auto; 
     padding: 1rem;
+  }
+
+  .orders-card-scroll{
+    padding-top: 40px; /* Add padding to push content down */
   }
 
   .orders-card-title-1 {

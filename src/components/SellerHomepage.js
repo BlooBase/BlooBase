@@ -256,15 +256,15 @@ const SellerHomePage = () => {
   };
 
   return (
-    <section className="seller-home">
-      <section className="seller-header">
-        <img src="/bloobase.png" alt="Bloobase" className="seller-logo" />
-        <section className="welcome-bg-seller">
-          <h1 className="seller-title">Welcome, {formData.name}</h1>
+    <section className="buyer-home">
+      <section className="buyer-header">
+        <img src="/bloobase.png" alt="Bloobase" className="buyer-logo" />
+        <section className="welcome-bg">
+          <h1 className="buyer-title">Welcome, {formData.name}</h1>
         </section>
-        <nav className="seller-nav">
-          <Link to="/" className="seller-nav-link">HOME</Link>
-          <Link to="/CardCreator" className="seller-nav-link">Your Store</Link>
+        <nav className="buyer-nav">
+          <Link to="/" className="buyer-nav-link">HOME</Link>
+          <Link to="/CardCreator" className="buyer-nav-link">Your Store</Link>
         </nav>
       </section>
 
